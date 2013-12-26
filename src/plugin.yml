@@ -1,0 +1,365 @@
+name: CarbonKit
+version: 0.7
+description: Plugin Kit Designed for Minecraft Team-Carbon
+author: OffLuffy
+depend: [Vault]
+soft-depend: [Essentials, GriefPrevention]
+main: me.offluffy.carbonkit.CarbonKit
+
+commands:
+  carbonkitabout:
+    description: Information about CarbonKit
+    usage: /cka
+    aliases: [cka]
+  carbonkithelp:
+    description: Help command for CarbonKit
+    usage: /ckh
+    aliases: [ckh]
+  carbonkitreload:
+    description: Reload CarbonKit
+    usage: /ckr
+    aliases: [ckr]
+  carbonkittoggle:
+    description: Toggle CarbonKit modules
+    usage: /ckt
+    aliases: [ckt]
+  carbonborder:
+    description: Border command
+    usage: /cbd
+    aliases: [ckborder, cborder, cborders, cbd, bd, border, borders]
+  cbclear:
+    description: Clear entities with command block
+    usage: /cbc
+    aliases: [cbc]
+  cbitem:
+    description: Spawn items with command block
+    usage: /cbi
+    aliases: [cbi]
+  cbkill:
+    description: Kill mobs with command block
+    usage: /cbk
+    aliases: [cbk]
+  cbrank:
+    description: Re-rank players with command block
+    usage: /cbr
+    aliases: [cbr]
+  cbspawn:
+    description: Spawn entities with command block
+    usage: /cbs
+    aliases: [cbs]
+  cbvanish:
+    description: Vanish players with command block
+    usage: /cbv
+    aliases: [cbv]
+  ckwatcher:
+    description: Toggle command watching
+    usage: /cw
+    aliases: [ckw,cw,cwatcher,ckwatch,cwatch,commandwatcher,commandwatch,cmdwatcher,cmdwatch]
+  claimpurge:
+    description: Purge GriefPrevention claims from a world
+    usage: /cp
+    aliases: [cpurge, cp]
+  entitycount:
+    description: Count entities
+    usage: /ecount
+    aliases: [ecount, entcount]
+  essentialspurge:
+    description: Purge old/empty essentials user files
+    usage: /ep
+    aliases: [epurge, ep]
+  fakejoin:
+    description: Broadcast a fake join message
+    usage: /fakejoin
+    aliases: [fjoin, fj]
+  fakequit:
+    description: Broadcast a fake quit message
+    usage: /fakequit
+    aliases: [fquit, fq]
+  freeze:
+    description: Freeze a player
+    usage: /freeze
+  gpflag:
+    description: Flag GriefPrevention claims
+    usage: /gpflag
+    aliases: [gpf]
+  goldensmite:
+    description: Super smite
+    usage: /goldensmite
+    aliases: [gsmite, gs]
+  ride:
+    description: Ride entities
+    usage: /ride
+  dismount:
+    description: Dismount an entity
+    usage: /dismount
+  skull:
+    description: Spawn player heads for a price
+    usage: /skull
+    aliases: [skullshop, headshop, head]
+  getskull:
+    description: Spawn queued player heads for a price
+    usage: /skull
+    aliases: [gskull]
+  slap:
+    description: Slap a player
+    usage: /slap
+  toggleinteract:
+    description: Toggle interacting while vanished
+    usage: /toggleinteract
+    aliases: [tint, ti]
+permissions:
+  carbonkit.toggleinteract:
+    description: Disable interacting with mods, plates and item drops while vanished
+    default: op
+  carbonkit.toggleinteract.force:
+    description: Force disabling interacting with various events when vanished
+    default: false
+  carbonkit.slap:
+    description: Slap a player
+    default: op
+  carbonkit.skull:
+    description: Spawn a player's head for the configurable price
+    default: op
+  carbonkit.skull.free:
+    description: Spawn a player's head for free
+    default: op
+  carbonkit.freeze:
+    description: Freeze a player
+    default: op
+  carbonkit.freeze.immune:
+    description: Immunity to being frozen
+    default: op
+  carbonkit.ride:
+    description: Ride an entity
+    default: op
+  carbonkit.ride.players:
+    description: Ride a player entity
+    default: op
+  carbonkit.fakequit.self:
+    description: Broadcast a fake quit message for yourself
+    default: op
+  carbonkit.fakequit.others:
+    description: Broadcast a fake quit message for someone else
+    default: op
+  carbonkit.fakejoin.self:
+    description: Broadcast a fake join message for yourself
+    default: op
+  carbonkit.fakejoin.others:
+    description: Broadcast a fake join message for someone else
+    default: op
+  carbonkit.quitmsg.extended:
+    description: Receieve extended quit message
+    default: op
+  carbonkit.joinmsg.extended:
+    description: Receive extended join message
+    default: op
+  carbonkit.silentjoin:
+    description: Join silently
+    default: op
+  carbonkit.silentjoin.notify:
+    description: Receieve a notice when someone joins silently
+    default: op
+  carbonkit.silentquit:
+    description: Quit silently
+    default: op
+  carbonkit.silentquit.notify:
+    description: Receieve a notice when someone quits silently
+    default: op
+  carbonkit.artcycle:
+    description: Cycle through paintings
+    default: op
+  carbonkit.purge.essentials:
+    description: Purge essentials user data
+    default: op
+  carbonkit.purge.claims:
+    description: Purge claims from a given world
+    default: op
+  carbonkit.entcount.radius:
+    description: Count entities in a specified radius
+    default: op
+  carbonkit.entcount.selection:
+    description: Count entities in a WorldEdit selection
+    default: op
+  carbonkit.entcount.world:
+    description: Count entities in the world
+    default: op
+  carbonkit.watcher:
+    description: Use command watcher
+    default: op
+  carbonkit.toggle:
+    description: Toggle CarbonKit modules
+    default: op
+  carbonkit.toggle.notify:
+    description: Receive notices when a module is toggled
+    default: op
+  carbonkit.reload:
+    description: Reload CarbonKit
+    default: op
+  carbonkit.help:
+    description: Use CarbonKit's root help command
+    default: op
+  carbonkit.vanish.see:
+    description: See players which are vanished using /cbv
+    default: op
+  carbonkit.radar.player:
+    description: Enable Rei's radar for player entities
+    default: op
+  carbonkit.radar.animal:
+    description: Enable Rei's radar for animal entities
+    default: op
+  carbonkit.radar.mob:
+    description: Enable Rei's radar for mob entities
+    default: op
+  carbonkit.radar.slime:
+    description: Enable Rei's radar for slime entities
+    default: op
+  carbonkit.radar.squid:
+    description: Enable Rei's radar for squid entities
+    default: op
+  carbonkit.radar.living:
+    description: Enable Rei's radar for living entities
+    default: op
+  cbtools:vanish.list:
+    description: List players vanished with /cbv
+    default: op
+  borders.set:
+    description: Set the world's border
+    default: op
+  borders.remove:
+    description: Remove the world's border
+    default: op
+  borders.check:
+    description: Check the server's borders
+    default: op
+  borders.bypass:
+    description: Bypass the world border
+    default: op
+  gsmite.use.cmd:
+    description: Use /gsmite command
+    default: op
+  gsmite.use.axe:
+    description: Use the golden axe to smite
+    default: op
+  gsmite.use.arrow:
+    description: Use goldensmite arrow
+    default: op
+  gsmite.toggle.hostile:
+    description: Toggle hostile mob damage
+    default: op
+  gsmite.toggle.neutral:
+    description: Toggle neutral mob damage
+    default: op
+  gsmite.toggle.passive:
+    description: Toggle passive mob damage
+    default: op
+  gsmite.toggle.tamed:
+    description: Toggle tamed mob damage
+    default: op
+  gsmite.toggle.player:
+    description: Toggle player damage
+    default: op
+  gsmite.toggle.check:
+    description: Check which mobs are damaged by goldensmite
+    default: op
+  gsmite.remember:
+    description: Remember a player's gsmite preferences
+    default: op
+  gpflag.help:
+    description: GPFlag help command
+    default: op
+  gpflag.check:
+    description: Check which flags are active in a claim
+    default: op
+  gpflag.admin:
+    description: Flag a claim which does not belong to you
+    default: op
+  gpflag.name:
+    description: Set a claim's name flag
+    default: op
+  gpflag.greeting:
+    description: Set a claim's greeting flag
+    default: op
+  gpflag.farewell:
+    description: Set a claim's farewell flag
+    default: op
+  gpflag.spawning.hostile:
+    description: Set a claim's hostile spawning flag
+    default: op
+  gpflag.spawning.passive:
+    description: Set a claim's passive spawning flag
+    default: op
+  gpflag.color:
+    description: Use color's in the greeting/farewell flag
+    default: op
+  fireworks.help:
+    description: Firework's help command
+    default: op
+  fireworks.launch:
+    description: Launch a firework via command
+    default: op
+  fireworks.cheat:
+    description: Use fireworks commands without requiring materials
+    default: op
+  fireworks.effect:
+    description: Spawn a fireworks effect without a rocket
+    default: op
+  fireworks.modify:
+    description: Modify a firework rocket in hand via command
+    default: op
+  fireworks.preset:
+    description: Create or modify a firework preset
+    default: op
+  fireworks.arrow:
+    description: Use firework arrows
+    default: op
+  fireworks.remember:
+    description: Remember a player's firework preferences
+    default: op
+  chatutils.replace.bypass:
+    description: Bypass the chat replace
+    default: op
+  chatutils.filter.bypass:
+    description: Bypass the chat filter
+    default: op
+  chatutils.bold.bypass:
+    description: Bypass the chat bolding
+    default: op
+  carbonkit.help.antiportal:
+    description: Help for the AntiPortal module
+    default: op
+  carbonkit.help.borders:
+    description: Help for the Borders module
+    default: op
+  carbonkit.help.chatutils:
+    description: Help for the ChatUtils module
+    default: op
+  carbonkit.help.ckwatcher:
+    description: Help for the CKWatcher module
+    default: op
+  carbonkit.help.claimpurge:
+    description: Help for the ClaimPurge module
+    default: op
+  carbonkit.help.cmdblocktools:
+    description: Help for the CmdBlockTools module
+    default: op
+  carbonkit.help.essassist:
+    description: Help for the EssAssist module
+    default: op
+  carbonkit.help.esspurge:
+    description: Help for the EssPurge module
+    default: op
+  carbonkit.help.fireworks:
+    description: Help for the Fireworks module
+    default: op
+  carbonkit.help.goldensmite:
+    description: Help for the GoldenSmite module
+    default: op
+  carbonkit.help.gpflags:
+    description: Help for the GPFlags module
+    default: op
+  carbonkit.help.misc:
+    description: Help for the Misc module
+    default: op
+  carbonkit.help.skulls:
+    description: Help for the Skulls module
+    default: op

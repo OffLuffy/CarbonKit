@@ -1,0 +1,93 @@
+#/+=======================================+\
+#||             CONFIG.YML FILE           ||
+#>>---------------------------------------<<
+#||               TEAM-CARBON             ||
+#|| Website: team-carbon.org              ||
+#|| Server: mc.team-carbon.org            ||
+#|| Plugin: team-carbon.org/carbonkit     ||
+#\+=======================================+/
+
+modules:
+  CarbonBorders: true
+  EssentialsAssist: true
+  Misc: true
+  SkullShop: true
+  AntiPortal: true
+  CommandBlockTools: true
+  CkWatcher: true
+  EssentialsPurge: true
+  GoldenSmite: true
+  GriefPreventionFlags: true
+core:
+  enable-debug-messages: true
+CkWatcher:
+  match-aliases: true
+  blacklist:
+  - jump
+  - j
+  - list
+  - msg
+  - r
+  - thru
+  - fw
+  - goldensmite
+  - mail
+  - bigtree
+  - login
+  - register
+  - changepw
+  watchers: []
+  exempt: []
+GoldenSmite:
+  range: 100
+  radius: 8
+  removeDrops: true
+  removeExp: true
+  explosionEffect: true
+  lightningEffect: false
+AntiPortal:
+  worlds:
+  - world_the_end
+  generate-egg: false
+  drop-egg: true
+  platform-mat: glowstone
+CommandBlockTools:
+  spawn-limit: 50
+  log-messages:
+    spawn: true
+    kill: true
+    clear: true
+    item: true
+  messages:
+    enabled: true
+    ranks: {}
+#      member: '{PLAYER} is now a member! Welcome them to {SERVER}!'
+CarbonBorders:
+  move-msg: Sorry, {PLAYER}, this is the edge of {WORLD}.
+  tp-msg: Sorry, {PLAYER}, you can't teleort past {WORLD}'s border.
+  spawn-msg: You spawned outside of {WORLD}'s border, putting you back inside.
+  broadcast-changes: true
+GriefPreventionFlags:
+  flag-timeout: 30
+  enabled-flags:
+    greeting: true
+    farewell: true
+    hspawning: true
+    pspawning: true
+SkullShop:
+  price: 50000
+EssentialsPurge:
+  auto-purge: true
+  threshold: 3m
+  purge-empty: true
+Misc:
+  slap-damage: 0.0
+  knockback: true
+  freeze-message: '&bFreeze!'
+  entity-group-count: true
+  entity-type-count: false
+  entity-total-count: true
+  join-message: '&6&l[&r&a+&r&6&l]&r &e{PLAYER}&r&6 logged in!'
+  join-message-extended: '&6&l[&r&a+&r&6&l]&r &e{PLAYER}&r&6 logged in!&r&7&o ({IP})'
+  quit-message: '&6&l[&r&c-&r&6&l]&r &e{PLAYER}&r&6 logged out!'
+  quit-message-extended: '&6&l[&r&c-&r&6&l]&r &e{PLAYER}&r&6 logged out!'

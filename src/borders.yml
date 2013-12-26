@@ -1,0 +1,7 @@
+border-name:
+  world: world
+  x: 0
+  z: 0
+  radius: 10
+  shape: SQUARE
+  group: Admin

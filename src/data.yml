@@ -1,0 +1,16 @@
+#/+=============================================+\
+#||                DATA.YML FILE                ||
+#>>---------------------------------------------<<
+#||     This file is used in several modules to ||
+#|| store data that is not intended to be       ||
+#|| modified by hand. Timestamps and lists are  ||
+#|| stored here, as well as volatile data.      ||
+#\+=============================================+/
+
+CommandBlockTools:
+  vanished: []
+GoldenSmite:
+  enabled-kills: {}
+  enabled-arrow: []
+CarbonBorders: {}
+GriefPreventionFlags: {}

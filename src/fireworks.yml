@@ -1,0 +1,29 @@
+Carbon:
+  author: OffLuffy
+  colors:
+  - green
+  - gray
+  - black
+  fades:
+  - silver
+  - lime
+  - gray
+  - black
+  effects: []
+  shape: large
+  power: 0
+test:
+  author: OffLuffy
+  colors:
+  - red
+  - orange
+  - yellow
+  - lime
+  - cyan
+  - blue
+  - purple
+  fades: []
+  effects:
+  - trail
+  shape: large
+  power: 0
