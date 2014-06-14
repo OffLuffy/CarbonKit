@@ -12,8 +12,12 @@ import org.bukkit.Bukkit;
 
 public class FlaggedClaim {
 	private static ModuleGPFlags gMod = (ModuleGPFlags)Module.getModule("GriefPreventionFlags");
-	private static List<FlaggedClaim> flaggedClaims = new ArrayList<FlaggedClaim>();
-	public static final int NAME = 0, GREETING = 1, FAREWELL = 2, MONSPAWN = 3, ANISPAWN = 4;
+	public static List<FlaggedClaim> flaggedClaims = new ArrayList<FlaggedClaim>();
+	public static final int NAME = 0,
+			GREETING = 1,
+			FAREWELL = 2,
+			HOSSPAWN = 3,
+			ANISPAWN = 4;
 	private Claim c;
 	private HashMap<Integer, String> stringFlags = new HashMap<Integer, String>();
 	private HashMap<Integer, Boolean> boolFlags = new HashMap<Integer, Boolean>();
@@ -22,27 +26,19 @@ public class FlaggedClaim {
 	
 	// CONSTRUCT
 	public FlaggedClaim(Claim claim) {
-		if (claim != null)
-			if (claim.parent != null)
-				claim = claim.parent;
 		c = claim;
-		boolFlags.put(MONSPAWN, true);
+		boolFlags.put(HOSSPAWN, true);
 		boolFlags.put(ANISPAWN, true);
 		setFlags.put(NAME, false);
 		setFlags.put(GREETING, false);
 		setFlags.put(FAREWELL, false);
-		setFlags.put(MONSPAWN, false);
+		setFlags.put(HOSSPAWN, false);
 		setFlags.put(ANISPAWN, false);
-		flaggedClaims.add(this);
 	}
 	
 	// GETS
 	public Claim getClaim() {
 		return c;
-	}
-	
-	public static List<FlaggedClaim> getFlaggedClaims() {
-		return flaggedClaims;
 	}
 	
 	// FLAG GETS
@@ -70,8 +66,8 @@ public class FlaggedClaim {
 			return null;
 	}
 	public boolean getHostileSpawning() {
-		if (isSet(MONSPAWN))
-			return boolFlags.get(MONSPAWN);
+		if (isSet(HOSSPAWN))
+			return boolFlags.get(HOSSPAWN);
 		else
 			return true;
 	}
@@ -102,8 +98,8 @@ public class FlaggedClaim {
 		Lib.saveFile(CarbonKit.data, "data.yml");
 	}
 	public void setHostileSpawning(boolean spawning) {
-		boolFlags.put(MONSPAWN, spawning);
-		setFlags.put(MONSPAWN, true);
+		boolFlags.put(HOSSPAWN, spawning);
+		setFlags.put(HOSSPAWN, true);
 		CarbonKit.data.set(gMod.getName() + "." + getId() + ".hostilespawning", spawning);
 		Lib.saveFile(CarbonKit.data, "data.yml");
 	}
@@ -140,8 +136,8 @@ public class FlaggedClaim {
 		checkFlags();
 	}
 	public void removeHostileSpawning() {
-		boolFlags.put(MONSPAWN, true);
-		setFlags.put(MONSPAWN, false);
+		boolFlags.put(HOSSPAWN, true);
+		setFlags.put(HOSSPAWN, false);
 		CarbonKit.data.set(gMod.getName() + "." + getId() + ".hostilespawning", null);
 		Lib.saveFile(CarbonKit.data, "data.yml");
 		checkFlags();
@@ -178,7 +174,7 @@ public class FlaggedClaim {
 				CarbonKit.data.set(key + "greeting", fc.getGreeting());
 			if (fc.isSet(FAREWELL))
 				CarbonKit.data.set(key + "farewell", fc.getFarewell());
-			if (fc.isSet(MONSPAWN))
+			if (fc.isSet(HOSSPAWN))
 				CarbonKit.data.set(key + "hostilespawning", fc.getHostileSpawning());
 			if (fc.isSet(ANISPAWN))
 				CarbonKit.data.set(key + "passivespawning", fc.getHostileSpawning());
@@ -187,7 +183,7 @@ public class FlaggedClaim {
 	}
 	private void checkFlags() {
 		// Remove from flagged claims if no flags are set
-		if (!(isSet(FlaggedClaim.NAME) || isSet(FlaggedClaim.GREETING) || isSet(FlaggedClaim.FAREWELL) || isSet(FlaggedClaim.MONSPAWN) || isSet(FlaggedClaim.ANISPAWN))) {
+		if (!(isSet(FlaggedClaim.NAME) || isSet(FlaggedClaim.GREETING) || isSet(FlaggedClaim.FAREWELL) || isSet(FlaggedClaim.HOSSPAWN) || isSet(FlaggedClaim.ANISPAWN))) {
 			FlaggedClaim.flaggedClaims.remove(this);
 			CarbonKit.data.set(gMod.getName() + "." + getId(), null);
 			Lib.saveFile(CarbonKit.data, "data.yml");

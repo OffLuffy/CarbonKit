@@ -2,7 +2,6 @@ package me.offluffy.carbonkit.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import me.offluffy.carbonkit.CarbonKit;
 
@@ -167,26 +166,22 @@ public class Border {
         	return;
         
         loadChunks(location, 3);
-        loadChunks(player.getLocation(), 3);
-        Entity vehicle = null;
-        List<Entity> passengers = new ArrayList<Entity>();
+        Entity vehicle = null, passenger = null;
 
-        Entity ent = player;
-        while (ent.getVehicle() != null)
-        	ent = ent.getVehicle();
-        vehicle = ent;
-        
-        while (ent.getPassenger() != null) {
-        	passengers.add(ent.getPassenger());
-        	ent = ent.getPassenger();
-        };
+        if (player.isInsideVehicle()) {
+        	vehicle = player.getVehicle();
+        	vehicle.eject();
+        	vehicle.teleport(location);
+        }
+        if (player.getPassenger() != null) {
+        	passenger = player.getPassenger();
+        	player.eject();
+        	passenger.teleport(location);
+        }
         
         player.teleport(location);
-        Entity lastEnt = vehicle;
-        for (Entity e : passengers) {
-        	lastEnt.setPassenger(e);
-        	lastEnt = e;
-        }
+        if (passenger != null)
+        	player.setPassenger(passenger);
         if (vehicle != null)
         	vehicle.setPassenger(player);
     }

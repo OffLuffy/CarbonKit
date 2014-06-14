@@ -86,9 +86,7 @@ public class ModuleGPFlags extends Module {
 			int tZ = z;
 			if ((fX != tX) || (fZ != tZ)) {
 				Claim c = gp.getClaimAt(location, true, null);
-				if (c != null) {
-					if (c.parent != null)
-						c = c.parent;
+				if (c != null) { 
 					if (!lastClaim.containsKey(player.getName())) {
 						String owner = c.getOwnerName();
 						claimEnter(c, player, owner);
@@ -114,13 +112,11 @@ public class ModuleGPFlags extends Module {
 	@EventHandler
 	public void mobSpawnEvent(CreatureSpawnEvent e) {
 		Location loc = e.getLocation();
-		Claim c = gp.getClaimAt(loc, false, null);
-		if (getFlaggedClaim(c) != null) {
-			FlaggedClaim fc = getFlaggedClaim(c);
+		if (getFlaggedClaim(gp.getClaimAt(loc, false, null)) != null) {
 			if (EntityHelper.isHostile(e.getEntity()))
-				e.setCancelled(fc.getHostileSpawning());
+				e.setCancelled(!getFlaggedClaim(gp.getClaimAt(loc, false, null)).getHostileSpawning());
 			if (EntityHelper.isPassive(e.getEntity()))
-				e.setCancelled(fc.getPassiveSpawning());
+				e.setCancelled(!getFlaggedClaim(gp.getClaimAt(loc, false, null)).getPassiveSpawning());
 		}
 	}
 	
@@ -228,6 +224,7 @@ public class ModuleGPFlags extends Module {
 					// Set passive spawning
 					if (CarbonKit.data.contains(getName() + "." + key + ".passivespawning"))
 						fc.setPassiveSpawning(CarbonKit.data.getBoolean(getName() + "." + key + ".passivespawning"));
+					FlaggedClaim.flaggedClaims.add(fc);
 				} else {
 					CarbonKit.data.set(getName() + "." + key, null);
 					Lib.saveFile(CarbonKit.data, "data.yml");
@@ -241,9 +238,7 @@ public class ModuleGPFlags extends Module {
 	public FlaggedClaim getFlaggedClaim(Claim c) {
 		if (c == null)
 			return null;
-		if (c.parent != null)
-			c = c.parent;
-		for (FlaggedClaim fc : FlaggedClaim.getFlaggedClaims())
+		for (FlaggedClaim fc : FlaggedClaim.flaggedClaims)
 			if (fc.getClaim().getID() == c.getID())
 				return fc;
 		return null;
