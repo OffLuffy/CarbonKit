@@ -270,6 +270,9 @@ permissions:
   gpflag.check:
     description: Check which flags are active in a claim
     default: op
+  gpflag.clear:
+    description: Clear all flags in a claim
+    default: op
   gpflag.admin:
     description: Flag a claim which does not belong to you
     default: op
