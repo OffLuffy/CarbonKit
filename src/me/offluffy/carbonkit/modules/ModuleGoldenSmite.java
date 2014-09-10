@@ -32,9 +32,7 @@ public class ModuleGoldenSmite extends Module {
 	public List<Arrow> arrows;
 	public static List<Entity> killed;
 	public ConfigurationSection kill;
-	public ModuleGoldenSmite() throws DuplicateModuleException {
-		super("GoldenSmite", "gsmite", "goldsmite", "gs");
-	}
+	public ModuleGoldenSmite() throws DuplicateModuleException { super("GoldenSmite", "gsmite", "goldsmite", "gs"); }
 	
 	public enum EntType {
 		HOSTILE("Hostiles","hostile","hm","hmob","hostilemob","hostiles","hostilemobs","hmobs"),
