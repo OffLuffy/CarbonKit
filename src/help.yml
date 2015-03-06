@@ -1,0 +1,74 @@
+root-perm-required-for-category-access: false
+root-menu:
+  require-permission: true
+  lines:
+  - '&aWelcome to Team-Carbon! Choose a category to view more specific help:'
+  - '&b/help claims&3 - For claims and trusting'
+  - '&b/help pvp&3 - Info about where you can PVP'
+  - '&b/help creative&3 - Info about the creative world'
+  - '&b/help kits&3 - Info about the kits you have access to'
+  - '&b/help voting&3 - Info about voting and rewards'
+  - '&b/help teamcarbon&3 - About our server'
+  extra-perm-lines:
+    carbonkit_help_donors:
+      lines:
+      - '&b/help donor&3 - Info about your donor rank perks'
+  no-perm-lines:
+  - '&bYou''re in the tutorial! It''s designed to teach you how to protect your items. You''ll be able to access the rest of the help menu after you completely the tutorial quiz!'
+  - '&bWant to know more about the server? Use &3/help teamcarbon'
+  - '&cIf you need assistance, notify staff with &6/helpop [msg]'
+  header: '&6&l====[ Team-Carbon Help Menu ]===='
+  footer: '&6&l==========================='
+categories:
+  claims:
+    require-permission: true
+    lines:
+    - 'There are two ways to create new claims. If you have NO claims, placing a chest will create your first claim. If you''d like to create additional claims, you need to use a gold shovel.'
+    no-perm-lines: []
+  header: '&6&l====[ Team-Carbon Help Menu ]===='
+  footer: '&6&l==========================='
+  pvp:
+    require-permission: true
+    lines: []
+    no-perm-lines: []
+  header: '&6&l====[ Team-Carbon Help Menu ]===='
+  footer: '&6&l==========================='
+  creative:
+    require-permission: true
+    lines: []
+    no-perm-lines: []
+  header: '&6&l====[ Team-Carbon Help Menu ]===='
+  footer: '&6&l==========================='
+  kits:
+    require-permission: true
+    lines: []
+    no-perm-lines: []
+  header: '&6&l====[ Team-Carbon Help Menu ]===='
+  footer: '&6&l==========================='
+  voting:
+    require-permission: true
+    lines:
+    - '&bThere are four sites at which you can vote for Team-Carbon in order to help us, and for doing so, be rewarded. Three of the sites will allow you to vote once a day, the fourth allows you to vote every 12 hours.'
+    - '&bFor each vote you will get 1,000 coins (our in-game currency) and an Enjin point which can be used on our store to purchase items that would otherwise cost real money, such as donor ranks or spawner blocks.'
+    - '&bIf you vote on all four sites for the day, you''ll also receive an additional 2,000 coins and Enjin point'
+    - '&bYou can only receive Enjin points if you are registerd on our website and have a registered character!'
+    - '&bTo view a list of links to the vote pages, use &6/vote or view the list on the website @ &ahttp://team-carbon.org/'
+    - '&6Due to bugs with vote sites or Enjin, you may not always receive rewards for every vote. Because this can happen quite frequently, staff are not obliged to compensate you for this instances.'
+    no-perm-lines: []
+  header: '&6&l====[ Team-Carbon Help Menu ]===='
+  footer: '&6&l==========================='
+  teamcarbon:
+    require-permission: false
+    lines:
+    - '&bTeam-Carbon is an anti-grief, semi-vanilla, survival server hosted in Dallas, TX, United States. Our community was founded in December 2011 by FordRacer2007, now owned and maintained by OffLuffy.'
+    - '&3Our main plugins include mcMMO, GriefPrevention, Essentials, and some custom plugins written by Luffy. We primarily focus on keeping our server friendly and pleasant to play on.'
+    - '&bJoin our Enjin community at &bhttp://team-carbon.org/'
+    no-perm-lines: []
+  header: '&6&l====[ Team-Carbon Help Menu ]===='
+  footer: '&6&l==========================='
+  donor:
+    require-permission: true
+    lines: []
+    no-perm-lines: []
+  header: '&6&l====[ Donor Perks Info ]===='
+  footer: '&6&l==========================='

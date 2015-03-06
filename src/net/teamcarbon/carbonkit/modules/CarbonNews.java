@@ -1,11 +1,11 @@
-package templates;
+package net.teamcarbon.carbonkit.modules;
 
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
 
 @SuppressWarnings("UnusedDeclaration")
-public class ModuleTemplate extends Module {
-	public ModuleTemplate() throws DuplicateModuleException { super("Template", "temp"); }
+public class CarbonNews extends Module {
+	public CarbonNews() throws DuplicateModuleException { super("CarbonNews", "cnews", "cn"); }
 	public void initModule() {
 		registerListeners();
 	}

@@ -7,10 +7,29 @@
 #|| stored here, as well as volatile data.      ||
 #\+=============================================+/
 
-CommandBlockTools:
-  vanished: []
+CarbonVote:
+  last-weather-vote: 0
+  last-time-vote: 0
+  last-ban-vote: 0
+  last-kick-vote: 0
+  last-mute-vote: 0
+  last-trivia-vote: 0
+CarbonPerks:
+  enabled-effects: []
+  effects: {}
+EssentialsAssist:
+  no-interact: []
+Fireworks:
+  enabled-arrows: []
+  enabled-snowballs: []
+  arrow-effects: {}
+  snowball-effects: {}
 GoldenSmite:
   enabled-kills: {}
-  enabled-arrow: []
-CarbonBorders: {}
-GriefPreventionFlags: {}
+  enabled-arrows: []
+CKWatcher:
+  watchers: []
+Misc:
+  frozen-players: []
+  temp-frozen-players: {}
+  to-be-unfrozen: []

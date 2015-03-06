@@ -1,93 +1,239 @@
-#/+=======================================+\
-#||             CONFIG.YML FILE           ||
-#>>---------------------------------------<<
-#||               TEAM-CARBON             ||
-#|| Website: team-carbon.org              ||
-#|| Server: mc.team-carbon.org            ||
-#|| Plugin: team-carbon.org/carbonkit     ||
-#\+=======================================+/
-
-modules:
-  CarbonBorders: true
-  EssentialsAssist: true
-  Misc: true
-  SkullShop: true
-  AntiPortal: true
-  CommandBlockTools: true
-  CkWatcher: true
-  EssentialsPurge: true
-  GoldenSmite: true
-  GriefPreventionFlags: true
 core:
   enable-debug-messages: true
-CkWatcher:
+  match-offline-players: false
+modules:
+  AntiPortal: true
+  CarbonCombat: true
+  CarbonCrafting: true
+  CarbonPerks: true
+  CarbonTrivia: true
+  CarbonVote: true
+  CKWatcher: true
+  CmdBlockTools: true
+  EssentialsAssist: true
+  Fireworks: false
+  GoldenSmite: true
+  Misc: true
+  NetherSpawners: true
+  SkullShop: true
+AntiPortal:
+  worlds:
+  - world_the_end
+  drop-egg: true
+  generate-egg: false
+  platform-mat: GLOWSTONE
+  protect-egg: true
+  egg-protect-seconds: 30
+CarbonCombat:
+  pvp-enabled:
+  - world
+  - world_nether
+  player-toggle-enabled:
+  - world
+  prevent-block-shooters:
+  - world
+  - world_the_end
+  disable-cooldown-seconds: 20
+CarbonCrafting:
+  shaped-recipes:
+    SADDLE:
+      recipe:
+      - ''
+      - LEATHER,,LEATHER
+      - IRON_INGOT,LEATHER,IRON_INGOT
+    NAME_TAG:
+      amount: 2
+      recipe:
+      - PAPER,PAPER,
+      - PAPER,SLIME_BALL,
+      - ',,STRING'
+    DIAMOND_BARDING:
+      recipe:
+      - ',DIAMOND'
+      - DIAMOND,LEATHER,DIAMOND
+      - LEATHER,LEATHER,LEATHER
+    GOLD_BARDING:
+      recipe:
+      - ',GOLD_INGOT,'
+      - GOLD_INGOT,LEATHER,GOLD_INGOT
+      - LEATHER,LEATHER,LEATHER
+    IRON_BARDING:
+      recipe:
+      - ',IRON_INGOT,'
+      - IRON_INGOT,LEATHER,IRON_INGOT
+      - LEATHER,LEATHER,LEATHER
+  shapeless-recipes:
+    LEATHER:
+      recipe:
+      - 2 ROTTEN_FLESH
+      - 1 COAL 1
+    COAL:
+      durability: 1
+      recipe:
+      - 2 COAL
+  furnace-recipes:
+    LEATHER:
+      source: ROTTEN_FLESH
+CarbonNews:
+  GeneralOptions:
+    welcomeMessage:
+      enabled: true
+      delaySeconds: 2
+      requirePermission: false
+      messageLines:
+      - '&3Welcome to {TTP~&aVisit our website @ team-carbon.org|TXT~&aTeam-Carbon}&3!
+        Know the {CMD~/rules|TTP~Click to view the rules|TXT~&brules}&3 and
+        enjoy your stay!'
+    newGroupDefaults:
+      delaySeconds: 60
+      randomOrder: false
+      requirePermission: false
+      sendToConsole: true
+      sendToPlayers: true
+      colorizeConsoleMessages: true
+      prefix: '&b&l[!] &3'
+      postfix: ''
+  MessageGroups:
+    tutorial:
+      groupEnabled: false
+      delaySeconds: 60
+      randomOrder: true
+      requirePermission: false
+      sendToConsole: true
+      sendToPlayers: true
+      colorizeConsoleMessages: true
+      prefix: '{TTP~Tutorial Group!|TXT~&b&l[!]} &3'
+      postfix: ''
+      messages:
+      - Formatting! {TOOLTIP~&bRuns /rules|CMD~/rules|COLOR~a|STYLES~lmno|TEXT~Check it!}
+      - Formats are delimited by a {TOOLTIP~&bA.K.A. a vertical bar, usually Shift + backslash(\)|COLOR~a|TEXT~pipe} '|'!
+      - Supported format tags are &6TOOLTIP&f, &6LINK&f, &6CMD&f, &6COLOR&f, &6STYLES&f, and &6TEXT&f.
+      - Tags are wrapped in curly braces (the &6{ &fand &6} &fcharacters)
+      - Use ampersand (&6&&f) codes for colors and styles of non-formatted strings, like &a&l&m&n&othis!
+      - If using formats, you must include TEXT and at least one other tag or it will be ignored!
+      - You can also use formats in the prefix and postfix!
+      - Tag headers must be uppercase and followed by a {TOOLTIP~&bUsually Shift + tick(`)|COLOR~a|TEXT~tilde} '~'!
+      - You may mix ampersand color codes into formatting tags!
+      - Links will have an 'http://' added before it if it doesn't already have one or an 'https://'
+CarbonPerks:
+  max-trails: 3
+  firework-bow-damage-percent:
+    mobs: 120.0
+    players: 100.0
+    disabled-worlds:
+    - pvp_world
+  fireworks-snowball-damage:
+    mobs: 4.0
+    players: 0.0
+    disabled-worlds:
+    - pvp_world
+CarbonVote:
+  vote-timeout-seconds: 30
+  broadcast-votes: true
+  majority-percent:
+    weather: 66
+    time: 66
+    trivia: 66
+    ban: 80
+    kick: 75
+    mute: 75
+  nonvote-weight-percent:
+    weather: -30
+    time: -30
+    trivia: -30
+    ban: -100
+    kick: -100
+    mute: -100
+  ban-time-seconds: 600
+  mute-time-seconds: 300
+  enabled-vote-types:
+    weather: true
+    time: true
+    trivia: true
+    ban: false
+    kick: false
+    mute: false
+  vote-prices:
+    weather: 10
+    time: 30
+    trivia: 50
+    ban: 0
+    kick: 0
+    mute: 0
+  min-players:
+    weather: 1
+    time: 1
+    trivia: 6
+    ban: 5
+    kick: 5
+    mute: 5
+  vote-interval-seconds:
+    weather: 600
+    time: 600
+    trivia: 900
+    ban: 300
+    kick: 120
+    mute: 300
+CKWatcher:
   match-aliases: true
   blacklist:
-  - jump
+  - ej
   - j
   - list
   - msg
   - r
   - thru
-  - fw
   - goldensmite
   - mail
-  - bigtree
   - login
   - register
   - changepw
-  watchers: []
   exempt: []
-GoldenSmite:
-  range: 100
-  radius: 8
-  removeDrops: true
-  removeExp: true
-  explosionEffect: true
-  lightningEffect: false
-AntiPortal:
-  worlds:
-  - world_the_end
-  generate-egg: false
-  drop-egg: true
-  platform-mat: glowstone
-CommandBlockTools:
+CmdBlockTools:
+  item-limit: 50
   spawn-limit: 50
+  kill-radius-limit: 1000
+  clear-radius-limit: 1000
   log-messages:
     spawn: true
     kill: true
     clear: true
     item: true
-  messages:
-    enabled: true
-    ranks: {}
-#      member: '{PLAYER} is now a member! Welcome them to {SERVER}!'
-CarbonBorders:
-  move-msg: Sorry, {PLAYER}, this is the edge of {WORLD}.
-  tp-msg: Sorry, {PLAYER}, you can't teleort past {WORLD}'s border.
-  spawn-msg: You spawned outside of {WORLD}'s border, putting you back inside.
-  broadcast-changes: true
-GriefPreventionFlags:
-  flag-timeout: 30
-  enabled-flags:
-    greeting: true
-    farewell: true
-    hspawning: true
-    pspawning: true
-SkullShop:
-  price: 50000
-EssentialsPurge:
-  auto-purge: true
-  threshold: 3m
-  purge-empty: true
+EssentialsAssist:
+  message-on-auto-anti-interact: false
+  vanish-toggles:
+    prevent-item-pickup: true
+    prevent-pressure: true
+    prevent-mob-targeting: true
+    prevent-damage: true
+Fireworks:
+  per-player-presets: 10
+  extra-arrow-player-damage: 0.0
+  extra-arrow-mob-damage: 0.0
+  extra-snowball-player-damage: 0.0
+  extra-snowball-mob-damage: 0.0
+  presets: {}
+GoldenSmite:
+  range: 100
+  radius: 8
+  removeMobDrops: true
+  removePlayerDrops: false
+  removeExp: true
+  explosionEffect: false
+  lightningEffect: false
+  fireworkEffect: true
 Misc:
   slap-damage: 0.0
+  slap-tool: BLAZE_ROD
   knockback: true
-  freeze-message: '&bFreeze!'
   entity-group-count: true
   entity-type-count: false
   entity-total-count: true
-  join-message: '&6&l[&r&a+&r&6&l]&r &e{PLAYER}&r&6 logged in!'
-  join-message-extended: '&6&l[&r&a+&r&6&l]&r &e{PLAYER}&r&6 logged in!&r&7&o ({IP})'
-  quit-message: '&6&l[&r&c-&r&6&l]&r &e{PLAYER}&r&6 logged out!'
-  quit-message-extended: '&6&l[&r&c-&r&6&l]&r &e{PLAYER}&r&6 logged out!'
+NetherSpawners:
+  enabled: true
+  enabled-worlds:
+  - world_nether
+  per-chunk-chance-percent: 10
+SkullShop:
+  buy-price: 2000
+  update-price: 500

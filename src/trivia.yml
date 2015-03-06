@@ -1,0 +1,147 @@
+debug-mode: false
+quiz-options:
+  prefix: '&b&l[?]&r&a '
+  random: true
+  ignore-spaces: false
+  ignore-symbols: false
+  count: 6
+  question-interval-seconds: 5
+  question-duration-seconds: 30
+  anti-cheat: true
+rewards:
+  money: 500.0
+  items:
+  - diamond 1
+questions:
+  Who was the creator of Minecraft?:
+  - notch
+  - markus
+  Who is the current lead developer of Minecraft?:
+  - jeb
+  - jeb_
+  - jens
+  What special item does Notch drop upon dying in multiplayer?:
+  - apple
+  What real animal was used to make ghast sounds?:
+  - cat
+  What movie inspired the iron golem?:
+  - laputa
+  - castle in the sky
+  How many minutes long is a night/day cycle in Minecraft?:
+  - 20
+  - twenty
+  What is the hardest breakable block in survival mode?:
+  - obsidian
+  What block will damage an enderman on contact?:
+  - water
+  What is the only mob that can lay eggs?:
+  - chicken
+  How many wood planks are needed to craft a boat?:
+  - 5
+  - five
+  How many Torches does 1 coal and 1 stick give you?:
+  - 4
+  - four
+  What item is used to tame wolves?:
+  - bone
+  What non-sand block is sand used for crafting?:
+  - tnt
+  - glass
+  What is the only type of tree that can grow cocoa beans?:
+  - jungle
+  How many diamonds does it take to craft a full set of diamond armor?:
+  - 24
+  - twenty four
+  - twentyfour
+  - twenty-four
+  How many hunger bars will mushroom stew recover?:
+  - 3
+  - three
+  What type of potion do you use to cure a zombie villager?:
+  - weakness
+  How many quartz does it take to craft a quartz block?:
+  - 4
+  - four
+  How many Sticks are needed to craft ladders?:
+  - 7
+  - seven
+  What is the only mob that can spawn in the mushroom biome?:
+  - mooshroom
+  What item is required to turn a regular carrot into a golden carrot?:
+  - gold nugget
+  - golden nugget
+  What biome is home to horses and donkeys?:
+  - plains
+  How many blocks does a redstone signal travel from a single redstone torch?:
+  - 15
+  How many iron ingots does it take to craft a hopper?:
+  - 5
+  What mob are creepers afraid of?:
+  - ocelot
+  - cat
+  What color dye will smelting cacti give you?:
+  - cactus green
+  What item can be obtained by digging gravel?:
+  - flint
+  Adding a torch to a pumpkin creates what?:
+  - jack o lantern
+  - jackolantern
+  How many different types of mobs can be found in the End?:
+  - 2
+  - two
+  What block can you wear on your head to prevent endermen damage?:
+  - pumpkin
+  - jackolantern
+  - jack o lantern
+  What is one of the two items most effective for destroying cobwebs?:
+  - shears
+  - sword
+  What were villagers called originally?:
+  - testificates
+  How many different placeable blocks can be crafted with diamonds?:
+  - 3
+  - three
+  What were diamonds referred to as in code when they were introduced?:
+  - emerald
+  What mob may spawn when using enderpearls?:
+  - endermite
+  Which food restores the most health?:
+  - rabbit stew
+  - rabbit soup
+  - bunny stew
+  - bunny soup
+  What item can be used to change what a spawner block spawns?:
+  - spawn egg
+  - mob egg
+  - spawner egg
+  - monster egg
+  (True/False) The beam of a beacon will pass through a leaf block:
+  - true
+  - yes
+  (True/False) Spiders only attack at night unless provoked during the day:
+  - true
+  - yes
+  (True/False) The creeper was put into the game by accident:
+  - true
+  - yes
+  (True/False) The creeper was created due to an error when creating a sheep:
+  - false
+  - no
+  (True/False) Skeletons have a rare chance of dropping an iron ingot:
+  - false
+  - no
+  (True/False) You cannot trade with a baby villager:
+  - true
+  - yes
+  (True/False) Slimes will only spawn in swamp biomes:
+  - false
+  - no
+  (True/False) Steering a boat into a lily pad will sometimes break the boat:
+  - true
+  - yes
+  (True/False) Water cannot be placed in the Nether:
+  - true
+  - yes
+  (True/False) Grass blocks can spread:
+  - true
+  - yes

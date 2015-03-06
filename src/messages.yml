@@ -1,0 +1,103 @@
+carbonkit:
+  prefix: '&6&l[CarbonKit] &r'
+  reloaded: '&bReloaded'
+antiporta:
+  prefix: '&6&l[AntiPorta] &r'
+  item-reserved: '&cThat item is reservered for {PLAYER}. It will be released in {TIME}'
+carbonvote:
+  prefix: '&6&l[CVote] &a'
+  weather-vote-passed: Weather vote passed! Weather changed to &b{WEATHER}
+  time-vote-passed: Time vote passed! Time changed to &b{TIME}
+  jail-vote-passed: Jail vote passed! {TARGET} has been jailed {DURATION}
+  ban-vote-passed: Ban vote passed! {TARGET} has been banned {DURATION}
+  kick-vote-passed: Kick vote passed! {TARGET} has been kicked
+  mute-vote-passed: Mute vote passed! {TARGET} has been muted {DURATION}
+  trivia-vote-passed: Trivia vote passed! Starting trivia...
+  vote-failed: '{VOTETYPE} vote failed! ({YESPERCENT}% yes, {NOPERCENT}% no)'
+  no-vote: '&cThere is no vote going on!'
+  vote-exists: '&cThere is already a {VOTETYPE} vote in progress. Use &6/ck y &cor
+    &6/ck n &cto vote.'
+  must-wait: '&cA {VOTETYPE} vote has already be called recently. Try again in {REMAININGTIME}!'
+  already-voted: '&cYou''ve already voted!'
+  trivia-disabled: '&cThe trivia module is disabled'
+  not-enough-players: '&cNot enough players to start a {VOTETYPE} vote, there needs
+    to be {MOREPLAYERS} more'
+  vote-started: '&aA &b{VOTETYPE} &avote has been called! Voting &b{VOTEREASON}'
+  starter-help: '&aYour &b{VOTETYPE} &avote is ongoing. ({YESPERCENT}% yes, {NOPERCENT}%
+    no)'
+  voter-help: '&aA &b{VOTETYPE} &avote &b{VOTEREASON} &ais ongoing. Use &6/ck y &aor
+    &6/ck n &ato vote.'
+  invalid-votetype: '&cInvalid vote-type specified. Use &6/cv &cfor more help'
+  vote-cast: '&a{VOTETYPE} vote cast'
+  vote-cast-broadcast: '&b{VOTER} &ahas vote &b{VOTED} &athe pending {VOTETYPE} vote'
+  blocked: '&cVoting is temporarily disabled'
+  exempt: '&cThat user is exempt from being {ACTION}'
+  mute-message: '&cYou''ve been muted {DURATION}'
+  jail-message: '&cYou''ve been jailed {DURATION}'
+  ban-message: '&cYou''ve been banned {DURATION}'
+  kick-message: '&cYou''ve been kicked'
+  jail-error: '&cThere was an error jailing that user'
+cmdblocktools:
+  prefix: '&6&l[CmdBlockTools] &r'
+  not-command-block: '&cThis command must be executed from a command block!'
+essentialsassist:
+  prefix: '&6&l[EssAssist] &r'
+  anti-interact-enabled-self: '&bEnabled anti-interact'
+  anti-interact-disabled-self: '&bDisabled anti-interact'
+  anti-interact-enabled-others: '&b{PLAYER}''s anti-interact has been enabled'
+  anti-interact-disabled-others: '&b{PLAYER}''s anti-interact has been disabled'
+  anti-interact-auto-disable: '&bYou''re not vanished, anti-interact disabled!'
+fireworks:
+  prefix: '&6&l[Fireworks] &r'
+  preset-not-found: '&cThat firework preset couldn''t be found!'
+  deleted-preset: '&bThe firework preset was deleted successfully'
+  error-deleting-preset: '&cAn error occurred while trying to delete the firework
+    preset'
+  invlid-effects: '&cCould not parse the arguments into firework effects'
+  combined-effects: '&aSuccessfully added new effects to firework preset'
+  modified-effects: '&aSuccessfully modified firework preset effects'
+  created-preset: '&aSuccessfully created firework preset'
+  not-firework: '&cYou must be holding a firework in hand to do that'
+  enabled-arrow: '&bFirework arrows are now enabled'
+  disabled-arrow: '&bFirework arrows are now disabled'
+  enabled-arrow-others: '&bFirework arrows have been anbled for {PLAYER}'
+  disabled-arrow-others: '&bFirework arrows have been disabled for {PLAYER}'
+  enabled-snowball: '&bFirework snowballs are now enabled'
+  disabled-snowball: '&bFirework snowballs are now disabled'
+  enabled-snowball-others: '&bFirework snowballs have been anbled for {PLAYER}'
+  disabled-snowball-others: '&bFirework snowballs have been disabled for {PLAYER}'
+  effect-set-others: '&bFirework effect has been set'
+  inventory-full: '&cYou''re inventory is full! You need one empty slot for that'
+  inventory-full-others: '&c{PLAYER}''s inventory is full! They need one empty slot
+    for that'
+goldensmiteprefix: '&6&l[GSmite] &r'
+goldensmitetoggled-group: '&bYou''ve {STATUS} the {GROUP} group'
+goldensmitetoggled-arrow: '&bYou''ve {STATUS} GSmite arrows'
+misc:
+  prefix: '&6&l[CarbonKit] &r'
+  freeze-message: '&bFreeze!'
+  unfreeze-message: '&6You''re free to go!'
+  slapped: '&6You''ve been slapped!'
+  slapped-broadcast: '&6{SLAPPER} has slapped {SLAPPED}!'
+  join-message: '&6&l[&r&a+&r&6&l] &e{PLAYER}&r&6 logged in!'
+  quit-message: '&6&l[&r&c-&r&6&l] &e{PLAYER}&r&6 logged out!'
+  join-message-extedned: '&7{STATUS}&6&l[&r&a+&r&6&l] &e{PLAYER} &r&7&o{IP}'
+  quit-message-extended: '&7{STATUS}&6&l[&r&c-&r&6&l] &e{PLAYER}'
+skullshop:
+  prefix: '&6&l[SkullShop] &r'
+  inventory-full: '&cYour inventory is full! Try again when you have at least one
+    slot open'
+  skull-given: '&bYou''ve been given {SKULLOWNER}''s head for ${PRICE}!'
+  skull-check: '&bThis is &a{SKULLOWNER}''s &bhead.'
+  get-skull: '&bSaved &a{SKULLOWNER}''s &bhead. Type &6/getskull &bto buy it for ${PRICE}!'
+  get-skull-free: '&bSaved &a{SKULLOWNER}''s &bhead. Type &6/getskull &bto get it!'
+  no-skull-saved: '&cThere is no skull saved. Right click one to save it.'
+  not-enough-money: '&cYou can''t afford to buy a player head right now'
+  transaction-failed: '&cFor some reason, we could not withdraw money from your balance!'
+generic:
+  prefix: '&6&l[CarbonKit] &r'
+  no-perm: '&cYou don''t have permission to do that'
+  not-online: '&cYou must be in-game to use that'
+  needs-group: '&cYou must specify a group!'
+  generic-error: '&cAn error occurred. Please report this to an admin!'
+  player-not-found: '&cThat player couldn''t be found'
