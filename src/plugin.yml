@@ -81,10 +81,10 @@ commands:
   customhelp:
     description: Custom help command to override Essential's or vanilla provided help command
     usage: /help [category]
-  hourcount:
-    descriptoin: Allows viewing of hours played of players
-    usage: /hourcount <user>
-    aliase: [hours, hc]
+  onlinetime:
+    descriptoin: Allows viewing how long players have played on the server
+    usage: /onlinetime <user>
+    aliases: [ot, ontime]
   ride:
     description: Ride an entity you're looking at or the specified player
     usage: /ride <player>
@@ -156,9 +156,6 @@ permissions:
   carbonkit.essassist.toggle-interact.others:
     description: Access to toggle other players' interacting
     default: op
-  carbonkit.misc.slap:
-    description: Access to slap players
-    default: op
   carbonkit.skullshop.skull:
     description: Access to buy player heads
     default: op
@@ -211,12 +208,6 @@ permissions:
       carbonkit.gamemode.self.creative: true
       carbonkit.gamemode.self.adventure: true
       carbonkit.gamemode.self.spectator: true
-  carbonkit.misc.ride:
-    description: Access to ride mobs
-    default: op
-  carbonkit.misc.ride.players:
-    description: Access to ride players
-    default: op
   carbonkit.goldensmite.toggle.hostile:
     description: Access to toggle gsmite for hostile mobs
     default: op
@@ -300,6 +291,21 @@ permissions:
     default: op
   carbonkit.misc.joinmsg.extended:
     description: Access to view extended join messages
+    default: op
+  carbonkit.misc.ride:
+    description: Access to ride mobs
+    default: op
+  carbonkit.misc.ride.players:
+    description: Access to ride players
+    default: op
+  carbonkit.misc.slap:
+    description: Access to slap players
+    default: op
+  carbonkit.misc.onlinetime.self:
+    description: View your own online time
+    default: op
+  carbonkit.misc.onlinetime.others:
+    description: View other players' online time
     default: op
   carbonkit.carbonvote.receive-messages:
     description: Access to receive messages pertaining to voting

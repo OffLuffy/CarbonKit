@@ -105,16 +105,16 @@ CarbonNews:
       prefix: '{TTP~Tutorial Group!|TXT~&b&l[!]} &3'
       postfix: ''
       messages:
-      - Formatting! {TOOLTIP~&bRuns /rules|CMD~/rules|COLOR~a|STYLES~lmno|TEXT~Check it!}
-      - Formats are delimited by a {TOOLTIP~&bA.K.A. a vertical bar, usually Shift + backslash(\)|COLOR~a|TEXT~pipe} '|'!
-      - Supported format tags are &6TOOLTIP&f, &6LINK&f, &6CMD&f, &6COLOR&f, &6STYLES&f, and &6TEXT&f.
-      - Tags are wrapped in curly braces (the &6{ &fand &6} &fcharacters)
-      - Use ampersand (&6&&f) codes for colors and styles of non-formatted strings, like &a&l&m&n&othis!
-      - If using formats, you must include TEXT and at least one other tag or it will be ignored!
-      - You can also use formats in the prefix and postfix!
-      - Tag headers must be uppercase and followed by a {TOOLTIP~&bUsually Shift + tick(`)|COLOR~a|TEXT~tilde} '~'!
-      - You may mix ampersand color codes into formatting tags!
-      - Links will have an 'http://' added before it if it doesn't already have one or an 'https://'
+      - 'Formatting! {TTP~&bRuns /rules|CMD~/rules|TXT~&a&l&m&n&oCheck it!}'
+      - 'Tags are delimited by a {TTP~&bA.K.A. a vertical bar, usually Shift + backslash(\)|TXT~&apipe} ''|''!'
+      - 'Supported format tags are &6TTP&f, &6LNK&f, &6CMD&f, and &6TXT&f.'
+      - 'Tags are wrapped in curly braces (the &6{ &fand &6} &fcharacters)'
+      - 'Use ampersand (&6&&f) codes for colors and styles - like &a&l&m&n&othis!'
+      - 'If using formats, you must include TXT and at least one other tag or it will be ignored!'
+      - 'You can also use formats in the prefix and postfix!'
+      - 'Tag headers must be uppercase and followed by a {TTP~&bUsually Shift + tick(`)|TEXT~&atilde} ''~''!'
+      - 'You may mix ampersand color codes into formatting tags!'
+      - 'Links will have an ''http://'' added before it if it doesn''t already have one or an ''https://'''
 CarbonPerks:
   max-trails: 3
   firework-bow-damage-percent:
@@ -229,6 +229,13 @@ Misc:
   entity-group-count: true
   entity-type-count: false
   entity-total-count: true
+  online-time:
+    show-years: true
+    show-months: true
+    show-days: true
+    show-hours: true
+    show-minutes: true
+    show-seconds: false
 NetherSpawners:
   enabled: true
   enabled-worlds:

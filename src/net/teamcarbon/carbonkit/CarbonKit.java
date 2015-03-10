@@ -7,28 +7,25 @@ import net.teamcarbon.carbonlib.*;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.Chunk;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("UnusedDeclaration")
-public class CarbonKit extends JavaPlugin {
+public class CarbonKit extends JavaPlugin implements Listener {
 	public static Log log;
 	public static boolean checkOffline;
-	private enum ModuleClass {
-		CORE(CoreModule.class), ANTIPORTAL(AntiPortalModule.class), CARBONCRAFTING(CarbonCraftingModule.class),
-		CKWATCHER(CKWatcherModule.class), CMDBLOCKTOOLS(CmdBlockToolsModule.class), ESSASSIST(EssentialsAssistModule.class),
-		PERKS(CarbonPerksModule.class), GOLDENSMITE(GoldenSmiteModule.class), MISC(MiscModule.class),
-		SKULLSHOP(SkullShopModule.class), CARBONVOTE(CarbonVoteModule.class), CARBONTRIVIA(CarbonTriviaModule.class);
-		Class<? extends Module> mClass;
-		ModuleClass(Class<? extends Module> mClass) { this.mClass = mClass; }
-		public Class<? extends Module> moduleClass() { return mClass; }
-	}
+	private static List<Class<? extends Module>> modules;
+	private static List<Chunk> lockedChunks;
 	public enum ConfType {
 		DATA("data.yml"), MESSAGES("messages.yml"), TRIVIA("trivia.yml"), HELP("help.yml");
 		private String fn;
@@ -48,17 +45,43 @@ public class CarbonKit extends JavaPlugin {
 	public static PluginManager pm;
 	public static Permission perms;
 	public static Economy econ;
+
+	/* ====================================
+	=====[         OVERRIDES         ]=====
+	===================================== */
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable() {
-		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-			public void run() { enablePlugin(); }
-		}, 5L);
+		modules = MiscUtils.resetList(modules);
+		Collections.addAll(modules, CoreModule.class, AntiPortalModule.class, CarbonCraftingModule.class,
+				CKWatcherModule.class, EssentialsAssistModule.class, CarbonPerksModule.class,
+				GoldenSmiteModule.class, MiscModule.class, SkullShopModule.class, CarbonVoteModule.class,
+				CarbonTriviaModule.class);
+		Bukkit.getScheduler().runTaskLater(this, new Runnable() { public void run() { enablePlugin(); } }, 5L);
+		MiscUtils.resetList(lockedChunks);
+		Bukkit.getPluginManager().registerEvents(this, this);
 	}
 	@Override
 	public void onDisable() {
 		saveAllConfigs();
-		Module.getModule("CarbonKit").disableModule();
+		CoreModule.inst.disableModule();
 	}
+
+	/* ====================================
+	=====[         LISTENERS         ]=====
+	===================================== */
+
+	@EventHandler
+	public void chunkUnload(ChunkUnloadEvent e) {
+		if (lockedChunks != null && lockedChunks.contains(e.getChunk())) {
+			e.setCancelled(true);
+		}
+	}
+
+	/* ====================================
+	=====[          METHODS          ]=====
+	===================================== */
 
 	private void enablePlugin() {
 		try {
@@ -89,7 +112,7 @@ public class CarbonKit extends JavaPlugin {
 	 */
 	public static void loadPlugin(long startTime) {
 		if (Module.getAllModules().size() > 0) { // Modules already loaded. Prep for reload
-			Module.getModule("CarbonKit").disableModule();
+			CoreModule.inst.disableModule();
 			Module.flushData();
 		}
 		CarbonKit.inst.reloadConfig();
@@ -97,12 +120,11 @@ public class CarbonKit extends JavaPlugin {
 		for (ConfType ct : ConfType.values()) if (ct.isInitialized()) { ct.reloadConfig(); } else { ct.initConfType(); }
 		CustomMessage.loadMessages();
 		List<Long> times = new ArrayList<Long>();
-		for (ModuleClass mc : ModuleClass.values()) {
-			String name = "null";
+		for (Class<? extends Module> mc : modules) {
+			String name = mc.getSimpleName();
 			try {
-				name = mc.moduleClass().getSimpleName();
 				long mtime = System.currentTimeMillis();
-				Module m = mc.moduleClass().newInstance();
+				Module m = mc.newInstance();
 				name = m.getName();
 				if (!(m instanceof CoreModule)) {
 					long dtime = System.currentTimeMillis();
@@ -152,23 +174,5 @@ public class CarbonKit extends JavaPlugin {
 		if (ep != null)
 			econ = ep.getProvider();
 		return econ != null;
-	}
-
-	/**
-	 * Attempts to fetch a player with the given name. Will check all offline players if enabled in config
-	 * @param name The name to check (case insensitive)
-	 * @return Returns a player if found, null otherwise
-	 */
-	public static OfflinePlayer getPlayer(String name) {
-		OfflinePlayer p = null;
-		if (Bukkit.getPlayer(name) != null) p = Bukkit.getPlayer(name);
-		if (CarbonKit.getDefConfig().getBoolean("core.match-offline-players", false)) {
-			if (p == null && Bukkit.getOfflinePlayer(name) != null) p = Bukkit.getOfflinePlayer(name);
-			if (p == null)
-				for (OfflinePlayer pl : Bukkit.getOfflinePlayers())
-					if (pl.getName().equalsIgnoreCase(name))
-						p = pl;
-		}
-		return p;
 	}
 }

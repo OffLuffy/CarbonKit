@@ -68,7 +68,7 @@ public class Smite {
 	}
 	
 	private static ArrayList<Entity> getTargets(Player pl, Location l, SmiteType smiteMethod) {
-		GoldenSmiteModule mod = (GoldenSmiteModule)Module.getModule("GoldenSmite");
+		GoldenSmiteModule mod = GoldenSmiteModule.inst;
 		ArrayList<Entity> entList = new ArrayList<Entity>();
 		boolean host = GoldenSmiteModule.isGroupEnabled(pl, EntityGroup.HOSTILE), neut = GoldenSmiteModule.isGroupEnabled(pl, EntityGroup.NEUTRAL),
 				pass = GoldenSmiteModule.isGroupEnabled(pl, EntityGroup.PASSIVE), tame = GoldenSmiteModule.isGroupEnabled(pl, EntityGroup.TAMED),
@@ -101,7 +101,7 @@ public class Smite {
 	}
 	
 	private static void createEffects(Location l) {
-		GoldenSmiteModule mod = (GoldenSmiteModule)Module.getModule("GoldenSmite");
+		GoldenSmiteModule mod = GoldenSmiteModule.inst;
 		if (mod.getConfig().getBoolean("explosionEffect", false)) l.getWorld().createExplosion(l, 0);
 		if (mod.getConfig().getBoolean("lightningEffect", false)) l.getWorld().strikeLightningEffect(l);
 		if (mod.getConfig().getBoolean("fireworkEffect", true)) {

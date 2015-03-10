@@ -28,8 +28,8 @@ public class CarbonKitToggleCommand extends ModuleCmd {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
-			if (Module.getModule(args[0]) != null) {
-				Module m = Module.getModule(args[0]);
+			Module m = Module.getModule(args[0]);
+			if (m != null) {
 				if (m instanceof CoreModule) {
 					sender.sendMessage(Clr.RED + "This module cannot be disabled!");
 					return;

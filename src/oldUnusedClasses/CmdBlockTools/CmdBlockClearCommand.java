@@ -1,7 +1,6 @@
 package net.teamcarbon.carbonkit.commands.CmdBlockTools;
 
 import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonkit.modules.CmdBlockToolsModule;
 import net.teamcarbon.carbonkit.utils.CBModuleCmd;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Module;
@@ -43,7 +42,7 @@ public class CmdBlockClearCommand extends CBModuleCmd {
 		public static boolean isValid(String name) { return getType(name) != null; }
 		public static EntType getType(String name) {
 			for (EntType et : values()) {
-				if (MiscUtils.eq(name, et.type.getName(), et.name(), et.type.getName()+"s", et.name() + "s")) return et;
+				if (MiscUtils.eq(name, et.type.name(), et.name(), et.type.name()+"s", et.name() + "s")) return et;
 				for (String s : et.getAliases()) if (MiscUtils.eq(name, s, s+"s")) return et;
 			}
 			return null;
@@ -60,7 +59,6 @@ public class CmdBlockClearCommand extends CBModuleCmd {
 			sender.sendMessage(CustomMessage.CB_NOT_CMD_BLOCK.pre());
 			return;
 		}
-		CmdBlockToolsModule mod = (CmdBlockToolsModule) Module.getModule(getMod().getName());
 		BlockCommandSender bcs = (BlockCommandSender)sender;
 		Location loc = bcs.getBlock().getLocation();
 		int entCount = 0;
@@ -77,8 +75,8 @@ public class CmdBlockClearCommand extends CBModuleCmd {
 			if (radius <= 0) {
 				cmdNotify("Radius is too small or negative (Must be greater than 0)", loc);
 				return;
-			} else if (radius > mod.getConfig().getInt("clear-radius-limit", 1000)) {
-				cmdNotify("Radius is too large! (Must be smaller than " + mod.getConfig().getInt("clear-radius-limit", 1000) + ")", loc);
+			} else if (radius > getMod().getConfig().getInt("clear-radius-limit", 1000)) {
+				cmdNotify("Radius is too large! (Must be smaller than " + getMod().getConfig().getInt("clear-radius-limit", 1000) + ")", loc);
 				return;
 			}
 			for (String s : args[0].split(",")) {
@@ -95,9 +93,9 @@ public class CmdBlockClearCommand extends CBModuleCmd {
 			}
 			for (Entity ent : targets)
 				ent.remove();
-			if (mod.getConfig().getBoolean("log-messages.clear"))
+			if (getMod().getConfig().getBoolean("log-messages.clear"))
 				CarbonKit.log.info("Executed CmdBlockClear (/cbc) at (" + ((int) loc.getX()) + ", " + ((int) loc.getY()) + ", " + ((int) loc.getZ()) + ")");
-			if (mod.getConfig().getBoolean("log-messages.clear"))
+			if (getMod().getConfig().getBoolean("log-messages.clear"))
 				CarbonKit.log
 						.info("Removed " + entCount + " items in a radius of " + radCount);
 			return;

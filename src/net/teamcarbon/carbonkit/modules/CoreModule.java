@@ -5,6 +5,8 @@ import net.teamcarbon.carbonkit.commands.Core.CarbonKitReloadCommand;
 import net.teamcarbon.carbonkit.commands.Core.CarbonKitToggleCommand;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.world.ChunkUnloadEvent;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CoreModule extends Module {
@@ -14,7 +16,6 @@ public class CoreModule extends Module {
 		inst = this;
 		addCmd(new CarbonKitReloadCommand(this));
 		addCmd(new CarbonKitToggleCommand(this));
-		//addCmd(new CarbonKitHelpCommand(this));
 	}
 	public void disableModule() {
 		for (Module m : Module.getAllModules())

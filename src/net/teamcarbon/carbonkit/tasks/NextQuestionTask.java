@@ -1,6 +1,6 @@
 package net.teamcarbon.carbonkit.tasks;
 
-		import net.teamcarbon.carbonkit.utils.TriviaRound;
+import net.teamcarbon.carbonkit.utils.TriviaRound;
 
 public class NextQuestionTask implements Runnable {
 	@Override

@@ -17,6 +17,7 @@ import net.teamcarbon.carbonkit.commands.CarbonTrivia.CarbonTriviaCommand;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonTriviaModule extends Module {
+	public static CarbonTriviaModule inst;
 	public CarbonTriviaModule() throws DuplicateModuleException { super("CarbonTrivia", "ctrivia", "trivia", "ctr", "ct"); }
 
 	public static String mpre;
@@ -25,6 +26,7 @@ public class CarbonTriviaModule extends Module {
 	private static FileConfiguration tconf;
 
 	public void initModule() {
+		inst = this;
 		Question.loadQuestions();
 		mpre = CustomMessage.CT_MPREFIX.noPre();
 		qpre = CustomMessage.CT_QPREFIX.noPre();

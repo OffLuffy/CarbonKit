@@ -204,11 +204,20 @@ public class CustomMessages {
 			sender.sendMessage(Clr.GOLD + "For several effects, wrap params in {}, i.e. " + Clr.GRAY + "{params}{params}");
 		}
 		/**
-		 * Prints a formatted header to the specified CommandSender
+		 * Prints a formatted header for the specified CommandSender
 		 * @param sender The CommandSender to send the message to
 		 * @param header The header to print (is wrapped in brackets)
 		 */
-		public static void printHeader(CommandSender sender, String header) { sender.sendMessage(Clr.fromChars("6l") + "===[ "+header+" ]======"); }
+		public static void printHeader(CommandSender sender, String header) {
+			if (header != null && !header.isEmpty())
+				sender.sendMessage(Clr.fromChars("6l") + "===[ " + header + " ]======");
+			else printFooter(sender);
+		}
+		/**
+		 * Prints a formatted footer for the specified CommandSender
+		 * @param sender The CommandSender to send the message to
+		 */
+		public static void printFooter(CommandSender sender) { sender.sendMessage(Clr.fromChars("6l") + "============="); }
 		public String toString() {
 			if (!init)
 				loadMessages();

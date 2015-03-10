@@ -54,7 +54,7 @@ public class TriviaRound {
 	private List<UUID> blacklist = new ArrayList<UUID>();
 	private List<Question> questions;
 
-	private final CarbonTriviaModule ctm = (CarbonTriviaModule)Module.getModule("CarbonTrivia");
+	private final CarbonTriviaModule ctm = CarbonTriviaModule.inst;
 	private final FileConfiguration tconf = CarbonKit.getConfig(ConfType.TRIVIA);
 	private final long duration = tconf.getLong("quiz-options.question-duration-seconds") * 20L;
 	private final long interval = tconf.getLong("quiz-options.question-interval-seconds") * 20L;
@@ -69,7 +69,7 @@ public class TriviaRound {
 	 * @param name The name to broadcast as having started the round (String, Player, or CommandSender)
 	 */
 	public TriviaRound(Object name) {
-		if (!(Module.getModule("CarbonTrivia").isEnabled())) return;
+		if (!CarbonTriviaModule.inst.isEnabled()) return;
 		if (!started) {
 			TriviaStartEvent tse = new TriviaStartEvent(this);
 			Bukkit.getPluginManager().callEvent(tse);

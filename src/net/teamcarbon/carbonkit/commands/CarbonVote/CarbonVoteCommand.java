@@ -23,7 +23,7 @@ import net.teamcarbon.carbonlib.MiscUtils;
 import java.util.HashMap;
 import java.util.Locale;
 
-@SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration"})
 public class CarbonVoteCommand extends ModuleCmd {
 	public CarbonVoteCommand(Module module) { super(module, "carbonvote"); }
 	@Override
@@ -32,7 +32,6 @@ public class CarbonVoteCommand extends ModuleCmd {
 			sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 			return;
 		}
-		CarbonVoteModule mod = (CarbonVoteModule)Module.getModule(getMod().getName());
 		final String CVP = "carbonkit.carbonvote.";
 		if (args.length < 1 || MiscUtils.eq(args[0], "help")) {
 			if (!MiscUtils.perm(sender, CVP + "help")) {
@@ -48,12 +47,12 @@ public class CarbonVoteCommand extends ModuleCmd {
 				}
 			} else {
 
-				double weatherPrice = mod.getConfig().getDouble("vote-prices.weather", 0.0),
-						timePrice = mod.getConfig().getDouble("vote-prices.time", 0.0),
-						triviaPrice = mod.getConfig().getDouble("vote-prices.trivia", 0.0),
-						banPrice = mod.getConfig().getDouble("vote-prices.ban", 0.0),
-						kickPrice = mod.getConfig().getDouble("vote-prices.kick", 0.0),
-						mutePrice = mod.getConfig().getDouble("vote-prices.mute", 0.0);
+				double weatherPrice = getMod().getConfig().getDouble("vote-prices.weather", 0.0),
+						timePrice = getMod().getConfig().getDouble("vote-prices.time", 0.0),
+						triviaPrice = getMod().getConfig().getDouble("vote-prices.trivia", 0.0),
+						banPrice = getMod().getConfig().getDouble("vote-prices.ban", 0.0),
+						kickPrice = getMod().getConfig().getDouble("vote-prices.kick", 0.0),
+						mutePrice = getMod().getConfig().getDouble("vote-prices.mute", 0.0);
 
 				boolean bypassWeather = MiscUtils.perm(sender, CVP + "bypassprice.weather"),
 						bypassTime = MiscUtils.perm(sender, CVP + "bypassprice.time"),
@@ -85,8 +84,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 								+ (!(bypassMute && mutePrice > 0) ? Clr.NOTE + " (" + mutePrice + ")" : ""));
 					}
 				}
-				if (CarbonVoteModule.isVoteTypeEnabled(VoteType.TRIVIA) && MiscUtils.perm(sender, CVP + "startvote.trivia" )
-						&& Module.getModule("CarbonTrivia") != null && Module.getModule("CarbonTrivia").isEnabled())
+				if (CarbonVoteModule.isVoteTypeEnabled(VoteType.TRIVIA) && MiscUtils.perm(sender, CVP + "startvote.trivia" ) && getMod().isEnabled())
 					sender.sendMessage(Clr.AQUA + "/cv tr" + Clr.DARKAQUA + " - Vote to start a round of trivia");
 				if (CarbonVoteModule.isVoteOngoing()) {
 					Vote v = CarbonVoteModule.getActiveVote();
@@ -196,25 +194,27 @@ public class CarbonVoteCommand extends ModuleCmd {
 				return;
 			}
 			// Check to see if this vote-type has been used too recently
-			if (!MiscUtils.perm(sender, CVP + "bypasscooldown." + rep.get("{VOTETYPE}"))) {}
-			long since = (System.currentTimeMillis()/1000L) - mod.getData().getLong("last-" + rep.get("{VOTETYPE}") + "-vote", 0L);
-			long intvl = mod.getConfig().getInt("vote-interval-seconds." + rep.get("{VOTETYPE}"), 60);
-			if (since < intvl) {
-				long rem = intvl-since;
-				if (rem >= 3600) { // Hour(s) remain
-					long h = rem/3600, m = rem%3600, s = rem%60;
-					rep.put("{REMAININGTIME}", h + "hour"+(h!=1?"s":"") + (m>0? ", " + m + " minute"+(m!=1?"s":""):"") + (s>0?", "+s+" second"+(s!=1?"s":""):""));
-				} if (rem >= 60) { // Minute(s) remain
-					long m = rem/60, s = rem%60;
-					rep.put("{REMAININGTIME}", m + " minute"+(m!=1?"s":"") + (s>0? ", " + s + " second"+(s!=1?"s":""):""));
-				} else { // Second(s) remain
-					rep.put("{REMAININGTIME}", rem + " seconds");
+			if (!MiscUtils.perm(sender, CVP + "bypasscooldown." + rep.get("{VOTETYPE}"))) {
+				long since = (System.currentTimeMillis() / 1000L) - getMod().getData().getLong("last-" + rep.get("{VOTETYPE}") + "-vote", 0L);
+				long intvl = getMod().getConfig().getInt("vote-interval-seconds." + rep.get("{VOTETYPE}"), 60);
+				if (since < intvl) {
+					long rem = intvl - since;
+					if (rem >= 3600) { // Hour(s) remain
+						long h = rem / 3600, m = rem % 3600, s = rem % 60;
+						rep.put("{REMAININGTIME}", h + "hour" + (h != 1 ? "s" : "") + (m > 0 ? ", " + m + " minute" + (m != 1 ? "s" : "") : "") + (s > 0 ? ", " + s + " second" + (s != 1 ? "s" : "") : ""));
+					}
+					if (rem >= 60) { // Minute(s) remain
+						long m = rem / 60, s = rem % 60;
+						rep.put("{REMAININGTIME}", m + " minute" + (m != 1 ? "s" : "") + (s > 0 ? ", " + s + " second" + (s != 1 ? "s" : "") : ""));
+					} else { // Second(s) remain
+						rep.put("{REMAININGTIME}", rem + " seconds");
+					}
+					sender.sendMessage(MiscUtils.massReplace(CustomMessage.CV_MUST_WAIT.pre(), rep));
+					return;
 				}
-				sender.sendMessage(MiscUtils.massReplace(CustomMessage.CV_MUST_WAIT.pre(), rep));
-				return;
 			}
 			// Check if player has enough money to start the vote (don't withdraw yet)
-			double votePrice = mod.getConfig().getDouble("vote-prices." + rep.get("{VOTETYPE}"), 0.0);
+			double votePrice = getMod().getConfig().getDouble("vote-prices." + rep.get("{VOTETYPE}"), 0.0);
 			if (votePrice > 0.0 && !MiscUtils.perm(sender, CVP + "bypassprice." + rep.get("{VOTETYPE}"))) {
 				if (!CarbonKit.econ.has((OfflinePlayer)sender, votePrice)) {
 					rep.put("{VOTECOST}", CarbonKit.econ.format(votePrice));
@@ -283,7 +283,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 					sender.sendMessage(Clr.DARKRED + "or a term (dawn, day, noon, evening, dusk, night, midnight)");
 				}
 			} else if (MiscUtils.eq(args[0], "trivia", "tr")) {
-				if (Module.getModule("CarbonTrivia").isEnabled()) {
+				if (getMod().isEnabled()) {
 					TriviaVote trv = new TriviaVote((OfflinePlayer) sender);
 					VoteStartEvent vse = new VoteStartEvent((Player) sender, trv);
 					if (!vse.isCancelled()) CarbonVoteModule.startVote(trv);
