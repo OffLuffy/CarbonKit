@@ -1,7 +1,7 @@
 package net.teamcarbon.carbonkit.events.triviaEvents;
 
 import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonkit.utils.TriviaRound;
+import net.teamcarbon.carbonkit.utils.CarbonTrivia.TriviaRound;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

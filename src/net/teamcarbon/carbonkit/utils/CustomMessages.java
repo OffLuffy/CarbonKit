@@ -1,16 +1,19 @@
 package net.teamcarbon.carbonkit.utils;
 
+import net.teamcarbon.carbonlib.MiscUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonlib.Messages.Clr;
 
+import java.util.HashMap;
+
 @SuppressWarnings("UnusedDeclaration")
 public class CustomMessages {
 	private final static String CK = "carbonkit.", A = "antiportal.", C = "cmdblocktools.", V = "carbonvote.",
 			E = "essentialsassist.", F = "fireworks.", G = "goldensmite", M = "misc.", S = "skullshop.",
-			W = "ckwatcher.", GEN = "generic.", T = "carbontrivia.", P = "carbonperks.";
+			W = "ckwatcher.", GEN = "generic.", T = "carbontrivia.", P = "carbonperks.", N = "carbonnews.";
 	private static boolean init = false;
 	public enum CustomMessage {
 		// CORE MODULE
@@ -21,6 +24,8 @@ public class CustomMessages {
 		CORE_MODULE_DISABLED(CK+"module-disabled", "&cThe {MODULENAME} module has been disabled"),
 		CORE_MODULE_ALREADY_ENABLED(CK+"module-already-enabled", "&bThe {MODULENAME} module is already enabled"),
 		CORE_MODULE_ALREADY_DISABLED(CK+"module-already-disabled", "&bThis {MODULENAME} module is already disabled"),
+		CORE_CHUNK_LOCKED(CK+"chunk-locked", "&bChunk &7{CHUNKCOORD}&b has been &clocked&b! (Can't unload)"),
+		CORE_CHUNK_UNLOCKED(CK+"chunk-unlocked", "&bChunk &7{CHUNKCOORD}&b has been &aunlocked&b! (Can now unload)"),
 		// ANTIPORTAL MODULE
 		AP_PREFIX(A+"prefix", "&6&l[AntiPortal] &r"),
 		AP_ITEM_RESERVED(A+"item-reserved", "&cThat item is reservered for {PLAYER}. It will be released in {TIME}"),
@@ -155,6 +160,10 @@ public class CustomMessages {
 		CW_WATCH_DISABLED(W+"watch-disabled", "&5You are no longer watching commands"),
 		CW_WATCH_ENABLED_OTHER(W+"watch-enabled-others", "&bCommand watching for {PLAYER} enabled"),
 		CW_WATCH_DISABLED_OTHER(W+"watch-disabled-others", "&5Command watching for {PLAYER} disabled"),
+		// CARBONNEWS MESSAGES
+		CN_PREFIX(N+"prefix", "&6&l[CarbonNews] &4"),
+		CN_NOT_SET(N+"not-set", "&cCould not find the specified message set: {SETNAME}"),
+		CN_NEEDS_SET(N+"needs-set", "&cThis requires a set name"),
 		// GENERIC MESSAGES
 		GEN_PREFIX(GEN +"prefix", "&6&l[CarbonKit] &r"),
 		GEN_NO_PERM(GEN +"no-perm", "&cYou don't have permission to do that"),
@@ -174,6 +183,8 @@ public class CustomMessages {
 					return Clr.trans(m + "" + msg);
 			return Clr.trans(msg);
 		}
+		public String noPre(HashMap<String, String> rep) { return MiscUtils.massReplace(noPre(), rep); }
+		public String pre(HashMap<String, String> rep) { return MiscUtils.massReplace(pre(), rep); }
 		/**
 		 * Sets the cached message for this enumarated object
 		 * @param message The message to set this CustomMessage to

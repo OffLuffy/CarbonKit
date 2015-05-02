@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -19,8 +20,8 @@ import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.commands.GoldenSmite.GoldenSmiteCommand;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonkit.utils.Smite;
-import net.teamcarbon.carbonkit.utils.Smite.SmiteType;
+import net.teamcarbon.carbonkit.utils.GoldenSmite.Smite;
+import net.teamcarbon.carbonkit.utils.GoldenSmite.Smite.SmiteType;
 import net.teamcarbon.carbonlib.MiscUtils;
 
 import static org.bukkit.Material.*;
@@ -132,10 +133,9 @@ public class GoldenSmiteModule extends Module {
 								HOPPER_MINECART, STORAGE_MINECART, POWERED_MINECART, NOTE_BLOCK, ANVIL, BEACON, JUKEBOX, COMMAND))
 							return;
 					int rng = getConfig().getInt("range", 100);
-					Location l = e.getPlayer().getTargetBlock(null, rng).getLocation();
-					if (e.getPlayer().getTargetBlock(null, rng).getType() == Material.AIR)
-						return;
-					Smite.createSmite(e.getPlayer(), l, SmiteType.AXE);
+					Block b = e.getPlayer().getTargetBlock(new HashSet<Material>(), rng);
+					if (b.getType() == Material.AIR) return;
+					Smite.createSmite(e.getPlayer(), b.getLocation(), SmiteType.AXE);
 				}
 			}
 		}

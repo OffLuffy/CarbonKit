@@ -1,5 +1,6 @@
 package net.teamcarbon.carbonkit.modules;
 
+import net.teamcarbon.carbonkit.utils.CarbonVote.TimeVote;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import net.teamcarbon.carbonkit.CarbonKit;
@@ -11,10 +12,10 @@ import net.teamcarbon.carbonkit.events.voteEvents.VoteStartEvent;
 import net.teamcarbon.carbonkit.events.voteEvents.VotePassEvent;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonkit.utils.votetypes.TargetedVote.TargetedVoteType;
-import net.teamcarbon.carbonkit.utils.votetypes.TimeVote.TimeTerm;
-import net.teamcarbon.carbonkit.utils.votetypes.Vote;
-import net.teamcarbon.carbonkit.utils.votetypes.Vote.VoteType;
+import net.teamcarbon.carbonkit.utils.CarbonVote.TargetedVote.TargetedVoteType;
+import net.teamcarbon.carbonkit.utils.CarbonVote.TimeVote.TimeTerm;
+import net.teamcarbon.carbonkit.utils.CarbonVote.Vote;
+import net.teamcarbon.carbonkit.utils.CarbonVote.Vote.VoteType;
 import net.teamcarbon.carbonlib.MiscUtils;
 
 @SuppressWarnings("UnusedDeclaration")
@@ -257,12 +258,12 @@ public class CarbonVoteModule extends Module {
 	 * Attempts to parse a string to a long in terms of time on the server
 	 * @param time Time as a long, a 12 or 24 hour format, or TimeTerm alias
 	 * @return Returns the long value of the time parsed or 0 if not parseable
-	 * @see net.teamcarbon.carbonkit.utils.votetypes.TimeVote.TimeTerm
+	 * @see TimeVote.TimeTerm
 	 */
 	public static long parseTime(String time) {
 		// 1000 ticks per mc hour, 16.6 ticks per mc minute (round to whole tick)
 		time = time.toLowerCase();
-		if (MiscUtils.eq(time, "dawn", "sunrise")) {
+		if (MiscUtils.eq(time, "d", "dawn", "sunrise")) {
 			return TimeTerm.DAWN.getTicks();
 		} else if (MiscUtils.eq(time, "day", "daytime", "daylight")) {
 			return TimeTerm.DAY.getTicks();
@@ -272,7 +273,7 @@ public class CarbonVoteModule extends Module {
 			return TimeTerm.EVENING.getTicks();
 		} else if (MiscUtils.eq(time, "dusk", "sunset")) {
 			return TimeTerm.DUSK.getTicks();
-		} else if (MiscUtils.eq(time, "night", "nighttime", "dark")) {
+		} else if (MiscUtils.eq(time, "n", "night", "nighttime", "dark")) {
 			return TimeTerm.NIGHT.getTicks();
 		} else if (MiscUtils.eq(time, "midnight")) {
 			return TimeTerm.MIDNIGHT.getTicks();

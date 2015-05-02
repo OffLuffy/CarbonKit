@@ -2,8 +2,8 @@ package net.teamcarbon.carbonkit.commands.CarbonVote;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
+import net.teamcarbon.carbonkit.utils.CarbonVote.*;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonkit.utils.votetypes.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -14,9 +14,9 @@ import net.teamcarbon.carbonkit.events.voteEvents.VoteCastEvent;
 import net.teamcarbon.carbonkit.events.voteEvents.VoteStartEvent;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonkit.utils.votetypes.TargetedVote.TargetedVoteType;
-import net.teamcarbon.carbonkit.utils.votetypes.Vote.VoteType;
-import net.teamcarbon.carbonkit.utils.votetypes.WeatherVote.WeatherType;
+import net.teamcarbon.carbonkit.utils.CarbonVote.TargetedVote.TargetedVoteType;
+import net.teamcarbon.carbonkit.utils.CarbonVote.Vote.VoteType;
+import net.teamcarbon.carbonkit.utils.CarbonVote.WeatherVote.WeatherType;
 import net.teamcarbon.carbonlib.Messages.Clr;
 import net.teamcarbon.carbonlib.MiscUtils;
 
@@ -63,25 +63,25 @@ public class CarbonVoteCommand extends ModuleCmd {
 
 				CustomMessage.printHeader(sender, "Vote Help");
 				if (CarbonVoteModule.isVoteTypeEnabled(VoteType.WEATHER) && MiscUtils.perm(sender, CVP + "startvote.weather")) {
-					sender.sendMessage(Clr.AQUA + "/cv w [clear|storm|rain]" + Clr.DARKAQUA + " - Vote to change the weather"
-							+ (!(bypassWeather && weatherPrice > 0) ? Clr.NOTE + " (" + weatherPrice + ")" : ""));
+					sender.sendMessage(Clr.AQUA + "/cv w [clear|storm|rain]" + Clr.DARKAQUA + " - Vote to change weather"
+							+ ((!bypassWeather && weatherPrice > 0) ? Clr.NOTE + " (" + weatherPrice + ")" : ""));
 				}
 				if (CarbonVoteModule.isVoteTypeEnabled(VoteType.TIME) && MiscUtils.perm(sender, CVP + "startvote.time")) {
-					sender.sendMessage(Clr.AQUA + "/cv t [term, 24/12hr, or ticks]" + Clr.DARKAQUA + " - Vote to set the time"
-							+ (!(bypassTime && timePrice > 0) ? Clr.NOTE + " (" + timePrice + ")" : ""));
+					sender.sendMessage(Clr.AQUA + "/cv t [term, 24/12hr, or ticks]" + Clr.DARKAQUA + " - Vote to set time"
+							+ ((!bypassTime && timePrice > 0) ? Clr.NOTE + " (" + timePrice + ")" : ""));
 				}
 				if (CarbonVoteModule.isVoteTypeEnabled(TargetedVoteType.BAN) && MiscUtils.perm(sender, CVP + "startvote.ban" )) {
-					sender.sendMessage(Clr.AQUA + "/cv b [player]" + Clr.DARKAQUA + " - Vote to ban a player"
-							+ (!(bypassBan && banPrice > 0) ? Clr.NOTE + " (" + banPrice + ")" : ""));
+					sender.sendMessage(Clr.AQUA + "/cv b [player]" + Clr.DARKAQUA + " - Vote to ban player"
+							+ ((!bypassBan && banPrice > 0) ? Clr.NOTE + " (" + banPrice + ")" : ""));
 				}
 				if (CarbonVoteModule.isVoteTypeEnabled(TargetedVoteType.KICK) && MiscUtils.perm(sender, CVP + "startvote.kick" )) {
-					sender.sendMessage(Clr.AQUA + "/cv k [player]" + Clr.DARKAQUA + " - Vote to kick a player"
-							+ (!(bypassKick && kickPrice > 0) ? Clr.NOTE + " (" + kickPrice + ")" : ""));
+					sender.sendMessage(Clr.AQUA + "/cv k [player]" + Clr.DARKAQUA + " - Vote to kick player"
+							+ ((!bypassKick && kickPrice > 0) ? Clr.NOTE + " (" + kickPrice + ")" : ""));
 				}
 				if (MiscUtils.checkPlugin("Essentials", true)) {
 					if (CarbonVoteModule.isVoteTypeEnabled(TargetedVoteType.MUTE) && MiscUtils.perm(sender, CVP + "startvote.mute")) {
-						sender.sendMessage(Clr.AQUA + "/cv m [player]" + Clr.DARKAQUA + " - Vote to mute a player"
-								+ (!(bypassMute && mutePrice > 0) ? Clr.NOTE + " (" + mutePrice + ")" : ""));
+						sender.sendMessage(Clr.AQUA + "/cv m [player]" + Clr.DARKAQUA + " - Vote to mute player"
+								+ ((!bypassMute && mutePrice > 0) ? Clr.NOTE + " (" + mutePrice + ")" : ""));
 					}
 				}
 				if (CarbonVoteModule.isVoteTypeEnabled(VoteType.TRIVIA) && MiscUtils.perm(sender, CVP + "startvote.trivia" ) && getMod().isEnabled())

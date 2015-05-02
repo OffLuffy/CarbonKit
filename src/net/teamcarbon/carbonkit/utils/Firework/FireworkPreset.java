@@ -1,4 +1,4 @@
-package net.teamcarbon.carbonkit.utils;
+package net.teamcarbon.carbonkit.utils.Firework;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;

@@ -1,4 +1,4 @@
-package net.teamcarbon.carbonkit.utils.votetypes;
+package net.teamcarbon.carbonkit.utils.CarbonVote;
 
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;

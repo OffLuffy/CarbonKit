@@ -142,11 +142,9 @@ public class TrailCommand extends ModuleCmd {
 					}
 				} else { num = multiple ? MiscUtils.rand(1, maxTrails) : 1; }
 				List<TrailEffect> fx = new ArrayList<TrailEffect>(), randList = new ArrayList<TrailEffect>();
-				for (TrailEffect e : TrailEffect.values()) {
-					if (MiscUtils.perm(sender, "carbonkit.perks.trails.set." + e.lname().replace("_", ""))) {
+				for (TrailEffect e : TrailEffect.values())
+					if (MiscUtils.perm(sender, "carbonkit.perks.trails.set." + e.lname().replace("_", "")))
 						randList.add(e);
-					}
-				}
 				for (int i = 0; i < num; i++) { fx.add(CarbonPerksModule.getRandomEffect(randList)); }
 				if (fx.size() < 1) return;
 				CarbonPerksModule.setTrailEffects((Player) sender, fx);

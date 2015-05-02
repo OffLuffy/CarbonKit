@@ -3,15 +3,14 @@ core:
   match-offline-players: false
 modules:
   AntiPortal: true
-  CarbonCombat: true
+  AnvilEnchants: true
   CarbonCrafting: true
+  CarbonNews: true
   CarbonPerks: true
   CarbonTrivia: true
   CarbonVote: true
   CKWatcher: true
-  CmdBlockTools: true
   EssentialsAssist: true
-  Fireworks: false
   GoldenSmite: true
   Misc: true
   NetherSpawners: true
@@ -75,46 +74,14 @@ CarbonCrafting:
     LEATHER:
       source: ROTTEN_FLESH
 CarbonNews:
-  GeneralOptions:
-    welcomeMessage:
-      enabled: true
-      delaySeconds: 2
-      requirePermission: false
-      messageLines:
-      - '&3Welcome to {TTP~&aVisit our website @ team-carbon.org|TXT~&aTeam-Carbon}&3!
-        Know the {CMD~/rules|TTP~Click to view the rules|TXT~&brules}&3 and
-        enjoy your stay!'
-    newGroupDefaults:
-      delaySeconds: 60
-      randomOrder: false
-      requirePermission: false
-      sendToConsole: true
-      sendToPlayers: true
-      colorizeConsoleMessages: true
-      prefix: '&b&l[!] &3'
-      postfix: ''
-  MessageGroups:
-    tutorial:
-      groupEnabled: false
-      delaySeconds: 60
-      randomOrder: true
-      requirePermission: false
-      sendToConsole: true
-      sendToPlayers: true
-      colorizeConsoleMessages: true
-      prefix: '{TTP~Tutorial Group!|TXT~&b&l[!]} &3'
-      postfix: ''
-      messages:
-      - 'Formatting! {TTP~&bRuns /rules|CMD~/rules|TXT~&a&l&m&n&oCheck it!}'
-      - 'Tags are delimited by a {TTP~&bA.K.A. a vertical bar, usually Shift + backslash(\)|TXT~&apipe} ''|''!'
-      - 'Supported format tags are &6TTP&f, &6LNK&f, &6CMD&f, and &6TXT&f.'
-      - 'Tags are wrapped in curly braces (the &6{ &fand &6} &fcharacters)'
-      - 'Use ampersand (&6&&f) codes for colors and styles - like &a&l&m&n&othis!'
-      - 'If using formats, you must include TXT and at least one other tag or it will be ignored!'
-      - 'You can also use formats in the prefix and postfix!'
-      - 'Tag headers must be uppercase and followed by a {TTP~&bUsually Shift + tick(`)|TEXT~&atilde} ''~''!'
-      - 'You may mix ampersand color codes into formatting tags!'
-      - 'Links will have an ''http://'' added before it if it doesn''t already have one or an ''https://'''
+  welcomeMessage:
+    enabled: true
+    delaySeconds: 2
+    requirePermission: false
+    messageLines:
+    - '&3Welcome to {TTP~&aVisit our website @ team-carbon.org|TXT~&aTeam-Carbon}&3!
+      Know the {CMD~/rules|TTP~Click to view the rules|TXT~&brules}&3 and
+      enjoy your stay!'
 CarbonPerks:
   max-trails: 3
   firework-bow-damage-percent:
@@ -223,8 +190,14 @@ GoldenSmite:
   lightningEffect: false
   fireworkEffect: true
 Misc:
+  ban-message-settings:
+    enable-replace: false
+    replace-msg: ''
+    enable-prefix: false
+    prefix: ''
+    enable-suffix: false
+    suffix: '\n&aYou may appeal bans at &6team-carbon.org/unban'
   slap-damage: 0.0
-  slap-tool: BLAZE_ROD
   knockback: true
   entity-group-count: true
   entity-type-count: false
@@ -236,6 +209,34 @@ Misc:
     show-hours: true
     show-minutes: true
     show-seconds: false
+AnvilEnchants:
+  allow-any-enchant: false
+  allow-uncombinable-enchants: false
+  max-ench-level-overrides:
+    arrow_damage: 10
+    arrow_fire: 1
+    arrow_infinite: 1
+    arrow_knockback: 2
+    damage_all: 10
+    damage_arthropods: 10
+    damage_undead: 10
+    depth_strider: 3
+    dig_speed: 10
+    durability: 10
+    fire_aspect: 10
+    knockback: 2
+    loot_bonus_blocks: 10
+    loot_bonus_mobs: 10
+    luck: 10
+    lure: 10
+    oxygen: 10
+    protection_environmental: 10
+    protection_explosions: 10
+    protection_fall: 10
+    protection_projectile: 10
+    silk_touch: 1
+    thorns: 10
+    water_worker: 1
 NetherSpawners:
   enabled: true
   enabled-worlds:

@@ -1,7 +1,7 @@
 package net.teamcarbon.carbonkit.events.voteEvents;
 
 import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonkit.utils.votetypes.Vote;
+import net.teamcarbon.carbonkit.utils.CarbonVote.Vote;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

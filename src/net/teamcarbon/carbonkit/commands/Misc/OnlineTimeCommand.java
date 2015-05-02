@@ -66,7 +66,7 @@ public class OnlineTimeCommand extends ModuleCmd {
 
 	public void displayOnlineTime(CommandSender sender, OfflinePlayer p) {
 		UUID id = p.getUniqueId();
-		MiscModule.inst.updateOnlineTime(id, true);
+		MiscModule.inst.updateOnlineTime(id, true, false);
 		String pre = "online-time." + id + ".";
 		CustomMessage.printHeader(sender, "Online Time for " + p.getName());
 		sender.sendMessage(Clr.AQUA + "First seen: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "first-seen", -1L), true));
@@ -75,6 +75,7 @@ public class OnlineTimeCommand extends ModuleCmd {
 		sender.sendMessage(Clr.AQUA + "Time this month: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "this-month", -1), false));
 		sender.sendMessage(Clr.AQUA + "Time last month: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "last-month", -1), false));
 		sender.sendMessage(Clr.AQUA + "Average monthly time: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "monthly-avg", -1), false));
+		sender.sendMessage(Clr.AQUA + "Average session time: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "average-session", -1), false));
 		CustomMessage.printFooter(sender);
 	}
 
@@ -100,41 +101,41 @@ public class OnlineTimeCommand extends ModuleCmd {
 			if (millis >= mpyr && syr) { // years
 				long yr = millis / mpyr;
 				millis %= mpyr;
-				time += yr + "year" + ((yr != 1) ? "s" : "");
+				time += yr + " year" + ((yr != 1) ? "s" : "");
 				addSpace = true;
 			}
 			if (millis >= mpmt && smt) { // months
 				long mt = millis / mpmt;
 				millis %= mpmt;
 				if (addSpace) time += ", ";
-				time += mt + "month" + ((mt != 1) ? "s" : "");
+				time += mt + " month" + ((mt != 1) ? "s" : "");
 				addSpace = true;
 			}
 			if (millis >= mpdy && sdy) { // days
 				long dy = millis / mpdy;
 				millis %= mpdy;
 				if (addSpace) time += ", ";
-				time += dy + "day" + ((dy != 1) ? "s" : "");
+				time += dy + " day" + ((dy != 1) ? "s" : "");
 				addSpace = true;
 			}
 			if (millis >= mphr && shr) { // hours
 				long hr = millis / mphr;
 				millis %= mphr;
 				if (addSpace) time += ", ";
-				time += hr + "hr" + ((hr != 1) ? "s" : "");
+				time += hr + " hr" + ((hr != 1) ? "s" : "");
 				addSpace = true;
 			}
 			if (millis >= mpmn && smn) { // minutes
 				long mn = millis / mpmn;
 				millis %= mpmn;
 				if (addSpace) time += ", ";
-				time += mn + "min" + ((mn != 1) ? "s" : "");
+				time += mn + " min" + ((mn != 1) ? "s" : "");
 				addSpace = true;
 			}
 			if (millis >= mpsc && ssc) { // seconds
 				long sc = millis / mpsc;
 				if (addSpace) time += ", ";
-				time += sc + "sec" + ((sc != 1) ? "s" : "");
+				time += sc + " sec" + ((sc != 1) ? "s" : "");
 			}
 			return time;
 		}

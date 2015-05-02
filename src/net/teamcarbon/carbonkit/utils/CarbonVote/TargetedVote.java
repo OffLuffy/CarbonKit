@@ -1,4 +1,4 @@
-package net.teamcarbon.carbonkit.utils.votetypes;
+package net.teamcarbon.carbonkit.utils.CarbonVote;
 
 import org.bukkit.OfflinePlayer;
 

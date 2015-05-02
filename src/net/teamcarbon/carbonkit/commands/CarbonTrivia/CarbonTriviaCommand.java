@@ -2,7 +2,7 @@ package net.teamcarbon.carbonkit.commands.CarbonTrivia;
 
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonkit.utils.TriviaRound;
+import net.teamcarbon.carbonkit.utils.CarbonTrivia.TriviaRound;
 import net.teamcarbon.carbonlib.Messages.Clr;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

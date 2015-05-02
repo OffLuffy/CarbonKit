@@ -1,4 +1,4 @@
-package net.teamcarbon.carbonkit.utils;
+package net.teamcarbon.carbonkit.utils.CarbonTrivia;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;

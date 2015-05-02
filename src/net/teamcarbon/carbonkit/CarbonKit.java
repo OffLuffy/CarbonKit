@@ -7,11 +7,8 @@ import net.teamcarbon.carbonlib.*;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,9 +22,8 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	public static Log log;
 	public static boolean checkOffline;
 	private static List<Class<? extends Module>> modules;
-	private static List<Chunk> lockedChunks;
 	public enum ConfType {
-		DATA("data.yml"), MESSAGES("messages.yml"), TRIVIA("trivia.yml"), HELP("help.yml");
+		DATA("data.yml"), MESSAGES("messages.yml"), TRIVIA("trivia.yml"), HELP("help.yml"), NEWS("news.yml");
 		private String fn;
 		private ConfigAccessor ca;
 		private boolean init = false;
@@ -53,14 +49,16 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable() {
-		modules = MiscUtils.resetList(modules);
+		modules = new ArrayList<Class<? extends Module>>();
 		Collections.addAll(modules, CoreModule.class, AntiPortalModule.class, CarbonCraftingModule.class,
 				CKWatcherModule.class, EssentialsAssistModule.class, CarbonPerksModule.class,
 				GoldenSmiteModule.class, MiscModule.class, SkullShopModule.class, CarbonVoteModule.class,
-				CarbonTriviaModule.class);
-		Bukkit.getScheduler().runTaskLater(this, new Runnable() { public void run() { enablePlugin(); } }, 5L);
-		MiscUtils.resetList(lockedChunks);
-		Bukkit.getPluginManager().registerEvents(this, this);
+				CarbonTriviaModule.class, CarbonNewsModule.class/*, AnvilEnchants.class*/);
+		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+			public void run() {
+				enablePlugin();
+			}
+		}, 5L);
 	}
 	@Override
 	public void onDisable() {
@@ -72,19 +70,13 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	=====[         LISTENERS         ]=====
 	===================================== */
 
-	@EventHandler
-	public void chunkUnload(ChunkUnloadEvent e) {
-		if (lockedChunks != null && lockedChunks.contains(e.getChunk())) {
-			e.setCancelled(true);
-		}
-	}
-
 	/* ====================================
 	=====[          METHODS          ]=====
 	===================================== */
 
 	private void enablePlugin() {
 		try {
+			CarbonException.setGlobalPluginScope(this, "net.teamcarbon");
 			long time = System.currentTimeMillis();
 			CarbonLib.notifyHook(this);
 			inst = this;
@@ -101,7 +93,7 @@ public class CarbonKit extends JavaPlugin implements Listener {
 			loadPlugin(time);
 		} catch (Exception e) {
 			System.out.println("===[ An exception occured while trying to enable CarbonKit ]===");
-			(new CarbonException(this, "net.teamcarbon", e)).printStackTrace();
+			(new CarbonException(this, e)).printStackTrace();
 			log.severe("=====================================");
 		}
 	}
@@ -135,7 +127,7 @@ public class CarbonKit extends JavaPlugin implements Listener {
 				}
 			} catch (Exception e) {
 				log.severe("===[ An exception occurred while trying to enable module: " + name + " ]===");
-				(new CarbonException(inst, "net.teamcarbon", e)).printStackTrace();
+				(new CarbonException(inst, e)).printStackTrace();
 				log.severe("=====================================");
 			}
 		}
@@ -152,6 +144,7 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	public static FileConfiguration getDefConfig() { return CarbonKit.inst.getConfig(); }
 	public static FileConfiguration getConfig(ConfType ct) { return ct.getConfig(); }
 	public static void saveConfig(ConfType ct) { ct.saveConfig(); }
+	public static void saveDefConfig() { inst.saveConfig(); }
 	public static void saveAllConfigs() {
 		inst.saveConfig();
 		for (ConfType ct : ConfType.values()) ct.saveConfig();

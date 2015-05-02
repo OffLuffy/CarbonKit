@@ -3,8 +3,8 @@ package net.teamcarbon.carbonkit.events.voteEvents;
 import net.teamcarbon.carbonkit.CarbonKit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import net.teamcarbon.carbonkit.utils.votetypes.Vote;
-import net.teamcarbon.carbonkit.utils.votetypes.Vote.VoteType;
+import net.teamcarbon.carbonkit.utils.CarbonVote.Vote;
+import net.teamcarbon.carbonkit.utils.CarbonVote.Vote.VoteType;
 
 @SuppressWarnings("UnusedDeclaration")
 public class VoteFailEvent extends Event {

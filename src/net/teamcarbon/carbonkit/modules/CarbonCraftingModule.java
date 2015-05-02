@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonlib.MiscUtils;
+import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.HashMap;

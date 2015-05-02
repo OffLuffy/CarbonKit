@@ -136,6 +136,8 @@ public abstract class Module implements Listener {
 			}
 		}
 		this.enabled = enabled;
+		CarbonKit.getDefConfig().set("modules." + name, enabled);
+		CarbonKit.saveDefConfig();
 	}
 	/**
 	 * @return Returns the list of commands the module instance has registered

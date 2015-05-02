@@ -1,7 +1,6 @@
 package net.teamcarbon.carbonkit.events.triviaEvents;
 
 import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonkit.utils.TriviaRound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

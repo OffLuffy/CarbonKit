@@ -16,8 +16,8 @@ import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.commands.Firework.FireworkCommand;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
-import net.teamcarbon.carbonkit.utils.FireworkPreset;
-import net.teamcarbon.carbonkit.utils.FireworkUtils;
+import net.teamcarbon.carbonkit.utils.Firework.FireworkPreset;
+import net.teamcarbon.carbonkit.utils.Firework.FireworkUtils;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonlib.MiscUtils;
 

@@ -23,6 +23,10 @@ commands:
     description: Overall CarbonKit help command
     usage: /ckh
     aliases: [ckh, ckh, carbonkith]
+  chunklock:
+    description: Locks or unlocks the current chunk
+    usage: /chunklock
+    aliases: [cl, clock]
   carbonvote:
     description: CarbonKit Vote command
     usage: /cvote [ban|kick|mute|weather|time] <player>
@@ -111,6 +115,10 @@ commands:
     description: Sets a particle trail for yourself
     usage: /trail
     aliases: [trails, ctrail, ctrails]
+  carbonnews:
+    description: CarbonNews command
+    usage: /carbonnews
+    aliases: [cnews, cn]
   disabledcmd:
     description: Command to register disabled module commands to
 permissions:
@@ -125,6 +133,9 @@ permissions:
     default: op
   carbonkit.help:
     description: Access to CarbonKit help
+    default: op
+  carbonkit.chunklock:
+    description: Toggle the locked state of a chunk.
     default: op
   carbonkit.cmdblocktools.help.item:
     description: Access to view help about the cbi command
@@ -523,4 +534,536 @@ permissions:
     default: op
   carbonkit.perks.trails.multiple:
     description: Allows using multiple trails (limit of trails in config)
+    default: op
+  carbonkit.perks.paintball.*:
+    description: Color all colorable blocks any color with paintballs
+    default: op
+    children:
+      carbonkit.perks.paintball.wool.*: true
+      carbonkit.perks.paintball.clay.*: true
+      carbonkit.perks.paintball.glass.*: true
+      carbonkit.perks.paintball.thinglass.*: true
+      carbonkit.perks.paintball.carpet.*: true
+      carbonkit.perks.paintball.logs.*: true
+      carbonkit.perks.paintball.wood.*: true
+      carbonkit.perks.paintball.doors.*: true
+      carbonkit.perks.paintball.fences.*: true
+      carbonkit.perks.paintball.gates.*: true
+  carbonkit.perks.paintball.wool.*:
+    description: Color wool blocks any color with paintballs
+    default: op
+    children:
+      carbonkit.perks.paintball.wool.black: true
+      carbonkit.perks.paintball.wool.blue: true
+      carbonkit.perks.paintball.wool.brown: true
+      carbonkit.perks.paintball.wool.cyan: true
+      carbonkit.perks.paintball.wool.gray: true
+      carbonkit.perks.paintball.wool.green: true
+      carbonkit.perks.paintball.wool.light_blue: true
+      carbonkit.perks.paintball.wool.lime: true
+      carbonkit.perks.paintball.wool.magenta: true
+      carbonkit.perks.paintball.wool.orange: true
+      carbonkit.perks.paintball.wool.pink: true
+      carbonkit.perks.paintball.wool.purple: true
+      carbonkit.perks.paintball.wool.red: true
+      carbonkit.perks.paintball.wool.silver: true
+      carbonkit.perks.paintball.wool.white: true
+      carbonkit.perks.paintball.wool.yellow: true
+      carbonkit.perks.paintball.wool.clean: true
+  carbonkit.perks.paintball.carpet.*:
+    description: Color thin carpet blocks any color with paintballs
+    default: op
+    children:
+      carbonkit.perks.paintball.carpet.black: true
+      carbonkit.perks.paintball.carpet.blue: true
+      carbonkit.perks.paintball.carpet.brown: true
+      carbonkit.perks.paintball.carpet.cyan: true
+      carbonkit.perks.paintball.carpet.gray: true
+      carbonkit.perks.paintball.carpet.green: true
+      carbonkit.perks.paintball.carpet.light_blue: true
+      carbonkit.perks.paintball.carpet.lime: true
+      carbonkit.perks.paintball.carpet.magenta: true
+      carbonkit.perks.paintball.carpet.orange: true
+      carbonkit.perks.paintball.carpet.pink: true
+      carbonkit.perks.paintball.carpet.purple: true
+      carbonkit.perks.paintball.carpet.red: true
+      carbonkit.perks.paintball.carpet.silver: true
+      carbonkit.perks.paintball.carpet.white: true
+      carbonkit.perks.paintball.carpet.yellow: true
+      carbonkit.perks.paintball.carpet.clean: true
+  carbonkit.perks.paintball.glass.*:
+    description: Color glass blocks any color with paintballs
+    default: op
+    children:
+      carbonkit.perks.paintball.glass.black: true
+      carbonkit.perks.paintball.glass.blue: true
+      carbonkit.perks.paintball.glass.brown: true
+      carbonkit.perks.paintball.glass.cyan: true
+      carbonkit.perks.paintball.glass.gray: true
+      carbonkit.perks.paintball.glass.green: true
+      carbonkit.perks.paintball.glass.light_blue: true
+      carbonkit.perks.paintball.glass.lime: true
+      carbonkit.perks.paintball.glass.magenta: true
+      carbonkit.perks.paintball.glass.orange: true
+      carbonkit.perks.paintball.glass.pink: true
+      carbonkit.perks.paintball.glass.purple: true
+      carbonkit.perks.paintball.glass.red: true
+      carbonkit.perks.paintball.glass.silver: true
+      carbonkit.perks.paintball.glass.white: true
+      carbonkit.perks.paintball.glass.yellow: true
+      carbonkit.perks.paintball.glass.clean: true
+  carbonkit.perks.paintball.thinglass.*:
+    description: Color thin glass blocks any color with paintballs
+    default: op
+    children:
+      carbonkit.perks.paintball.thinglass.black: true
+      carbonkit.perks.paintball.thinglass.blue: true
+      carbonkit.perks.paintball.thinglass.brown: true
+      carbonkit.perks.paintball.thinglass.cyan: true
+      carbonkit.perks.paintball.thinglass.gray: true
+      carbonkit.perks.paintball.thinglass.green: true
+      carbonkit.perks.paintball.thinglass.light_blue: true
+      carbonkit.perks.paintball.thinglass.lime: true
+      carbonkit.perks.paintball.thinglass.magenta: true
+      carbonkit.perks.paintball.thinglass.orange: true
+      carbonkit.perks.paintball.thinglass.pink: true
+      carbonkit.perks.paintball.thinglass.purple: true
+      carbonkit.perks.paintball.thinglass.red: true
+      carbonkit.perks.paintball.thinglass.silver: true
+      carbonkit.perks.paintball.thinglass.white: true
+      carbonkit.perks.paintball.thinglass.yellow: true
+      carbonkit.perks.paintball.thinglass.clean: true
+  carbonkit.perks.paintball.clay.*:
+    description: Color clay blocks any color with paintballs
+    default: op
+    children:
+      carbonkit.perks.paintball.clay.black: true
+      carbonkit.perks.paintball.clay.blue: true
+      carbonkit.perks.paintball.clay.brown: true
+      carbonkit.perks.paintball.clay.cyan: true
+      carbonkit.perks.paintball.clay.gray: true
+      carbonkit.perks.paintball.clay.green: true
+      carbonkit.perks.paintball.clay.light_blue: true
+      carbonkit.perks.paintball.clay.lime: true
+      carbonkit.perks.paintball.clay.magenta: true
+      carbonkit.perks.paintball.clay.orange: true
+      carbonkit.perks.paintball.clay.pink: true
+      carbonkit.perks.paintball.clay.purple: true
+      carbonkit.perks.paintball.clay.red: true
+      carbonkit.perks.paintball.clay.silver: true
+      carbonkit.perks.paintball.clay.white: true
+      carbonkit.perks.paintball.clay.yellow: true
+      carbonkit.perks.paintball.clay.clean: true
+  carbonkit.perks.paintball.logs.*:
+    description: Color log blocks any color with paintballs
+    default: op
+    children:
+      carbonkit.perks.paintball.logs.black: true
+      carbonkit.perks.paintball.logs.brown: true
+      carbonkit.perks.paintball.logs.orange: true
+      carbonkit.perks.paintball.logs.red: true
+      carbonkit.perks.paintball.logs.white: true
+      carbonkit.perks.paintball.logs.clean: true
+  carbonkit.perks.paintball.wood.*:
+    description: Color log blocks any color with paintballs
+    default: op
+    children:
+      carbonkit.perks.paintball.wood.black: true
+      carbonkit.perks.paintball.wood.brown: true
+      carbonkit.perks.paintball.wood.orange: true
+      carbonkit.perks.paintball.wood.red: true
+      carbonkit.perks.paintball.wood.white: true
+      carbonkit.perks.paintball.wood.purple: true
+      carbonkit.perks.paintball.wood.clean: true
+  carbonkit.perks.paintball.doors.*:
+    description: Color log blocks any color with paintballs
+    default: op
+    children:
+      carbonkit.perks.paintball.doors.black: true
+      carbonkit.perks.paintball.doors.brown: true
+      carbonkit.perks.paintball.doors.orange: true
+      carbonkit.perks.paintball.doors.red: true
+      carbonkit.perks.paintball.doors.white: true
+      carbonkit.perks.paintball.doors.clean: true
+  carbonkit.perks.paintball.fences.*:
+    description: Color log blocks any color with paintballs
+    default: op
+    children:
+      carbonkit.perks.paintball.fences.black: true
+      carbonkit.perks.paintball.fences.brown: true
+      carbonkit.perks.paintball.fences.orange: true
+      carbonkit.perks.paintball.fences.red: true
+      carbonkit.perks.paintball.fences.white: true
+      carbonkit.perks.paintball.fences.purple: true
+      carbonkit.perks.paintball.fences.clean: true
+  carbonkit.perks.paintball.gates.*:
+    description: Color log blocks any color with paintballs
+    default: op
+    children:
+      carbonkit.perks.paintball.gates.black: true
+      carbonkit.perks.paintball.gates.brown: true
+      carbonkit.perks.paintball.gates.orange: true
+      carbonkit.perks.paintball.gates.red: true
+      carbonkit.perks.paintball.gates.white: true
+      carbonkit.perks.paintball.gates.clean: true
+
+  carbonkit.perks.paintball.wool.black:
+    description: Color wool blocks black with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.blue:
+    description: Color wool blocks blue with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.brown:
+    description: Color wool blocks brown with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.cyan:
+    description: Color wool blocks cyan with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.gray:
+    description: Color wool blocks gray with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.green:
+    description: Color wool blocks green with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.light_blue:
+    description: Color wool blocks light blue with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.lime:
+    description: Color wool blocks lime with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.magenta:
+    description: Color wool blocks magenta with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.orange:
+    description: Color wool blocks orange with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.pink:
+    description: Color wool blocks pink with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.purple:
+    description: Color wool blocks purple with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.red:
+    description: Color wool blocks red with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.silver:
+    description: Color wool blocks silver with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.white:
+    description: Color wool blocks white with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.yellow:
+    description: Color wool blocks yellow with paintballs
+    default: op
+  carbonkit.perks.paintball.wool.clean:
+    description: Clean wool blocks with paintballs
+    default: op
+
+  carbonkit.perks.paintball.carpet.black:
+    description: Color carpets black with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.blue:
+    description: Color carpets blue with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.brown:
+    description: Color carpets brown with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.cyan:
+    description: Color carpets cyan with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.gray:
+    description: Color carpets gray with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.green:
+    description: Color carpets green with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.light_blue:
+    description: Color carpets light blue with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.lime:
+    description: Color carpets lime with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.magenta:
+    description: Color carpets magenta with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.orange:
+    description: Color carpets orange with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.pink:
+    description: Color carpets pink with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.purple:
+    description: Color carpets purple with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.red:
+    description: Color carpets red with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.silver:
+    description: Color carpets silver with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.white:
+    description: Color carpets white with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.yellow:
+    description: Color carpets yellow with paintballs
+    default: op
+  carbonkit.perks.paintball.carpet.clean:
+    description: Clean carpets with paintballs
+    default: op
+
+  carbonkit.perks.paintball.glass.black:
+    description: Color glass blocks black with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.blue:
+    description: Color glass blocks blue with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.brown:
+    description: Color glass blocks brown with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.cyan:
+    description: Color glass blocks cyan with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.gray:
+    description: Color glass blocks gray with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.green:
+    description: Color glass blocks green with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.light_blue:
+    description: Color glass blocks light blue with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.lime:
+    description: Color glass blocks lime with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.magenta:
+    description: Color glass blocks magenta with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.orange:
+    description: Color glass blocks orange with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.pink:
+    description: Color glass blocks pink with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.purple:
+    description: Color glass blocks purple with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.red:
+    description: Color glass blocks red with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.silver:
+    description: Color glass blocks silver with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.white:
+    description: Color glass blocks white with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.yellow:
+    description: Color glass blocks yellow with paintballs
+    default: op
+  carbonkit.perks.paintball.glass.clean:
+    description: Clean glass blocks with paintballs
+    default: op
+
+  carbonkit.perks.paintball.thinglass.black:
+    description: Color glass panes black with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.blue:
+    description: Color glass panes blue with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.brown:
+    description: Color glass panes brown with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.cyan:
+    description: Color glass panes cyan with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.gray:
+    description: Color glass panes gray with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.green:
+    description: Color glass panes green with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.light_blue:
+    description: Color glass panes light blue with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.lime:
+    description: Color glass panes lime with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.magenta:
+    description: Color glass panes magenta with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.orange:
+    description: Color glass panes orange with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.pink:
+    description: Color glass panes pink with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.purple:
+    description: Color glass panes purple with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.red:
+    description: Color glass panes red with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.silver:
+    description: Color glass panes silver with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.white:
+    description: Color glass panes white with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.yellow:
+    description: Color glass panes yellow with paintballs
+    default: op
+  carbonkit.perks.paintball.thinglass.clean:
+    description: Clean glass panes with paintballs
+    default: op
+
+  carbonkit.perks.paintball.clay.black:
+    description: Color clay blocks black with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.blue:
+    description: Color clay blocks blue with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.brown:
+    description: Color clay blocks brown with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.cyan:
+    description: Color clay blocks cyan with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.gray:
+    description: Color clay blocks gray with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.green:
+    description: Color clay blocks green with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.light_blue:
+    description: Color clay blocks light blue with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.lime:
+    description: Color clay blocks lime with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.magenta:
+    description: Color clay blocks magenta with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.orange:
+    description: Color clay blocks orange with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.pink:
+    description: Color clay blocks pink with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.purple:
+    description: Color clay blocks purple with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.red:
+    description: Color clay blocks red with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.silver:
+    description: Color clay blocks silver with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.white:
+    description: Color clay blocks white with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.yellow:
+    description: Color clay blocks yellow with paintballs
+    default: op
+  carbonkit.perks.paintball.clay.clean:
+    description: Clean clay blocks with paintballs
+    default: op
+
+  carbonkit.perks.paintball.logs.black:
+    description: Set log blocks to dark oak logs with paintballs
+    default: op
+  carbonkit.perks.paintball.logs.brown:
+    description: Set log blocks to jungle logs with paintballs
+    default: op
+  carbonkit.perks.paintball.logs.orange:
+    description: Set log blocks to acacia logs with paintballs
+    default: op
+  carbonkit.perks.paintball.logs.red:
+    description: Set log blocks to spruce logs with paintballs
+    default: op
+  carbonkit.perks.paintball.logs.white:
+    description: Set log blocks to birch logs with paintballs
+    default: op
+  carbonkit.perks.paintball.logs.clean:
+    description: Set log blocks to oak logs with paintballs
+    default: op
+
+  carbonkit.perks.paintball.wood.black:
+    description: Set wood blocks/slabs/double slabs/stairs types to dark oak with paintballs
+    default: op
+  carbonkit.perks.paintball.wood.brown:
+    description: Set wood blocks/slabs/double slabs/stairs types to jungle with paintballs
+    default: op
+  carbonkit.perks.paintball.wood.orange:
+    description: Set wood blocks/slabs/double slabs/stairs types to acacia with paintballs
+    default: op
+  carbonkit.perks.paintball.wood.red:
+    description: Set wood blocks/slabs/double slabs/stairs types to spruce with paintballs
+    default: op
+  carbonkit.perks.paintball.wood.white:
+    description: Set wood blocks/slabs/double slabs/stairs types to birch with paintballs
+    default: op
+  carbonkit.perks.paintball.wood.purple:
+    description: Set wood blocks/slabs/double slabs/stairs types to netherbrick with paintballs
+    default: op
+  carbonkit.perks.paintball.wood.clean:
+    description: Set wood blocks/slabs/double slabs/stairs types to oak with paintballs
+    default: op
+
+  carbonkit.perks.paintball.doors.black:
+    description: Set wood door type to dark oak with paintballs
+    default: op
+  carbonkit.perks.paintball.doors.brown:
+    description: Set wood door type to jungle with paintballs
+    default: op
+  carbonkit.perks.paintball.doors.orange:
+    description: Set wood door type to acacia with paintballs
+    default: op
+  carbonkit.perks.paintball.doors.red:
+    description: Set wood door type to spruce with paintballs
+    default: op
+  carbonkit.perks.paintball.doors.white:
+    description: Set wood door type to birch with paintballs
+    default: op
+  carbonkit.perks.paintball.doors.clean:
+    description: Set wood door type to oak with paintballs
+    default: op
+
+  carbonkit.perks.paintball.fences.black:
+    description: Set fence type to dark oak with paintballs
+    default: op
+  carbonkit.perks.paintball.fences.brown:
+    description: Set fence type to jungle with paintballs
+    default: op
+  carbonkit.perks.paintball.fences.orange:
+    description: Set fence type to acacia oak with paintballs
+    default: op
+  carbonkit.perks.paintball.fences.red:
+    description: Set fence type to spruce with paintballs
+    default: op
+  carbonkit.perks.paintball.fences.white:
+    description: Set fence type to birch with paintballs
+    default: op
+  carbonkit.perks.paintball.fences.purple:
+    description: Set fence type to netherbrick with paintballs
+    default: op
+  carbonkit.perks.paintball.fences.clean:
+    description: Set fence type to oak with paintballs
+    default: op
+
+  carbonkit.perks.paintball.gates.black:
+    description: Set fence gate type to dark oak with paintballs
+    default: op
+  carbonkit.perks.paintball.gates.brown:
+    description: Set fence gate type to jungle with paintballs
+    default: op
+  carbonkit.perks.paintball.gates.orange:
+    description: Set fence gate type to acacia with paintballs
+    default: op
+  carbonkit.perks.paintball.gates.red:
+    description: Set fence gate type to spruce with paintballs
+    default: op
+  carbonkit.perks.paintball.gates.white:
+    description: Set fence gate type to birch with paintballs
+    default: op
+  carbonkit.perks.paintball.gates.clean:
+    description: Set fence gate type to oak with paintballs
     default: op

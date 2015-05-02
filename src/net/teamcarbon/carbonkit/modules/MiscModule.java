@@ -23,18 +23,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
-import org.bukkit.inventory.AnvilInventory;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.net.InetAddress;
 import java.util.*;
 
 public class MiscModule extends Module {
@@ -54,7 +49,7 @@ public class MiscModule extends Module {
 	public void initModule() {
 		inst = this;
 		instId = UUID.randomUUID();
-		MiscUtils.resetList(freezeList);
+		freezeList = new ArrayList<UUID>();
 		if (addressMap == null) addressMap = new HashMap<UUID, String>();
 		// else addressMap.clear(); // Not clearing anymore to save IPs across re-init
 		if (onlineTimeStart == null) onlineTimeStart = new HashMap<UUID, Long>();
@@ -105,14 +100,24 @@ public class MiscModule extends Module {
 	/*===[                     LISTENERS                       ]===*/
 	/*=============================================================*/
 
+	@EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
+	public void login(AsyncPlayerPreLoginEvent e) {
+		if (!isEnabled()) return;
+		if (e.getLoginResult() == Result.KICK_BANNED) e.setKickMessage(banHandler(e.getKickMessage()));
+		if (e.getLoginResult() == Result.ALLOWED) storeAddress(e.getUniqueId(), e.getAddress());
+	}
+
+	@EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
+	public void login(PlayerLoginEvent e) {
+		if (!isEnabled()) return;
+		if (e.getResult() == PlayerLoginEvent.Result.KICK_BANNED) e.setKickMessage(banHandler(e.getKickMessage()));
+		if (e.getResult() == PlayerLoginEvent.Result.ALLOWED) storeAddress(e.getPlayer().getUniqueId(), e.getAddress());
+	}
+
 	@EventHandler
 	public void joinEvent(PlayerJoinEvent e) {
 		if (!isEnabled()) return;
-		if (e.getPlayer().getAddress() != null) {
-			String addr = e.getPlayer().getAddress().toString().replace("/", "");
-			if (addr.contains(":")) addr = addr.substring(0, addr.indexOf(":"));
-			addressMap.put(e.getPlayer().getUniqueId(), addr);
-		} else { addressMap.put(e.getPlayer().getUniqueId(), "X.X.X.X"); }
+		storeAddress(e.getPlayer().getUniqueId(), e.getPlayer().getAddress().getAddress());
 		onlineTimeStart.put(e.getPlayer().getUniqueId(), System.currentTimeMillis());
 		FileConfiguration data = CarbonKit.getConfig(ConfType.DATA);
 		String midPath = getName() + "." + "online-time." + e.getPlayer().getUniqueId().toString() + ".";
@@ -129,7 +134,7 @@ public class MiscModule extends Module {
 		joinQuitHandle(false, e.getPlayer());
 		if (addressMap.containsKey(e.getPlayer().getUniqueId()))
 			addressMap.remove(e.getPlayer().getUniqueId());
-		updateOnlineTime(e.getPlayer().getUniqueId(), true);
+		updateOnlineTime(e.getPlayer().getUniqueId(), true, true);
 		onlineTimeStart.remove(e.getPlayer().getUniqueId());
 		e.setQuitMessage(null);
 	}
@@ -137,20 +142,25 @@ public class MiscModule extends Module {
 	@EventHandler(ignoreCancelled = true)
 	public void entityInteract(PlayerInteractEntityEvent e) {
 		if (!isEnabled()) return;
-		if (frozenCancellableHandle(e, e.getPlayer())) return;
-		if (e.getRightClicked().getType().equals(EntityType.PAINTING) && MiscUtils.perm(e.getPlayer(), "carbonkit.misc.artcycle")) {
+		Player pl = e.getPlayer();
+		UUID pid = pl.getUniqueId();
+		if (frozenCancellableHandle(e, pl)) return;
+		if (e.getRightClicked().getType().equals(EntityType.PAINTING) && MiscUtils.perm(pl, "carbonkit.misc.artcycle")) {
 			Painting p = (Painting) e.getRightClicked();
 			boolean allow = true;
 			if (MiscUtils.checkPlugin("GriefPrevention", true)) {
 				me.ryanhamshire.GriefPrevention.DataStore ds = me.ryanhamshire.GriefPrevention.GriefPrevention.instance.dataStore;
 				me.ryanhamshire.GriefPrevention.Claim claim = ds.getClaimAt(p.getLocation(), false, null);
-				me.ryanhamshire.GriefPrevention.PlayerData pd = ds.getPlayerData(e.getPlayer().getUniqueId());
-				if (claim != null) {
-					ArrayList<String> builders = new ArrayList<String>(), managers = new ArrayList<String>();
-					claim.getPermissions(builders, null, null, managers);
-					String pn = e.getPlayer().getName(), pid = e.getPlayer().getUniqueId().toString();
-					allow = MiscUtils.eq(claim.getOwnerName(), pn) || e.getPlayer().isOp() || pd.ignoreClaims
-							|| builders.contains(pid) || managers.contains(pid);
+				me.ryanhamshire.GriefPrevention.PlayerData pd = ds.getPlayerData(pid);
+				allow = claim == null || claim.ownerID.equals(pid) || (pd != null && pd.ignoreClaims);
+				if (!allow) {
+					String msg = claim.allowBuild(e.getPlayer(), Material.PAINTING);
+					if (msg == null) {
+						allow = true;
+					} else {
+						e.getPlayer().sendMessage(msg);
+						return;
+					}
 				}
 			}
 			if (allow) {
@@ -219,7 +229,7 @@ public class MiscModule extends Module {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	/*@EventHandler(priority = EventPriority.MONITOR)
 	public void itemRename(InventoryClickEvent e){
 		// check if the event has been cancelled by another plugin
 		if(!e.isCancelled()){
@@ -234,17 +244,9 @@ public class MiscModule extends Module {
 					int rawSlot = e.getRawSlot();
 					// compare the raw slot with the inventory view to make sure we are talking about the upper inventory
 					if(rawSlot == view.convertSlot(rawSlot)){
-						/*
-						slot 0 = left item slot
-						slot 1 = right item slot
-						slot 2 = result item slot
-						see if the player clicked in the result item slot of the anvil inventory
-						*/
+						// see if the player clicked in the result item slot of the anvil inventory
 						if(rawSlot == 2){
-							/*
-							get the current item in the result slot
-							I think inv.getItem(rawSlot) would be possible too
-							*/
+							// get the current item in the result slot
 							ItemStack item = e.getCurrentItem();
 							// check if there is an item in the result slot
 							if(item != null){
@@ -263,77 +265,41 @@ public class MiscModule extends Module {
 				}
 			}
 		}
-	}
-
-	@EventHandler
-	public static void itemRepair(InventoryClickEvent e){
-		// check whether the event has been cancelled by another plugin
-		if(!e.isCancelled()){
-			HumanEntity ent = e.getWhoClicked();
-			// not really necessary
-			if(ent instanceof Player){
-				Player player = (Player)ent;
-				Inventory inv = e.getInventory();
-				// see if we are talking about an anvil here
-				if(inv instanceof AnvilInventory){
-					AnvilInventory anvil = (AnvilInventory)inv;
-					InventoryView view = e.getView();
-					int rawSlot = e.getRawSlot();
-					// compare raw slot to the inventory view to make sure we are in the upper inventory
-					if(rawSlot == view.convertSlot(rawSlot)){
-						// 2 = result slot
-						if(rawSlot == 2){
-							// all three items in the anvil inventory
-							ItemStack[] items = anvil.getContents();
-							// item in the left slot
-							ItemStack item1 = items[0];
-							// item in the right slot
-							ItemStack item2 = items[1];
-							// I do not know if this is necessary
-							if(item1 != null && item2 != null){
-								int id1 = item1.getTypeId();
-								int id2 = item2.getTypeId();
-								// if the player is repairing something the ids will be the same
-								if(id1 != 0 && id1 == id2){
-									// item in the result slot
-									ItemStack item3 = e.getCurrentItem();
-									// check if there is an item in the result slot
-									if(item3 != null){
-										ItemMeta meta = item3.getItemMeta();
-											// meta data could be null
-										if(meta != null){
-											// get the repairable interface to obtain the repair cost
-											if(meta instanceof Repairable){
-												Repairable repairable = (Repairable)meta;
-												int repairCost = repairable.getRepairCost();
-												// can the player afford to repair the item
-												if(player.getLevel() >= repairCost){
-													// success
-												}else{
-													// bugger
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+	}*/
 
 	/*=============================================================*/
 	/*===[                      METHODS                        ]===*/
 	/*=============================================================*/
 
+	public void storeAddress(UUID id, InetAddress address) {
+		if (address != null) {
+			String addr = address.toString().replace("/", "");
+			if (addr.contains(":")) addr = addr.substring(0, addr.indexOf(":"));
+			CarbonKit.log.debug("Storing address: " + addr + " for user ID: " + id.toString());
+			addressMap.put(id, addr);
+		} else { addressMap.put(id, "X.X.X.X"); }
+	}
+
+	public String banHandler(String kickMsg) {
+		String bms = "ban-message-settings.";
+		boolean r = getConfig().getBoolean(bms + "enable-replace", false),
+				p = getConfig().getBoolean(bms + "enable-prefix", false),
+				s = getConfig().getBoolean(bms + "enable-suffix", false);
+		if (!(r || p || s)) return kickMsg;
+		CarbonKit.log.debug("Enabled ban messages: " + (r ? " Replace ": "") + (p ? " Prefix " : "") + (s ? " Suffix " : ""));
+		String msg = r ? Clr.trans(getConfig().getString(bms + "replace-msg", "").replace("\\n", "\n")) : kickMsg;
+		if (p) msg = Clr.trans(getConfig().getString(bms + "prefix", "").replace("\\n", "\n")) + msg;
+		if (s) msg += Clr.trans(getConfig().getString(bms + "suffix", "").replace("\\n", "\n"));
+		if (r || p || s) CarbonKit.log.debug("Setting kick message to: " + msg);
+		return msg;
+	}
+
 	public void updateAllOnlineTimes() {
-		for (UUID id : onlineTimeStart.keySet()) { updateOnlineTime(id, false); }
+		for (UUID id : onlineTimeStart.keySet()) { updateOnlineTime(id, false, false); }
 		CarbonKit.saveConfig(ConfType.DATA);
 	}
 
-	public void updateOnlineTime(UUID id, boolean save) {
+	public void updateOnlineTime(UUID id, boolean save, boolean quitting) {
 		FileConfiguration data = CarbonKit.getConfig(ConfType.DATA);
 		String idPath = "online-time." + id.toString() + ".", midPath = getName() + "." + idPath;
 		long lastOnline = getData().getLong(idPath + "last-online", -1);
@@ -341,22 +307,26 @@ public class MiscModule extends Module {
 		long lmonthTime = getData().getLong(idPath + "last-month", -1);
 		long oldOverall = getData().getLong(idPath + "overall-time", -1);
 		long monthlyAvg = getData().getLong(idPath + "monthly-avg", -1);
-		long curSession = System.currentTimeMillis() - onlineTimeStart.get(id);
+		long avgSession = getData().getLong(idPath + "average-session", -1);
+		long curSession = 0L;
+		Player pl = Bukkit.getPlayer(id);
+		boolean plOnline = pl != null && pl.isOnline();
+		if (plOnline) curSession = System.currentTimeMillis() - onlineTimeStart.get(id);
 		Date lst = new Date(lastOnline), cur = new Date();
 		Calendar lstCal = Calendar.getInstance(), curCal = Calendar.getInstance();
 		lstCal.setTime(lst);
 		curCal.setTime(cur);
 		boolean newMonth = lastOnline != -1 && lstCal.get(Calendar.MONTH) != curCal.get(Calendar.MONTH);
-		if (newMonth) {
-			monthlyAvg = ((monthlyAvg == -1) ? (tmonthTime + curSession) : ((lmonthTime + (tmonthTime + curSession))/2));
-		}
+		if (newMonth) monthlyAvg = ((monthlyAvg == -1) ? (tmonthTime + curSession) : ((lmonthTime + (tmonthTime + curSession))/2));
+		if (quitting) avgSession = ((avgSession == -1) ? curSession : (avgSession + curSession) / 2);
 		long newMonthTime = newMonth ? curSession : (tmonthTime + curSession);
 		long lastMonthTime = newMonth ? (tmonthTime + curSession) : lmonthTime;
 		data.set(midPath + "overall-time", (oldOverall + curSession));
 		data.set(midPath + "this-month", newMonthTime);
 		data.set(midPath + "last-month", lastMonthTime);
-		data.set(midPath + "last-online", System.currentTimeMillis());
+		data.set(midPath + "last-online", (pl != null && pl.isOnline())?System.currentTimeMillis():lastOnline);
 		data.set(midPath + "monthly-avg", monthlyAvg);
+		data.set(midPath + "average-session", avgSession);
 		onlineTimeStart.put(id, System.currentTimeMillis());
 		if (save) { CarbonKit.saveConfig(ConfType.DATA); }
 	}
@@ -400,8 +370,15 @@ public class MiscModule extends Module {
 		Location l = p.getLocation();
 		String statuses = "";
 		boolean silent = MiscUtils.perm(p, "carbonkit.misc.silent"+a);
-		if (silent && join)
+		if (silent && join) {
 			p.sendMessage(Clr.DARKAQUA + "[Silent] " + Clr.AQUA + "You have joined silently.");
+			if (MiscUtils.perm(p, "carbonkit.misc.siletjoin.vanish") && MiscUtils.checkPlugin("Essentials", true)) {
+				com.earth2me.essentials.Essentials ep = (com.earth2me.essentials.Essentials) MiscUtils.getPlugin("Essentials", true);
+				com.earth2me.essentials.User user = ep.getUser(p);
+				user.setVanished(true);
+				p.sendMessage(Clr.DARKAQUA + "[Silent] " + Clr.AQUA + "You have been vanished");
+			}
+		}
 		if (silent) statuses += "[S]";
 		if (isFrozen(p, !join)) statuses += "[F]";
 		if (MiscUtils.checkPlugin("Essentials", true)) {

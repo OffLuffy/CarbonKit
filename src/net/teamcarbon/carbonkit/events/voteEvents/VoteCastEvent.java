@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import net.teamcarbon.carbonkit.utils.votetypes.Vote;
+import net.teamcarbon.carbonkit.utils.CarbonVote.Vote;
 
 @SuppressWarnings("UnusedDeclaration")
 public class VoteCastEvent extends Event implements Cancellable {

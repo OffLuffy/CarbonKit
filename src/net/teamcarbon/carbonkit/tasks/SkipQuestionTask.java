@@ -1,7 +1,7 @@
 package net.teamcarbon.carbonkit.tasks;
 
-import net.teamcarbon.carbonkit.utils.Question;
-import net.teamcarbon.carbonkit.utils.TriviaRound;
+import net.teamcarbon.carbonkit.utils.CarbonTrivia.Question;
+import net.teamcarbon.carbonkit.utils.CarbonTrivia.TriviaRound;
 
 public class SkipQuestionTask implements Runnable {
 	private Question question;

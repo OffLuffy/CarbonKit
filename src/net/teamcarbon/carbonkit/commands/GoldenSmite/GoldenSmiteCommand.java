@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonkit.utils.Smite;
-import net.teamcarbon.carbonkit.utils.Smite.SmiteType;
+import net.teamcarbon.carbonkit.utils.GoldenSmite.Smite;
+import net.teamcarbon.carbonkit.utils.GoldenSmite.Smite.SmiteType;
 import net.teamcarbon.carbonlib.Messages.Clr;
 
 import java.util.HashMap;

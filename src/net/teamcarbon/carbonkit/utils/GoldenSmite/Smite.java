@@ -1,10 +1,12 @@
-package net.teamcarbon.carbonkit.utils;
+package net.teamcarbon.carbonkit.utils.GoldenSmite;
 
 import java.util.ArrayList;
 
 import net.teamcarbon.carbonkit.modules.GoldenSmiteModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
+import net.teamcarbon.carbonkit.utils.EntHelper;
 import net.teamcarbon.carbonkit.utils.EntHelper.EntityGroup;
+import net.teamcarbon.carbonkit.utils.Firework.FireworkUtils;
 import net.teamcarbon.carbonlib.LocUtils;
 import net.teamcarbon.carbonlib.MiscUtils;
 import org.bukkit.*;

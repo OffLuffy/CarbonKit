@@ -3,6 +3,8 @@ package net.teamcarbon.carbonkit.modules;
 import net.teamcarbon.carbonkit.events.triviaEvents.TriviaAnswerEvent;
 import net.teamcarbon.carbonkit.events.triviaEvents.TriviaUserBlacklistedEvent;
 import net.teamcarbon.carbonkit.utils.*;
+import net.teamcarbon.carbonkit.utils.CarbonTrivia.Question;
+import net.teamcarbon.carbonkit.utils.CarbonTrivia.TriviaRound;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonlib.Messages.Clr;
 import net.teamcarbon.carbonlib.MiscUtils;

@@ -9,25 +9,35 @@ import net.teamcarbon.carbonlib.CarbonException;
 import net.teamcarbon.carbonlib.LocUtils;
 import net.teamcarbon.carbonlib.MiscUtils;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.BlockIterator;
 
 import java.util.*;
 
-@SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "deprecation"})
 public class CarbonPerksModule extends Module {
+	private HashMap<Projectile, Byte> paintballs;
+	private EntityType projType = EntityType.ARROW;
 	public enum TrailEffect {
 		SMOKE(0.5),
 		ENDER_SIGNAL(0.0, "ender", "enderdust"),
 		FIREWORKS_SPARK(0.5, "firework", "spark"),
 		CRIT(0.5, "hit", "ouch"),
 		MAGIC_CRIT(0.5, "mhit", "mcrit"),
-		POTION_SWIRL(0.5, "confetti", "colorstrips", "colourstrips"),
+		POTION_SWIRL(0.5, "confetti", "colorstrips"),
 		SPELL(0.5, "swirl"),
 		INSTANT_SPELL(0.5, "star", "starspell"),
 		WITCH_MAGIC(0.5, "wmagic", "witch"),
@@ -36,14 +46,14 @@ public class CarbonPerksModule extends Module {
 		FLYING_GLYPH(0.5, "glyph", "text"),
 		FLAME(0.5),
 		LAVA_POP(0.5, "lava"),
-		FOOTSTEP(0.2, "footsteps", "footprints", "footprint"),
+		FOOTSTEP(0.2, "footprint"),
 		SPLASH(0.5),
 		SMALL_SMOKE(0.5, "void", "dust"),
-		COLOURED_DUST(0.5, "rainbow", "rainbowdust", "coloreddust"),
+		COLOURED_DUST(0.5, "rainbow", "colordust"),
 		WATERDRIP(0.5, "water", "drip", "moist"),
 		SLIME(0.5),
-		HEART(0.5, "hearts", "love"),
-		VILLAGER_THUNDERCLOUD(0.5, "thunder", "cloud", "clouds"),
+		HEART(0.5, "love"),
+		VILLAGER_THUNDERCLOUD(0.5, "thunder", "cloud"),
 		HAPPY_VILLAGER(0.5, "happy", "grow"),
 		TILE_BREAK(0.5, "break", "crumble");
 
@@ -89,6 +99,7 @@ public class CarbonPerksModule extends Module {
 			essExists = true;
 			ess = MiscUtils.getPlugin("Essentials", true);
 		}
+		paintballs = new HashMap<Projectile, Byte>();
 		registerListeners();
 	}
 	public void disableModule() {
@@ -133,6 +144,538 @@ public class CarbonPerksModule extends Module {
 					pl.getWorld().playEffect(pl, te.getEffect(), 20);
 				}
 			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@EventHandler
+	public void onInteract(PlayerInteractEvent e) {
+		if (!isEnabled()) return;
+		if (e.getItem() == null) return;
+		Class<? extends Projectile> pc = Snowball.class;
+		if (projType.getEntityClass().isInstance(Projectile.class)) pc = (Class<? extends Projectile>)projType.getEntityClass();
+		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getPlayer().isSneaking()) {
+			if (e.getItem().getType() == Material.INK_SACK) {
+				DyeColor dc = DyeColor.values()[(DyeColor.values().length - 1) - e.getItem().getData().getData()];
+				Projectile p = e.getPlayer().launchProjectile(pc);
+				p.setVelocity(p.getVelocity().multiply(3));
+				paintballs.put(p, dc.getData());
+				//e.getPlayer().sendMessage("You right clicked with dye color: " + dc.name().toLowerCase());
+			}
+			if (e.getItem().getType() == Material.SNOW_BALL) {
+				e.setCancelled(true);
+				Projectile p = e.getPlayer().launchProjectile(pc);
+				p.setVelocity(p.getVelocity().multiply(3));
+				paintballs.put(p, (byte) -1);
+				//e.getPlayer().sendMessage("You right clicked with a water bottle");
+			}
+		}
+	}
+
+	@EventHandler
+	public void projHit(ProjectileHitEvent e) {
+		if (!isEnabled()) return;
+		Projectile ent = e.getEntity();
+		if (paintballs.containsKey(ent)) {
+			Player shooter = (Player)ent.getShooter();
+			BlockIterator i = new BlockIterator(ent.getWorld(), ent.getLocation().toVector(), ent.getVelocity().normalize(), 0.0, 4);
+			Block hit = null;
+			while (i.hasNext()) {
+				hit = i.next();
+				if (!isPermeable(hit.getType())) break;
+			}
+			if (hit != null) {
+				boolean allow = true;
+				if (MiscUtils.checkPlugin("WorldGuard", true)) {
+					Plugin wgp = MiscUtils.getPlugin("WorldGuard", true);
+					if (wgp != null) {
+						com.sk89q.worldguard.bukkit.WorldGuardPlugin wg = (com.sk89q.worldguard.bukkit.WorldGuardPlugin) wgp;
+						if (!wg.canBuild(shooter, hit)) allow = false;
+					}
+				}
+				if (allow && MiscUtils.checkPlugin("GriefPrevention", true)) {
+					me.ryanhamshire.GriefPrevention.DataStore ds = me.ryanhamshire.GriefPrevention.GriefPrevention.instance.dataStore;
+					me.ryanhamshire.GriefPrevention.Claim claim = ds.getClaimAt(hit.getLocation(), false, null);
+					me.ryanhamshire.GriefPrevention.PlayerData pd = ds.getPlayerData(shooter.getUniqueId());
+					allow = claim == null || claim.ownerID.equals(shooter.getUniqueId()) || (pd != null && pd.ignoreClaims);
+					if (!allow) {
+						String msg = claim.allowBuild(shooter, Material.PAINTING);
+						if (msg == null) {
+							allow = true;
+						} else {
+							shooter.sendMessage(msg);
+							return;
+						}
+					}
+				}
+				if (!allow) { return; }
+
+				boolean changed = false;
+
+				String pre = "carbonkit.perks.paintball.";
+				byte bd = hit.getData();
+				if (paintballs.get(ent) == (byte)-1) {
+					switch (hit.getType()) {
+						case WOOL:
+							if (!MiscUtils.perm(shooter, pre + "wool.clean")) return;
+							changed = bd != (byte) 0;
+							hit.setData((byte)0);
+							break;
+						case CARPET:
+							if (!MiscUtils.perm(shooter, pre + "carpet.clean")) return;
+							changed = bd != (byte) 0;
+							hit.setData((byte) 0);
+							break;
+						case STAINED_GLASS:
+							if (!MiscUtils.perm(shooter, pre + "glass.clean")) return;
+							changed = hit.getType() != Material.GLASS || bd != (byte) 0;
+							hit.setType(Material.GLASS);
+							hit.setData((byte) 0);
+							break;
+						case STAINED_GLASS_PANE:
+							if (!MiscUtils.perm(shooter, pre + "thinglass.clean")) return;
+							changed = hit.getType() != Material.THIN_GLASS || bd != (byte) 0;
+							hit.setType(Material.THIN_GLASS);
+							hit.setData((byte) 0);
+							break;
+						case STAINED_CLAY:
+							if (!MiscUtils.perm(shooter, pre + "clay.clean")) return;
+							changed = hit.getType() != Material.HARD_CLAY || bd != (byte) 0;
+							hit.setType(Material.HARD_CLAY);
+							hit.setData((byte) 0);
+							break;
+						case LOG:
+						case LOG_2:
+							if (!MiscUtils.perm(shooter, pre + "logs.clean")) return;
+							changed = hit.getType() != Material.LOG || bd != (byte) 0;
+							hit.setType(Material.LOG);
+							hit.setData((byte) (bd%4));
+							break;
+						/*case SPRUCE_DOOR:
+						case BIRCH_DOOR:
+						case JUNGLE_DOOR:
+						case ACACIA_DOOR:
+						case DARK_OAK_DOOR:
+							if (!MiscUtils.perm(shooter, pre + "door.clean")) return;
+							changed = hit.getType() != Material.WOODEN_DOOR;
+							hit.setType(Material.WOODEN_DOOR);
+							break;*/
+						case WOOD_DOUBLE_STEP:
+						case DOUBLE_STEP:
+							if (hit.getType() == Material.DOUBLE_STEP  && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
+							if (!MiscUtils.perm(shooter, pre + "wood.clean")) return;
+							changed = hit.getType() != Material.WOOD_DOUBLE_STEP || bd != (byte) 0;
+							hit.setType(Material.WOOD_DOUBLE_STEP);
+							hit.setData((byte) 0);
+							break;
+						case WOOD:
+						case NETHER_BRICK:
+							if (hit.getType() == Material.NETHER_BRICK && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
+							if (!MiscUtils.perm(shooter, pre + "wood.clean")) return;
+							changed = hit.getType() != Material.WOOD || bd != (byte) 0;
+							hit.setType(Material.WOOD);
+							hit.setData((byte) 0);
+							break;
+						case SPRUCE_FENCE_GATE:
+						case BIRCH_FENCE_GATE:
+						case JUNGLE_FENCE_GATE:
+						case ACACIA_FENCE_GATE:
+						case DARK_OAK_FENCE_GATE:
+							if (!MiscUtils.perm(shooter, pre + "gates.clean")) return;
+							changed = hit.getType() != Material.FENCE_GATE;
+							hit.setType(Material.FENCE_GATE);
+							hit.setData(bd);
+							break;
+						case SPRUCE_FENCE:
+						case BIRCH_FENCE:
+						case JUNGLE_FENCE:
+						case ACACIA_FENCE:
+						case DARK_OAK_FENCE:
+						case NETHER_FENCE:
+							if (hit.getType() == Material.NETHER_FENCE && !MiscUtils.perm(shooter, pre + "fences.purple")) return;
+							if (!MiscUtils.perm(shooter, pre + "fences.clean")) return;
+							changed = hit.getType() != Material.FENCE;
+							hit.setType(Material.FENCE);
+							hit.setData(bd);
+							break;
+						case SPRUCE_WOOD_STAIRS:
+						case BIRCH_WOOD_STAIRS:
+						case JUNGLE_WOOD_STAIRS:
+						case ACACIA_STAIRS:
+						case DARK_OAK_STAIRS:
+						case NETHER_BRICK_STAIRS:
+							if (hit.getType() == Material.NETHER_BRICK_STAIRS && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
+							if (!MiscUtils.perm(shooter, pre + "wood.clean")) return;
+							changed = hit.getType() != Material.WOOD_STAIRS;
+							hit.setType(Material.WOOD_STAIRS);
+							hit.setData(bd);
+							break;
+						case WOOD_STEP:
+						case STEP:
+							if (hit.getType() == Material.STEP && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
+							if (!MiscUtils.perm(shooter, pre + "wood.clean")) return;
+							byte bdm = bd >= 8 ? (byte) 8 : (byte) 0;
+							changed = hit.getType() != Material.WOOD_STEP || bd != (byte) 0;
+							hit.setType(Material.WOOD_STEP);
+							hit.setData(bdm);
+							break;
+						default: break;
+					}
+				} else {
+					switch (hit.getType()) {
+						case WOOL:
+							if (!MiscUtils.perm(shooter, pre + "wool." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							changed = bd != paintballs.get(ent);
+							hit.setData(paintballs.get(ent));
+							break;
+						case CARPET:
+							if (!MiscUtils.perm(shooter, pre + "carpet." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							changed = bd != paintballs.get(ent);
+							hit.setData(paintballs.get(ent));
+							break;
+						case GLASS:
+							if (!MiscUtils.perm(shooter, pre + "glass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							changed = hit.getType() != Material.STAINED_GLASS || bd != paintballs.get(ent);
+							hit.setType(Material.STAINED_GLASS);
+							hit.setData(paintballs.get(ent));
+							break;
+						case THIN_GLASS:
+							if (!MiscUtils.perm(shooter, pre + "thinglass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							changed = hit.getType() != Material.STAINED_GLASS_PANE || bd != paintballs.get(ent);
+							hit.setType(Material.STAINED_GLASS_PANE);
+							hit.setData(paintballs.get(ent));
+							break;
+						case STAINED_GLASS:
+							if (!MiscUtils.perm(shooter, pre + "glass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							changed = bd != paintballs.get(ent);
+							hit.setData(paintballs.get(ent));
+							break;
+						case STAINED_GLASS_PANE:
+							if (!MiscUtils.perm(shooter, pre + "thinglass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							changed = bd != paintballs.get(ent);
+							hit.setData(paintballs.get(ent));
+							break;
+						case HARD_CLAY:
+							if (!MiscUtils.perm(shooter, pre + "clay." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							changed = hit.getType() != Material.STAINED_CLAY || bd != paintballs.get(ent);
+							hit.setType(Material.STAINED_CLAY);
+							hit.setData(paintballs.get(ent));
+							break;
+						case STAINED_CLAY:
+							if (!MiscUtils.perm(shooter, pre + "clay." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							changed = bd != paintballs.get(ent);
+							hit.setData(paintballs.get(ent));
+							break;
+						case LOG:
+						case LOG_2:
+							if (!MiscUtils.perm(shooter, pre + "logs." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							int rotMod = hit.getData() / 4;
+							switch (paintballs.get(ent)) {
+								case 14: // SPRUCE
+									changed = hit.getType() != Material.LOG || bd != (byte) 1;
+									hit.setType(Material.LOG);
+									hit.setData((byte) (rotMod * 4 + 1));
+									break;
+								case 0: // BIRCH
+									changed = hit.getType() != Material.LOG || bd != (byte) 2;
+									hit.setType(Material.LOG);
+									hit.setData((byte) (rotMod * 4 + 2));
+									break;
+								case 12: // JUNGLE
+									changed = hit.getType() != Material.LOG || bd != (byte) 3;
+									hit.setType(Material.LOG);
+									hit.setData((byte) (rotMod * 4 + 3));
+									break;
+								case 1: // ACACIA
+									changed = hit.getType() != Material.LOG_2 || bd != (byte) 0;
+									hit.setType(Material.LOG_2);
+									hit.setData(bd);
+									break;
+								case 15: // DARK OAK
+									changed = hit.getType() != Material.LOG_2 || bd != (byte) 1;
+									hit.setType(Material.LOG_2);
+									hit.setData((byte) (rotMod * 4 + 1));
+									break;
+							}
+							break;
+						/*case WOODEN_DOOR:
+						case SPRUCE_DOOR:
+						case BIRCH_DOOR:
+						case JUNGLE_DOOR:
+						case ACACIA_DOOR:
+						case DARK_OAK_DOOR:
+							if (!MiscUtils.perm(shooter, pre + "doors." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							switch (paintballs.get(ent)) {
+								case 14: // SPRUCE
+									changed = hit.getType() != Material.SPRUCE_DOOR;
+									hit.setType(Material.SPRUCE_DOOR);
+									break;
+								case 0: // BIRCH
+									changed = hit.getType() != Material.BIRCH_DOOR;
+									hit.setType(Material.BIRCH_DOOR);
+									break;
+								case 12: // JUNGLE
+									changed = hit.getType() != Material.JUNGLE_DOOR;
+									hit.setType(Material.JUNGLE_DOOR);
+									break;
+								case 1: // ACACIA
+									changed = hit.getType() != Material.ACACIA_DOOR;
+									hit.setType(Material.ACACIA_DOOR);
+									break;
+								case 15: // DARK OAK
+									changed = hit.getType() != Material.DARK_OAK_DOOR;
+									hit.setType(Material.DARK_OAK_DOOR);
+									break;
+							}
+							break;*/
+						case FENCE_GATE:
+						case SPRUCE_FENCE_GATE:
+						case BIRCH_FENCE_GATE:
+						case JUNGLE_FENCE_GATE:
+						case ACACIA_FENCE_GATE:
+						case DARK_OAK_FENCE_GATE:
+							if (!MiscUtils.perm(shooter, pre + "gates." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							switch (paintballs.get(ent)) {
+								case 14: // SPRUCE
+									changed = hit.getType() != Material.SPRUCE_FENCE_GATE;
+									hit.setType(Material.SPRUCE_FENCE_GATE);
+									hit.setData(bd);
+									break;
+								case 0: // BIRCH
+									changed = hit.getType() != Material.BIRCH_FENCE_GATE;
+									hit.setType(Material.BIRCH_FENCE_GATE);
+									hit.setData(bd);
+									break;
+								case 12: // JUNGLE
+									changed = hit.getType() != Material.JUNGLE_FENCE_GATE;
+									hit.setType(Material.JUNGLE_FENCE_GATE);
+									hit.setData(bd);
+									break;
+								case 1: // ACACIA
+									changed = hit.getType() != Material.ACACIA_FENCE_GATE;
+									hit.setType(Material.ACACIA_FENCE_GATE);
+									hit.setData(bd);
+									break;
+								case 15: // DARK OAK
+									changed = hit.getType() != Material.DARK_OAK_FENCE_GATE;
+									hit.setType(Material.DARK_OAK_FENCE_GATE);
+									hit.setData(bd);
+									break;
+							}
+							break;
+						case FENCE:
+						case SPRUCE_FENCE:
+						case BIRCH_FENCE:
+						case JUNGLE_FENCE:
+						case ACACIA_FENCE:
+						case DARK_OAK_FENCE:
+						case NETHER_FENCE:
+							if (hit.getType() == Material.NETHER_FENCE && !MiscUtils.perm(shooter, pre + "fences.purple")) return;
+							if (!MiscUtils.perm(shooter, pre + "fences." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							switch (paintballs.get(ent)) {
+								case 14: // SPRUCE
+									changed = hit.getType() != Material.SPRUCE_FENCE;
+									hit.setType(Material.SPRUCE_FENCE);
+									break;
+								case 0: // BIRCH
+									changed = hit.getType() != Material.BIRCH_FENCE;
+									hit.setType(Material.BIRCH_FENCE);
+									break;
+								case 12: // JUNGLE
+									changed = hit.getType() != Material.JUNGLE_FENCE;
+									hit.setType(Material.JUNGLE_FENCE);
+									break;
+								case 1: // ACACIA
+									changed = hit.getType() != Material.ACACIA_FENCE;
+									hit.setType(Material.ACACIA_FENCE);
+									break;
+								case 15: // DARK OAK
+									changed = hit.getType() != Material.DARK_OAK_FENCE;
+									hit.setType(Material.DARK_OAK_FENCE);
+									break;
+								case 10: // NETHERBRICK
+									changed = hit.getType() != Material.NETHER_FENCE;
+									hit.setType(Material.NETHER_FENCE);
+									break;
+							}
+							break;
+						case WOOD_STAIRS:
+						case SPRUCE_WOOD_STAIRS:
+						case BIRCH_WOOD_STAIRS:
+						case JUNGLE_WOOD_STAIRS:
+						case ACACIA_STAIRS:
+						case DARK_OAK_STAIRS:
+						case NETHER_BRICK_STAIRS:
+							if (hit.getType() == Material.NETHER_BRICK_STAIRS && !MiscUtils.perm(shooter, pre + "fences.purple")) return;
+							if (!MiscUtils.perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							switch (paintballs.get(ent)) {
+								case 14: // SPRUCE
+									changed = hit.getType() != Material.SPRUCE_WOOD_STAIRS;
+									hit.setType(Material.SPRUCE_WOOD_STAIRS);
+									hit.setData(bd);
+									break;
+								case 0: // BIRCH
+									changed = hit.getType() != Material.BIRCH_WOOD_STAIRS;
+									hit.setType(Material.BIRCH_WOOD_STAIRS);
+									hit.setData(bd);
+									break;
+								case 12: // JUNGLE
+									changed = hit.getType() != Material.JUNGLE_WOOD_STAIRS;
+									hit.setType(Material.JUNGLE_WOOD_STAIRS);
+									hit.setData(bd);
+									break;
+								case 1: // ACACIA
+									changed = hit.getType() != Material.ACACIA_STAIRS;
+									hit.setType(Material.ACACIA_STAIRS);
+									hit.setData(bd);
+									break;
+								case 15: // DARK OAK
+									changed = hit.getType() != Material.DARK_OAK_STAIRS;
+									hit.setType(Material.DARK_OAK_STAIRS);
+									hit.setData(bd);
+									break;
+								case 10: // NETHERBRICK
+									changed = hit.getType() != Material.NETHER_BRICK_STAIRS;
+									hit.setType(Material.NETHER_BRICK_STAIRS);
+									hit.setData(bd);
+							}
+							break;
+						case WOOD_STEP:
+						case STEP:
+							if (hit.getType() == Material.STEP && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
+							if (!MiscUtils.perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							int bdm = bd >= 8 ? 8 : 0; // data modifier, determines if slab is inverted or not
+							switch (paintballs.get(ent)) {
+								case 14: // SPRUCE
+									changed = hit.getType() != Material.WOOD_STEP || bd != (byte) 9;
+									hit.setType(Material.WOOD_STEP);
+									hit.setData((byte) (1+bdm));
+									break;
+								case 0: // BIRCH
+									changed = hit.getType() != Material.WOOD_STEP || bd != (byte) 10;
+									hit.setType(Material.WOOD_STEP);
+									hit.setData((byte) (2+bdm));
+									break;
+								case 12: // JUNGLE
+									changed = hit.getType() != Material.WOOD_STEP || bd != (byte) 11;
+									hit.setType(Material.WOOD_STEP);
+									hit.setData((byte) (3+bdm));
+									break;
+								case 1: // ACACIA
+									changed = hit.getType() != Material.WOOD_STEP || bd != (byte) 12;
+									hit.setType(Material.WOOD_STEP);
+									hit.setData((byte) (4+bdm));
+									break;
+								case 15: // DARK OAK
+									changed = hit.getType() != Material.WOOD_STEP || bd != (byte) 13;
+									hit.setType(Material.WOOD_STEP);
+									hit.setData((byte) (5+bdm));
+									break;
+								case 10: // NETHERBRICK
+									changed = hit.getType() != Material.STEP;
+									hit.setType(Material.STEP);
+									hit.setData((byte) (6+bdm));
+									break;
+							}
+							break;
+						case WOOD_DOUBLE_STEP:
+						case DOUBLE_STEP:
+							if (hit.getType() == Material.DOUBLE_STEP && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
+							if (!MiscUtils.perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							switch (paintballs.get(ent)) {
+								case 14: // SPRUCE
+									changed = hit.getType() != Material.WOOD_DOUBLE_STEP || bd != (byte) 1;
+									hit.setType(Material.WOOD_DOUBLE_STEP);
+									hit.setData((byte) 1);
+									break;
+								case 0: // BIRCH
+									changed = hit.getType() != Material.WOOD_DOUBLE_STEP || bd != (byte) 2;
+									hit.setType(Material.WOOD_DOUBLE_STEP);
+									hit.setData((byte) 2);
+									break;
+								case 12: // JUNGLE
+									changed = hit.getType() != Material.WOOD_DOUBLE_STEP || bd != (byte) 3;
+									hit.setType(Material.WOOD_DOUBLE_STEP);
+									hit.setData((byte) 3);
+									break;
+								case 1: // ACACIA
+									changed = hit.getType() != Material.WOOD_DOUBLE_STEP || bd != (byte) 4;
+									hit.setType(Material.WOOD_DOUBLE_STEP);
+									hit.setData((byte) 4);
+									break;
+								case 15: // DARK OAK
+									changed = hit.getType() != Material.WOOD_DOUBLE_STEP || bd != (byte) 5;
+									hit.setType(Material.WOOD_DOUBLE_STEP);
+									hit.setData((byte) 5);
+									break;
+								case 10: // NETHERBRICK
+									changed = hit.getType() != Material.DOUBLE_STEP || bd != (byte) 6;
+									hit.setType(Material.DOUBLE_STEP);
+									hit.setData((byte) 6);
+									break;
+							}
+							break;
+						case WOOD:
+						case NETHER_BRICK:
+							if (hit.getType() == Material.NETHER_BRICK && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
+							if (!MiscUtils.perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							switch (paintballs.get(ent)) {
+								case 14: // SPRUCE
+									changed = hit.getType() != Material.WOOD || bd != (byte) 1;
+									hit.setType(Material.WOOD);
+									hit.setData((byte) 1);
+									break;
+								case 0: // BIRCH
+									changed = hit.getType() != Material.WOOD || bd != (byte) 2;
+									hit.setType(Material.WOOD);
+									hit.setData((byte) 2);
+									break;
+								case 12: // JUNGLE
+									changed = hit.getType() != Material.WOOD || bd != (byte) 3;
+									hit.setType(Material.WOOD);
+									hit.setData((byte) 3);
+									break;
+								case 1: // ACACIA
+									changed = hit.getType() != Material.WOOD || bd != (byte) 4;
+									hit.setType(Material.WOOD);
+									hit.setData((byte) 4);
+									break;
+								case 15: // DARK OAK
+									changed = hit.getType() != Material.WOOD || bd != (byte) 5;
+									hit.setType(Material.WOOD);
+									hit.setData((byte) 5);
+									break;
+								case 10: // NETHERBRICK
+									changed = hit.getType() != Material.NETHER_BRICK;
+									hit.setType(Material.NETHER_BRICK);
+									break;
+							}
+							break;
+						default: break;
+					}
+				}
+				if (changed) {
+					if (shooter.getGameMode() != GameMode.CREATIVE || MiscUtils.perm(shooter, pre + "infinite")) {
+						ItemStack is = new ItemStack(Material.INK_SACK, 1, (short) (DyeColor.values().length - paintballs.get(ent)));
+						Inventory inv = shooter.getInventory();
+						if (inv.contains(is)) {
+							ItemStack newStack = inv.getItem(inv.first(is));
+							newStack.setAmount(newStack.getAmount()-1);
+							if (newStack.getAmount() == 0) inv.remove(inv.first(is));
+							else inv.setItem(inv.first(is), newStack);
+						}
+						//if (shooter.getInventory().containsAtLeast(is, 2)) { shooter.getInventory().remove(is); }
+					}
+				}
+			}
+			ent.remove();
+		}
+	}
+
+	@EventHandler
+	public void onDamage(EntityDamageByEntityEvent e){
+		if (e.getDamager().getType() == EntityType.SNOWBALL) {
+
 		}
 	}
 
@@ -200,6 +743,22 @@ public class CarbonPerksModule extends Module {
 	/*===[                      METHODS                        ]===*/
 	/*=============================================================*/
 
+	// For paintballs, checks if the BlockIterator should ignore this Material and look for the next solid block
+	private boolean isPermeable(Material mat) {
+		return mat == Material.AIR || MiscUtils.objEq(mat, Material.VINE, Material.COCOA, Material.LADDER,
+				Material.SIGN, Material.SIGN_POST, Material.WALL_SIGN, Material.BANNER, Material.STANDING_BANNER,
+				Material.WALL_BANNER, Material.SAPLING, Material.WATER, Material.STATIONARY_WATER, Material.LAVA,
+				Material.STATIONARY_LAVA, Material.RAILS, Material.ACTIVATOR_RAIL, Material.DETECTOR_RAIL,
+				Material.POWERED_RAIL, Material.LONG_GRASS, Material.WEB, Material.YELLOW_FLOWER,
+				Material.BROWN_MUSHROOM, Material.RED_MUSHROOM, Material.TORCH, Material.FIRE, Material.REDSTONE,
+				Material.LEVER, Material.REDSTONE_TORCH_OFF, Material.REDSTONE_TORCH_ON, Material.STONE_BUTTON,
+				Material.WOOD_BUTTON, Material.STONE_PLATE, Material.WOOD_PLATE, Material.REDSTONE_COMPARATOR_OFF,
+				Material.REDSTONE_COMPARATOR_ON, Material.DIODE_BLOCK_OFF, Material.DIODE_BLOCK_ON, Material.MELON_STEM,
+				Material.PUMPKIN_STEM, Material.WATER_LILY, Material.NETHER_WARTS, Material.TRIPWIRE,
+				Material.TRIPWIRE_HOOK, Material.CARROT, Material.CROPS, Material.POTATO, Material.FLOWER_POT,
+				Material.DOUBLE_PLANT, Material.RED_ROSE);
+	}
+
 	/**
 	 * Attempts to parse a String query to an Effect if the TrailEffect is allowed
 	 * @param query The String query (the TrailEffect name or alias)
@@ -210,17 +769,13 @@ public class CarbonPerksModule extends Module {
 			if (query == null) return null;
 			for (TrailEffect te : TrailEffect.values()) {
 				if (te.isEnabled()) {
-					if (MiscUtils.eq(query, te.name())) return te;
+					if (MiscUtils.eq(query, te.name(), te.name()+"s")) return te;
 					if (te.getAliases().size() > 0) {
-						for (String a : te.getAliases()) {
-							if (MiscUtils.eq(query, a)) {
-								return te;
-							}
-						}
+						for (String a : te.getAliases()) { if (MiscUtils.eq(query, a, a+"s")) { return te; } }
 					}
 				}
 			}
-		} catch (Exception e) { (new CarbonException(CarbonKit.inst, "net.teamcarbon", e)).printStackTrace(); return null; }
+		} catch (Exception e) { (new CarbonException(CarbonKit.inst, e)).printStackTrace(); return null; }
 		return null;
 	}
 

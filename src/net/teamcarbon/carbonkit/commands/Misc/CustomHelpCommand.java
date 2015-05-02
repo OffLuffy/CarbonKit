@@ -37,21 +37,26 @@ public class CustomHelpCommand extends ModuleCmd {
 	private void send(CommandSender sender, ConfigurationSection sect, String perm) {
 		try {
 			if (!sect.getBoolean("require-permission", true) || MiscUtils.perm(sender, perm)) {
-				sender.sendMessage(Clr.trans(sect.getString("header")));
-				for (String s : sect.getStringList("lines")) { if (s != null && !s.isEmpty()) { sender.sendMessage(Clr.trans(s)); } }
-				ConfigurationSection ep = sect.getConfigurationSection("extra-perm-lines");
-				if (!ep.getKeys(false).isEmpty()) {
-					for (String s : ep.getKeys(false)) {
-						if (!ep.getStringList(s).isEmpty() && MiscUtils.perm(sender, s.replace("_", "."))) {
-							for (String l : ep.getStringList(s)) { if (l != null && !l.isEmpty()) { sender.sendMessage(Clr.trans(l)); } }
-						}
-					}
+				if (sect.contains("header"))
+					sender.sendMessage(Clr.trans(sect.getString("header")));
+				if (sect.contains("lines"))
+					for (String s : sect.getStringList("lines"))
+						if (s != null && !s.isEmpty()) { sender.sendMessage(Clr.trans(s)); }
+				if (sect.contains("extra-perm-lines")) {
+					ConfigurationSection ep = sect.getConfigurationSection("extra-perm-lines");
+					if (ep != null && !ep.getKeys(false).isEmpty())
+						for (String s : ep.getKeys(false))
+							if (!ep.getStringList(s).isEmpty() && MiscUtils.perm(sender, s.replace("_", ".")))
+								for (String l : ep.getStringList(s))
+									if (l != null && !l.isEmpty())
+										sender.sendMessage(Clr.trans(l));
 				}
-				sender.sendMessage(Clr.trans(sect.getString("footer")));
+				if (sect.contains("footer"))
+					sender.sendMessage(Clr.trans(sect.getString("footer")));
 			} else {
 				for (String s : sect.getStringList("no-perm-lines")) { if (s != null && !s.isEmpty()) { sender.sendMessage(Clr.trans(s)); } }
 			}
-		} catch (Exception e) { (new CarbonException(CarbonKit.inst, "net.teamcarbon", e)).printStackTrace(); }
+		} catch (Exception e) { (new CarbonException(CarbonKit.inst, e)).printStackTrace(); }
 	}
 
 }

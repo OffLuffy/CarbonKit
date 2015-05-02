@@ -1,4 +1,4 @@
-package net.teamcarbon.carbonkit.utils.votetypes;
+package net.teamcarbon.carbonkit.utils.CarbonVote;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.events.voteEvents.VoteFailEvent;

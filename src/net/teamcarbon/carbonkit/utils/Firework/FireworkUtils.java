@@ -1,4 +1,4 @@
-package net.teamcarbon.carbonkit.utils;
+package net.teamcarbon.carbonkit.utils.Firework;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonlib.CarbonException;
@@ -376,7 +376,7 @@ public final class FireworkUtils {
 				ticksFlown.setInt(entityFirework, expectedLifespan.getInt(entityFirework) - 1);
 				ticksFlown.setAccessible(false);
 			} catch (Exception e) {
-				(new CarbonException(CarbonKit.inst, "net.teamcarbon", e)).printStackTrace();
+				(new CarbonException(CarbonKit.inst, e)).printStackTrace();
 			}
 		} else {
 			fm.setPower(MiscUtils.normalizeInt(power, 1, 6));

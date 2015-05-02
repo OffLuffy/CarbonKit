@@ -1,0 +1,31 @@
+setDefaults:
+  delaySeconds: 60
+  randomOrder: false
+  requirePermission: false
+  sendToConsole: true
+  sendToPlayers: true
+  colorConsoleMessages: true
+  prefix: '{CLR~b|TXT~&l[!]} &3'
+  postfix: ''
+MessageSets:
+  tutorial:
+    setEnabled: false
+    delaySeconds: 60
+    randomOrder: true
+    requirePermission: false
+    sendToConsole: true
+    sendToPlayers: true
+    colorConsoleMessages: true
+    prefix: '{TTP~Tutorial Group!|TXT~&b&l[!]} &3'
+    postfix: ''
+    messages:
+    - 'Formatting! {TTP~&bRuns /rules|CMD~/rules|TXT~&a&l&m&n&oCheck it!}'
+    - 'Formats are delimited by a {TTP~&bA.K.A. a vertical bar, usually Shift + backslash(\)|TXT~&apipe} &3''|''!'
+    - 'Supported format tags are &6TTP&3, &6LNK&3, &6CMD&3, and &6TXT&3.'
+    - 'Tags are wrapped in curly braces (the &6{ &3and &6} &3characters)'
+    - 'Use ampersand (&6&&3) codes for colors and styles of non-formatted strings, like &a&l&m&n&othis&3!'
+    - 'If using formats, you must include TXT and at least one other tag or it will be ignored!'
+    - 'You can also use formats in the prefix and postfix!'
+    - 'Tag headers must be uppercase and followed by a {TTP~&bUsually Shift + tick(`)|TXT~&atilde} ''~''!'
+    - 'You may use ampersand (&6&&3) color codes in tooltips or text!'
+    - 'Links will have ''http://'' added if it doesn''t begin with that or ''https://'''
