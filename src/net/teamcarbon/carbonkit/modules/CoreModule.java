@@ -1,8 +1,8 @@
 package net.teamcarbon.carbonkit.modules;
 
 import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonkit.commands.Core.CarbonKitReloadCommand;
-import net.teamcarbon.carbonkit.commands.Core.CarbonKitToggleCommand;
+import net.teamcarbon.carbonkit.commands.Core.CarbonReloadCommand;
+import net.teamcarbon.carbonkit.commands.Core.CarbonToggleCommand;
 import net.teamcarbon.carbonkit.commands.Core.ChunkLockCommand;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
@@ -25,8 +25,8 @@ public class CoreModule extends Module {
 	public void initModule() {
 		inst = this;
 		lockedChunks = new ArrayList<Chunk>();
-		addCmd(new CarbonKitReloadCommand(this));
-		addCmd(new CarbonKitToggleCommand(this));
+		addCmd(new CarbonReloadCommand(this));
+		addCmd(new CarbonToggleCommand(this));
 		addCmd(new ChunkLockCommand(this));
 	}
 	public void disableModule() {

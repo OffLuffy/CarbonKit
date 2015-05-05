@@ -51,7 +51,7 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	public void onEnable() {
 		modules = new ArrayList<Class<? extends Module>>();
 		Collections.addAll(modules, CoreModule.class, AntiPortalModule.class, CarbonCraftingModule.class,
-				CKWatcherModule.class, EssentialsAssistModule.class, CarbonPerksModule.class,
+				WatcherModule.class, EssentialsAssistModule.class, CarbonPerksModule.class,
 				GoldenSmiteModule.class, MiscModule.class, SkullShopModule.class, CarbonVoteModule.class,
 				CarbonTriviaModule.class, CarbonNewsModule.class/*, AnvilEnchants.class*/);
 		Bukkit.getScheduler().runTaskLater(this, new Runnable() {

@@ -12,9 +12,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class CustomHelpCommand extends ModuleCmd {
+public class HelpCommand extends ModuleCmd {
 
-	public CustomHelpCommand(Module module) { super(module, "customhelp"); }
+	public HelpCommand(Module module) { super(module, "help"); }
 
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {

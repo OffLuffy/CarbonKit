@@ -13,9 +13,9 @@ import net.teamcarbon.carbonlib.MiscUtils;
 import java.util.HashMap;
 
 @SuppressWarnings("UnusedDeclaration")
-public class CarbonKitToggleCommand extends ModuleCmd {
+public class CarbonToggleCommand extends ModuleCmd {
 
-	public CarbonKitToggleCommand(Module module) { super(module, "carbonkittoggle"); }
+	public CarbonToggleCommand(Module module) { super(module, "carbontoggle"); }
 
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {

@@ -12,9 +12,9 @@ import net.teamcarbon.carbonlib.MiscUtils;
 import java.util.List;
 
 @SuppressWarnings("UnusedDeclaration")
-public class CarbonKitReloadCommand extends ModuleCmd {
+public class CarbonReloadCommand extends ModuleCmd {
 
-	public CarbonKitReloadCommand(Module module) { super(module, "carbonkitreload"); }
+	public CarbonReloadCommand(Module module) { super(module, "carbonreload"); }
 
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {

@@ -72,7 +72,7 @@ public class MiscModule extends Module {
 		addCmd(new RideCommand(this));
 		addCmd(new EntCountCommand(this));
 		addCmd(new GamemodeCommand(this));
-		addCmd(new CustomHelpCommand(this));
+		addCmd(new HelpCommand(this));
 		addCmd(new OnlineTimeCommand(this));
 		registerListeners();
 	}

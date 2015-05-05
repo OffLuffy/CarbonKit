@@ -1,6 +1,6 @@
 package net.teamcarbon.carbonkit.modules;
 
-import net.teamcarbon.carbonkit.commands.CKWatcher.CKWatcherCommand;
+import net.teamcarbon.carbonkit.commands.CKWatcher.WatcherCommand;
 import net.teamcarbon.carbonlib.MiscUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -20,17 +20,17 @@ import java.util.List;
 import java.util.UUID;
 
 @SuppressWarnings("UnusedDeclaration")
-public class CKWatcherModule extends Module {
-	public CKWatcherModule() throws DuplicateModuleException { super("CKWatcher", "commandwatcher", "cwatcher", "ckw", "cw"); }
+public class WatcherModule extends Module {
+	public WatcherModule() throws DuplicateModuleException { super("CKWatcher", "commandwatcher", "cwatcher", "ckw", "cw"); }
 	private static List<UUID> watchers;
-	private static CKWatcherModule inst;
+	private static WatcherModule inst;
 	public void initModule() {
 		inst = this;
 		if (watchers == null) watchers = new ArrayList<UUID>();
 		for (Player p : Bukkit.getOnlinePlayers())
 			if (getData().getStringList("watchers").contains(p.getUniqueId().toString()))
 				setWatching(p, true);
-		addCmd(new CKWatcherCommand(this));
+		addCmd(new WatcherCommand(this));
 		registerListeners();
 	}
 	public void disableModule() {

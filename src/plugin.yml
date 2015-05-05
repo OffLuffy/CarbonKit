@@ -11,18 +11,14 @@ commands:
     description: Base CarbonKit command, info and help
     usage: /ckit
     aliases: [ck, ckit]
-  carbonkitreload:
+  carbonreload:
     description: Reloads all modules and config files
     usage: /ckreload
-    aliases: [ckreload, ckr, carbonkitr]
-  carbonkittoggle:
+    aliases: [carbonkitreload, ckreload, creload, ckr]
+  carbontoggle:
     description: Lists modules or toggle a module on or off
     usage: /ckt [module]
     aliases: [cktoggle, ckt, carbonkitt]
-  carbonkithelp:
-    description: Overall CarbonKit help command
-    usage: /ckh
-    aliases: [ckh, ckh, carbonkith]
   chunklock:
     description: Locks or unlocks the current chunk
     usage: /chunklock
@@ -35,38 +31,22 @@ commands:
     description: CarbonKit Trivia command
     usage: /trivia start
     aliases: [ctrivia, trivia, cktrivia, ctr]
-  carbonkitwatcher:
+  carbonwatcher:
     description: Toggle command watcher
-    usage: /ckw
-    aliases: [ckwatcher, ckw, cw]
-  commandblockclear:
-    description: Command block executed command to clear entities
-    usage: /cbc [type] <radius>
-    aliases: [cmdblockclear, cblockclear, cbclear, cbc]
-  commandblockitem:
-    description: Command block executed command to spawn items
-    usage: /cbi [item] <amount>
-    aliases: [cmdblockitem, cblockitem, cbitem, cbi]
-  commandblockkill:
-    description: Command block executed command to kill mobs
-    usage: /cbk [mobs] <radius>
-    aliases: [cmdblockkill, cblockkill, cbkill, cbk]
-  commandblockspawn:
-    description: Command block executed command to spawn mobs
-    usage: /cbs [mobtype] <amount>
-    aliases: [cmdblockspawn, cblockspawn, cbspawn, cbs]
+    usage: /cw
+    aliases: [ckwatcher, cwatcher, ckw, cw]
   entitycount:
     description: Command to count the number of entities in a WE selection, radius, or the world
     usage: /ecount <radius>
-    aliases: [entcount, ecount]
+    aliases: [entcount, ecount, ckentitycount, ckentcount, ckecount, ckec]
   fakejoin:
     description: Broadcasts a fake join message for you or a specified user
     usage: /fakejoin <user>
-    aliases: [fjoin, fakej, falsejoin, falsej]
+    aliases: [fjoin, fakej, falsejoin, falsej, ckfakejoin]
   fakequit:
     description: Broadcasts a fake quit message for you or a specified user
     usage: /fakequit <user>
-    aliases: [fquit, fakeq, falsequit, falseq]
+    aliases: [fquit, fakeq, falsequit, falseq, ckfakequit]
   firework:
     description: CarbonKit Fireworks command
     usage: /firework [help|list|preset|launch|spawn|arrow|snowball]
@@ -74,51 +54,59 @@ commands:
   freeze:
     description: Freezes the specified user until restart or release
     usage: /freeze [user]
+    aliases: [ckfreeze]
   gamemode:
     description: Gamemode switching command and per-mode permissions
     usage: /gamemode [mode] <user>
-    aliases: [gm, mode, gmode]
+    aliases: [gm, mode, gmode, ckgm, ckgamemode, ckmode, ckgmode]
   goldensmite:
     description: GoldenSmite an area, toggle affected entities, or toggle gsmite arrows
     usage: /gs <here|hmob|pmob|nmob|tame|player|drop|arrow>
-    aliases: [gsmite, gs]
-  customhelp:
+    aliases: [gsmite, gs, ckgoldensmite, ckgsmite, ckgs]
+  help:
     description: Custom help command to override Essential's or vanilla provided help command
     usage: /help [category]
+    aliases: [carbonkithelp, carbonhelp, ckhelp, chelp]
   onlinetime:
     descriptoin: Allows viewing how long players have played on the server
     usage: /onlinetime <user>
-    aliases: [ot, ontime]
+    aliases: [ot, ontime, ckot, ckontime, ckonlinetime]
   ride:
     description: Ride an entity you're looking at or the specified player
     usage: /ride <player>
+    aliases: [ckride]
   head:
     description: Buy or spawn a player head
     usage: /head [player]
-    aliases: [skull, headshop, skullshop]
+    aliases: [skull, headshop, skullshop, ckskull, ckhead]
   updatehead:
     description: Allows you to update whose skin is on a head
     usage: /updatehead [player]
-    aliases: [updateskull, uhead, uskull]
+    aliases: [updateskull, uhead, uskull, ckuskull, ckuhead]
   dupehead:
     description: Buy or spawn a saved skull
     usage: /gskull
-    aliases: [getskull,gskull,gethead,ghead,dupeskull,dskull,dupehead,dhead]
+    aliases: [getskull, gskull, gethead, ghead, dupeskull, dskull, dupehead, dhead, ckdskull, ckdhead]
   slap:
     description: Slap a player
     usage: /slap [player]
+    aliases: [ckslap]
   toggleinteract:
     description: Toggle interacting with pressure plates, tripwire, mobs, and drops when vanished
     usage: /ti
-    aliases: [tinteract, tint, ti]
+    aliases: [tinteract, tint, ti, cktinteract, cktint, ckti]
   trail:
     description: Sets a particle trail for yourself
     usage: /trail
-    aliases: [trails, ctrail, ctrails]
+    aliases: [trails, ctrail, ctrails, cktrails, cktrail]
   carbonnews:
     description: CarbonNews command
     usage: /carbonnews
-    aliases: [cnews, cn]
+    aliases: [cnews, cn, cknews]
+  ticket:
+    description: Creates a ticket for suggestions/reports/bugs, etc
+    usage: /ticket [message]
+    aliases: [report, ckticket, ckreport]
   disabledcmd:
     description: Command to register disabled module commands to
 permissions:
