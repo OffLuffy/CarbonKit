@@ -34,4 +34,7 @@ Misc:
   temp-frozen-players: {}
   to-be-unfrozen: []
   online-time: {}
-  tickets: {}
+  ticket-data:
+    next-ticket-id: 0
+    cooldowns: {}
+    tickets: {}

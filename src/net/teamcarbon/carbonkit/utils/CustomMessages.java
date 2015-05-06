@@ -221,14 +221,19 @@ public class CustomMessages {
 		 */
 		public static void printHeader(CommandSender sender, String header) {
 			if (header != null && !header.isEmpty())
-				sender.sendMessage(Clr.fromChars("6l") + "===[ " + header + " ]======");
+				sender.sendMessage(Clr.fromChars("6lm") + "=-=[ " + Clr.fromChars("r6l") + header + Clr.fromChars("6lm") + " ]=-=-=-=");
 			else printFooter(sender);
 		}
+		/**
+		 * Prints a formatted divider for the specified CommandSender
+		 * @param sender The CommandSender to send the message to
+		 */
+		public static void printDivider(CommandSender sender) { sender.sendMessage(Clr.fromChars("6lm") + "-------------"); }
 		/**
 		 * Prints a formatted footer for the specified CommandSender
 		 * @param sender The CommandSender to send the message to
 		 */
-		public static void printFooter(CommandSender sender) { sender.sendMessage(Clr.fromChars("6l") + "============="); }
+		public static void printFooter(CommandSender sender) { sender.sendMessage(Clr.fromChars("6lm") + "=-=-=-=-=-=-="); }
 		public String toString() {
 			if (!init)
 				loadMessages();
