@@ -5,7 +5,6 @@ import net.teamcarbon.carbonkit.utils.Module;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.List;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonCombatModule extends Module {
@@ -23,7 +22,6 @@ public class CarbonCombatModule extends Module {
 		initModule();
 	}
 	protected boolean needsListeners() { return false; }
-	public boolean hasAllDependencies() { return true; }
 	
 	/*=============================================================*/
 	/*===[                     LISTENERS                       ]===*/

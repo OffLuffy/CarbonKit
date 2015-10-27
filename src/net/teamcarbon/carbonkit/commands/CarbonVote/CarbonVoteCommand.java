@@ -4,6 +4,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
 import net.teamcarbon.carbonkit.utils.CarbonVote.*;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
+import net.teamcarbon.carbonlib.Misc.TypeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -17,8 +18,8 @@ import net.teamcarbon.carbonkit.utils.ModuleCmd;
 import net.teamcarbon.carbonkit.utils.CarbonVote.TargetedVote.TargetedVoteType;
 import net.teamcarbon.carbonkit.utils.CarbonVote.Vote.VoteType;
 import net.teamcarbon.carbonkit.utils.CarbonVote.WeatherVote.WeatherType;
-import net.teamcarbon.carbonlib.Messages.Clr;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -109,15 +110,15 @@ public class CarbonVoteCommand extends ModuleCmd {
 			// y = yes votes, n = no votes, x = non-voters, xw = non-vote weight
 			// non-vote weight is negative for no vote, positive for yes. 0 for no effect
 			float y=0, n=0, x=0, xw = -30;
-			if (args.length > 1 && MiscUtils.isFloat(args[1])) y = Float.parseFloat(args[1]);
-			if (args.length > 2 && MiscUtils.isFloat(args[2])) n = Float.parseFloat(args[2]);
-			if (args.length > 3 && MiscUtils.isFloat(args[3])) x = Float.parseFloat(args[3]);
-			if (args.length > 4 && MiscUtils.isFloat(args[4])) xw = Float.parseFloat(args[4]);
+			if (args.length > 1 && TypeUtils.isFloat(args[1])) y = Float.parseFloat(args[1]);
+			if (args.length > 2 && TypeUtils.isFloat(args[2])) n = Float.parseFloat(args[2]);
+			if (args.length > 3 && TypeUtils.isFloat(args[3])) x = Float.parseFloat(args[3]);
+			if (args.length > 4 && TypeUtils.isFloat(args[4])) xw = Float.parseFloat(args[4]);
 			float p = Vote.calc(y,n,x,xw);
 			sender.sendMessage("Y: " + String.format("%.1f", p) + "% - N: " + String.format("%.1f", (100f-p)) + "%");
 		} else {
 			// Check if they're voting yes or no to an active vote
-			if (MiscUtils.isBoolean(args[0])) {
+			if (TypeUtils.isBoolean(args[0])) {
 				if (CarbonVoteModule.getActiveVote() != null) {
 					Vote v = CarbonVoteModule.getActiveVote();
 					if (v instanceof TargetedVote) {
@@ -136,15 +137,15 @@ public class CarbonVoteCommand extends ModuleCmd {
 						return;
 					}
 					String type = CarbonVoteModule.getActiveVote().getType().name();
-					VoteCastEvent vce = new VoteCastEvent(pl, v, MiscUtils.toBoolean(args[0]));
+					VoteCastEvent vce = new VoteCastEvent(pl, v, TypeUtils.toBoolean(args[0]));
 					CarbonKit.pm.callEvent(vce);
 					if (!vce.isCancelled()) {
-						CarbonVoteModule.getActiveVote().addVoter(pl, MiscUtils.toBoolean(args[0]));
+						CarbonVoteModule.getActiveVote().addVoter(pl, TypeUtils.toBoolean(args[0]));
 						sender.sendMessage(Clr.LIME + MiscUtils.capFirst(type) + " vote cast");
 						if (getMod().getConfig().getBoolean("broadcast-votes", true)) {
 							HashMap<String, String> rep = new HashMap<String, String>();
 							rep.put("{VOTER}", sender.getName());
-							rep.put("{VOTED}", MiscUtils.toBoolean(args[0]) ? "in favor of" : "against");
+							rep.put("{VOTED}", TypeUtils.toBoolean(args[0]) ? "in favor of" : "against");
 							rep.put("{VOTETYPE}", v.getTypeName());
 							MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList(pl),
 									MiscUtils.massReplace(CustomMessage.CV_VOTE_CAST_BROADCAST.pre(), rep));

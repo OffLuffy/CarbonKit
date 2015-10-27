@@ -2,20 +2,20 @@ package net.teamcarbon.carbonkit.utils.GoldenSmite;
 
 import java.util.ArrayList;
 
-import net.teamcarbon.carbonkit.modules.GoldenSmiteModule;
+import net.teamcarbon.carbonkit.modules.CarbonSmiteModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.EntHelper;
 import net.teamcarbon.carbonkit.utils.EntHelper.EntityGroup;
 import net.teamcarbon.carbonkit.utils.Firework.FireworkUtils;
-import net.teamcarbon.carbonlib.LocUtils;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.LocUtils;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import org.bukkit.*;
 import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonlib.Messages.Clr;
 
 @SuppressWarnings("UnusedDeclaration")
 public class Smite {
@@ -31,10 +31,10 @@ public class Smite {
 			effectLocation.setY(effectLocation.getBlockY()+1.5);
 			effectLocation.setZ(effectLocation.getBlockZ()+0.5);
 		}
-		GoldenSmiteModule.killed = getTargets(pl, l, smiteMethod);
+		CarbonSmiteModule.killed = getTargets(pl, l, smiteMethod);
 		createEffects(effectLocation);
-		if (!GoldenSmiteModule.killed.isEmpty())
-			for (Entity x : GoldenSmiteModule.killed)
+		if (!CarbonSmiteModule.killed.isEmpty())
+			for (Entity x : CarbonSmiteModule.killed)
 				if (x instanceof LivingEntity) {
 					((LivingEntity)x).damage(OVER_NINE_THOUSAND, pl);
 					final LivingEntity fx = (LivingEntity)x;
@@ -47,7 +47,7 @@ public class Smite {
 				} else {
 					x.remove();
 				}
-		GoldenSmiteModule.killed.clear();
+		CarbonSmiteModule.killed.clear();
 	}
 	
 	public static void smitePlayer(CommandSender p, Player vic) {
@@ -70,11 +70,11 @@ public class Smite {
 	}
 	
 	private static ArrayList<Entity> getTargets(Player pl, Location l, SmiteType smiteMethod) {
-		GoldenSmiteModule mod = GoldenSmiteModule.inst;
+		CarbonSmiteModule mod = CarbonSmiteModule.inst;
 		ArrayList<Entity> entList = new ArrayList<Entity>();
-		boolean host = GoldenSmiteModule.isGroupEnabled(pl, EntityGroup.HOSTILE), neut = GoldenSmiteModule.isGroupEnabled(pl, EntityGroup.NEUTRAL),
-				pass = GoldenSmiteModule.isGroupEnabled(pl, EntityGroup.PASSIVE), tame = GoldenSmiteModule.isGroupEnabled(pl, EntityGroup.TAMED),
-				play = GoldenSmiteModule.isGroupEnabled(pl, EntityGroup.PLAYER), drop = GoldenSmiteModule.isGroupEnabled(pl, EntityGroup.DROP);
+		boolean host = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.HOSTILE), neut = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.NEUTRAL),
+				pass = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.PASSIVE), tame = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.TAMED),
+				play = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.PLAYER), drop = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.DROP);
 		if (host || neut || pass || tame || play || drop) {
 			if (mod == null) CarbonKit.log.warn("Module is null");
 			if (mod.getConfig() == null) CarbonKit.log.warn("Module config is null");
@@ -103,7 +103,7 @@ public class Smite {
 	}
 	
 	private static void createEffects(Location l) {
-		GoldenSmiteModule mod = GoldenSmiteModule.inst;
+		CarbonSmiteModule mod = CarbonSmiteModule.inst;
 		if (mod.getConfig().getBoolean("explosionEffect", false)) l.getWorld().createExplosion(l, 0);
 		if (mod.getConfig().getBoolean("lightningEffect", false)) l.getWorld().strikeLightningEffect(l);
 		if (mod.getConfig().getBoolean("fireworkEffect", true)) {

@@ -3,11 +3,11 @@ package net.teamcarbon.carbonkit.commands.CarbonTrivia;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
 import net.teamcarbon.carbonkit.utils.CarbonTrivia.TriviaRound;
-import net.teamcarbon.carbonlib.Messages.Clr;
+import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonlib.MiscUtils;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonTriviaCommand extends ModuleCmd {

@@ -1,6 +1,6 @@
 package net.teamcarbon.carbonkit.tasks;
 
-import net.teamcarbon.carbonkit.modules.MiscModule;
+import net.teamcarbon.carbonkit.modules.CarbonToolsModule;
 
 import java.util.UUID;
 
@@ -12,6 +12,6 @@ public class UpdateOnlineTimeTask implements Runnable {
 
 	@Override
 	public void run() {
-		if (instanceID.equals(MiscModule.instId)) { if (MiscModule.inst.isEnabled()) { MiscModule.inst.updateAllOnlineTimes(); } }
+		if (instanceID.equals(CarbonToolsModule.instId)) { if (CarbonToolsModule.inst.isEnabled()) { CarbonToolsModule.inst.updateAllOnlineTimes(); } }
 	}
 }

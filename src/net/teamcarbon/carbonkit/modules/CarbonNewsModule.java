@@ -6,52 +6,53 @@ import net.teamcarbon.carbonkit.commands.CarbonNews.CarbonNewsCommand;
 import net.teamcarbon.carbonkit.utils.CarbonNews.FormattedMessage;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonlib.Messages.Clr;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import net.teamcarbon.carbonkit.tasks.BroadcastTask;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonNewsModule extends Module {
 
-	public static List<BroadcastTask> tasks;
-	public static ConfigurationSection setDefaults;
+	public static final String NAME = "CarbonNews";
 
-	public CarbonNewsModule() throws DuplicateModuleException { super("CarbonNews", "cnews", "cn"); }
+	public CarbonNewsModule() throws DuplicateModuleException {
+		super(NAME, "cnews", "cn");
+		reqVer = "1_8_R3";
+	}
 	public void initModule() {
-		tasks = new ArrayList<BroadcastTask>();
 
-		setDefaults = CarbonKit.getConfig(ConfType.NEWS).getConfigurationSection("setDefaults");
+		ConfigurationSection setDefaults = CarbonKit.getConfig(ConfType.NEWS).getConfigurationSection("setDefaults");
 		setDefaults.set("setEnabled", false);
 		setDefaults.set("messages", new ArrayList<String>());
 
 		Set<String> keys = CarbonKit.getConfig(ConfType.NEWS).getConfigurationSection("MessageSets").getKeys(false);
 		for (String k : keys) {
-			long delay = CarbonKit.getConfig(ConfType.NEWS).getLong("MessageSets." + k + ".delaySeconds", setDefaults.getLong("delaySeconds", 60L)) * 20L;
 			BroadcastTask bt = new BroadcastTask(k);
-			bt.runTaskTimer(CarbonKit.inst, delay, delay);
-			tasks.add(bt);
+			if (bt.isEnabled()) bt.startBroadcasts();
 		}
 		addCmd(new CarbonNewsCommand(this));
 		registerListeners();
 	}
-	public void disableModule() { unregisterListeners(); }
+	public void disableModule() {
+		unregisterListeners();
+		BroadcastTask.disableAllTasks();
+		BroadcastTask.removeAllTasks();
+	}
 	public void reloadModule() {
 		disableModule();
 		initModule();
 	}
 	protected boolean needsListeners() { return true; }
-	public boolean hasAllDependencies() { return true; }
 	
 	/*=============================================================*/
 	/*===[                     LISTENERS                       ]===*/
@@ -65,8 +66,9 @@ public class CarbonNewsModule extends Module {
 			public void run() {
 				boolean perm =  getConfig().getBoolean("welcomeMessage.requirePermission", false);
 				for (String message : getConfig().getStringList("welcomeMessage.messageLines")) {
-					Player[] pls = new Player[] { e.getPlayer() };
-					CarbonNewsModule.broadcastFormatted(message, pls, perm, "carbonnews.welcome");
+					ArrayList<Player> pls = new ArrayList<Player>();
+					pls.add(e.getPlayer());
+					CarbonNewsModule.broadcastFormatted(message, pls, true, false, false, perm, "carbonnews.welcome");
 				}
 			}
 		}, getConfig().getLong("welcomeMessage.delaySeconds", 2L) * 20L);
@@ -76,17 +78,22 @@ public class CarbonNewsModule extends Module {
 	/*===[                      METHODS                        ]===*/
 	/*=============================================================*/
 
-	public static void broadcastNormal(String msg, Player[] pls, boolean needsPerm, String... perms) {
-		for (Player pl : pls) { if (!needsPerm || MiscUtils.perm(pl, perms)) pl.sendMessage(msg); }
+	public static void broadcastNormal(String msg, Collection<? extends Player> pls, boolean toPlayers, boolean toConsole, boolean colorConsole, boolean needsPerm, String... perms) {
+		if (!toPlayers && !toConsole) return;
+		if (toPlayers)
+			for (Player pl : pls) { if (pl.isOnline() && (!needsPerm || MiscUtils.perm(pl, perms))) pl.sendMessage(msg); }
+		if (toConsole)
+			Bukkit.getServer().getConsoleSender().sendMessage(colorConsole ? msg : ChatColor.stripColor(msg));
 	}
 
-	public static void broadcastFormatted(String msg, Player[] pls, boolean needsPerm, String ... perms) {
+	public static void broadcastFormatted(String msg, Collection<? extends Player> pls, boolean toPlayers, boolean toConsole, boolean colorConsole, boolean needsPerm, String ... perms) {
+		if (!toPlayers && !toConsole) return;
 		FormattedMessage fm = new FormattedMessage("");
 		msg = Clr.trans(msg);
 		Pattern pattern = Pattern.compile("\\{((?:(?:LNK|TTP|CMD|STY|CLR)~[^~|]+?\\|)*TXT~[^~|]+?(?:(?:\\||})(?:(?:LNK|TTP|CMD|STY|CLR)~[^~|]+?))*)}");
 		Matcher matcher = pattern.matcher(msg);
 		if (!matcher.find()) {
-			broadcastNormal(msg, pls, needsPerm, perms);
+			broadcastNormal(msg, pls, toPlayers, toConsole, colorConsole, needsPerm, perms);
 		} else {
 			int pos1 = 0, pos2;
 			matcher.reset();
@@ -124,22 +131,17 @@ public class CarbonNewsModule extends Module {
 			}
 			if (!(pos1 > msg.length()-1)) fm.then(msg.substring(pos1)); // Add the rest of message
 		}
-		for (Player pl : pls)
-			if (!needsPerm || MiscUtils.perm(pl, perms))
-				fm.send(pl);
+		if (toPlayers)
+			for (Player pl : pls)
+				if (pl.isOnline() && (!needsPerm || MiscUtils.perm(pl, perms)))
+					fm.send(pl);
+		if (toConsole) Bukkit.getServer().getConsoleSender().sendMessage(colorConsole ? fm.toString() : ChatColor.stripColor(fm.toString()));
 	}
 
-	public static boolean isMessageSet(String setName) {
-		for (BroadcastTask bt : tasks)
-			if (bt.getSetName().equalsIgnoreCase(setName))
-				return true;
-		return false;
-	}
-
-	public static BroadcastTask getMessageSet(String setName) {
-		for (BroadcastTask bt : tasks)
-			if (bt.getSetName().equalsIgnoreCase(setName))
-				return bt;
-		return null;
+	public static void deleteSet(String setName) {
+		if (CarbonKit.getConfig(ConfType.NEWS).contains("MessageSets." + setName))
+			CarbonKit.getConfig(ConfType.NEWS).set("MessageSets." + setName, null);
+		CarbonKit.saveConfig(ConfType.NEWS);
+		BroadcastTask.removeTask(setName);
 	}
 }

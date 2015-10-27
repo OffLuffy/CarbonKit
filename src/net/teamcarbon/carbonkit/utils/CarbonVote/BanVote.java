@@ -2,7 +2,7 @@ package net.teamcarbon.carbonkit.utils.CarbonVote;
 
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

@@ -3,10 +3,10 @@ package net.teamcarbon.carbonkit.utils.CarbonVote;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.events.voteEvents.VoteFailEvent;
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
+import net.teamcarbon.carbonlib.Misc.NumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import net.teamcarbon.carbonkit.events.voteEvents.VotePassEvent;
-import net.teamcarbon.carbonlib.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public abstract class Vote {
 		if (Bukkit.getScheduler().isCurrentlyRunning(voteTask) || Bukkit.getScheduler().isQueued(voteTask))
 			Bukkit.getScheduler().cancelTask(voteTask);
 		if (CarbonVoteModule.getActiveVote() != null) {
-			int maj = MiscUtils.normalizeInt(CarbonKit.getDefConfig().getInt("CarbonVote.majority-percent." + typeName, 70), 0, 100);
+			int maj = NumUtils.normalizeInt(CarbonKit.getDefConfig().getInt("CarbonVote.majority-percent." + typeName, 70), 0, 100);
 			Vote v = CarbonVoteModule.getActiveVote();
 			if (v.getAgreePercentage(true) > maj) {
 				VotePassEvent vwe = new VotePassEvent(v);
@@ -72,7 +72,7 @@ public abstract class Vote {
 	}
 	public void start() {
 		broadcastStart();
-		long voteTimeout = (long)(MiscUtils.normalizeInt(CarbonKit.getDefConfig().getInt("CarbonVote.vote-timeout-seconds", 20), 10, 300)*20);
+		long voteTimeout = (long)(NumUtils.normalizeInt(CarbonKit.getDefConfig().getInt("CarbonVote.vote-timeout-seconds", 20), 10, 300)*20);
 		voteTask = Bukkit.getScheduler().scheduleSyncDelayedTask(CarbonKit.inst, new Runnable() {
 			@Override
 			public void run() { end(); }
@@ -85,13 +85,13 @@ public abstract class Vote {
 	public List<OfflinePlayer> getDisagrees() { return disagrees; }
 	public void addVoter(OfflinePlayer voter, boolean yn) {
 		(yn?agrees:disagrees).add(voter);
-		int maj = MiscUtils.normalizeInt(CarbonKit.getDefConfig().getInt("CarbonVote.majority-percent." + typeName, 66), 0, 100);
+		int maj = NumUtils.normalizeInt(CarbonKit.getDefConfig().getInt("CarbonVote.majority-percent." + typeName, 66), 0, 100);
 		if (getAgreePercentage(false) > maj) end();
 	}
 	public float getAgreePercentage(boolean weighted) {
 		if (agrees.isEmpty()) return 0f;
 		float as = agrees.size(), ds = disagrees.size();
-		float nonVoteWeight = (float)MiscUtils.normalizeDouble(CarbonKit.getDefConfig().getDouble("CarbonVote.nonvote-weight-percent." + typeName,-30), -1, 1);
+		float nonVoteWeight = (float)NumUtils.normalizeDouble(CarbonKit.getDefConfig().getDouble("CarbonVote.nonvote-weight-percent." + typeName,-30), -1, 1);
 		if (nonVoteWeight == 0.0)
 			return Vote.calc(as, ds, 0, 0);
 		float nonVoters = 0;

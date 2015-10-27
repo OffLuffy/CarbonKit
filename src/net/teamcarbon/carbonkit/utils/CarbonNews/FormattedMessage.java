@@ -5,20 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.server.v1_8_R2.IChatBaseComponent;
-import net.minecraft.server.v1_8_R2.NBTTagCompound;
-import net.minecraft.server.v1_8_R2.PacketPlayOutChat;
 import org.bukkit.Achievement;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.Statistic.Type;
-import org.bukkit.craftbukkit.v1_8_R2.CraftStatistic;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
+import org.bukkit.craftbukkit.v1_8_R3.CraftStatistic;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 
 @SuppressWarnings("UnusedDeclaration")
 public class FormattedMessage {
@@ -80,7 +81,7 @@ public class FormattedMessage {
 	}
 
 	public FormattedMessage achievementTooltip(final Achievement which) {
-		net.minecraft.server.v1_8_R2.Achievement nms = CraftStatistic.getNMSAchievement(which);
+		net.minecraft.server.v1_8_R3.Achievement nms = CraftStatistic.getNMSAchievement(which);
 		return achievementTooltip(nms.name);
 	}
 
@@ -89,7 +90,7 @@ public class FormattedMessage {
 		if (type != Type.UNTYPED) {
 			throw new IllegalArgumentException("That statistic requires an additional " + type + " parameter!");
 		}
-		net.minecraft.server.v1_8_R2.Statistic nms = CraftStatistic.getNMSStatistic(which);
+		net.minecraft.server.v1_8_R3.Statistic nms = CraftStatistic.getNMSStatistic(which);
 		return achievementTooltip(nms.name);
 	}
 
@@ -101,7 +102,7 @@ public class FormattedMessage {
 		if ((type == Type.BLOCK && item.isBlock()) || type == Type.ENTITY) {
 			throw new IllegalArgumentException("Wrong parameter type for that statistic - needs " + type + "!");
 		}
-		net.minecraft.server.v1_8_R2.Statistic nms = CraftStatistic.getMaterialStatistic(which, item);
+		net.minecraft.server.v1_8_R3.Statistic nms = CraftStatistic.getMaterialStatistic(which, item);
 		return achievementTooltip(nms.name);
 	}
 
@@ -113,7 +114,7 @@ public class FormattedMessage {
 		if (type != Type.ENTITY) {
 			throw new IllegalArgumentException("Wrong parameter type for that statistic - needs " + type + "!");
 		}
-		net.minecraft.server.v1_8_R2.Statistic nms = CraftStatistic.getEntityStatistic(which, entity);
+		net.minecraft.server.v1_8_R3.Statistic nms = CraftStatistic.getEntityStatistic(which, entity);
 		return achievementTooltip(nms.name);
 	}
 
@@ -183,7 +184,7 @@ public class FormattedMessage {
 	}
 
 	public void send(Player player){
-		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a(toJSONString())));
+		((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutChat(ChatSerializer.a(toJSONString())));
 	}
 
 	private MessagePart latest() {

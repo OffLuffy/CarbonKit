@@ -2,7 +2,8 @@ package net.teamcarbon.carbonkit.modules;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
-import net.teamcarbon.carbonlib.Messages.Clr;
+import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonlib.Misc.TypeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,8 +12,7 @@ import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonlib.MiscUtils;
-import org.bukkit.material.MaterialData;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,16 +22,12 @@ import java.util.List;
 public class CarbonCraftingModule extends Module {
 	public CarbonCraftingModule() throws DuplicateModuleException { super("CarbonCrafting", "ccrafting", "carboncraft", "ccraft", "cc"); }
 	public static CarbonCraftingModule inst;
-	//private static List<Recipe> addedRecipes;
 	public void initModule() {
 		inst = this;
-		//if (addedRecipes == null) addedRecipes = new ArrayList<Recipe>(); else addedRecipes.clear();
 		loadRecipes();
 		registerListeners();
 	}
 	public void disableModule() {
-		//MiscUtils.removeRecipes(addedRecipes);
-		//addedRecipes.clear();
 		unregisterListeners();
 	}
 	public void reloadModule() {
@@ -41,7 +37,6 @@ public class CarbonCraftingModule extends Module {
 		initModule();
 	}
 	protected boolean needsListeners() { return false; }
-	public boolean hasAllDependencies() { return true; }
 	
 	/*=============================================================*/
 	/*===[                     LISTENERS                       ]===*/
@@ -88,6 +83,7 @@ public class CarbonCraftingModule extends Module {
 		return item;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void loadRecipes() {
 		ConfigurationSection shaped = inst.getConfig().getConfigurationSection("shaped-recipes");
 		ConfigurationSection shapeless = inst.getConfig().getConfigurationSection("shapeless-recipes");
@@ -159,7 +155,7 @@ public class CarbonCraftingModule extends Module {
 								continue nextRecipe;
 							}
 						} else if (ing.length == 2) {
-							if (MiscUtils.isInteger(ing[0])) {
+							if (TypeUtils.isInteger(ing[0])) {
 								amount = Integer.parseInt(ing[0]);
 								if (MiscUtils.getMaterial(ing[1]) != null)
 									mat = MiscUtils.getMaterial(ing[1]);
@@ -173,14 +169,14 @@ public class CarbonCraftingModule extends Module {
 								CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
 								continue nextRecipe;
 							}
-							if (mat != null && MiscUtils.isInteger(ing[1]))
+							if (mat != null && TypeUtils.isInteger(ing[1]))
 								data = Integer.parseInt(ing[1]);
 							if (mat == null) {
 								CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
 								continue nextRecipe;
 							}
 						} else if (ing.length == 3) {
-							if (MiscUtils.isInteger(ing[0])) {
+							if (TypeUtils.isInteger(ing[0])) {
 								amount = Integer.parseInt(ing[0]);
 							} else {
 								CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
@@ -192,7 +188,7 @@ public class CarbonCraftingModule extends Module {
 								CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
 								continue nextRecipe;
 							}
-							if (MiscUtils.isInteger(ing[2]))
+							if (TypeUtils.isInteger(ing[2]))
 								data = Integer.parseInt(ing[2]);
 							else {
 								CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");

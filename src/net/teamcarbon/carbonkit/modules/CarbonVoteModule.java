@@ -1,6 +1,8 @@
 package net.teamcarbon.carbonkit.modules;
 
 import net.teamcarbon.carbonkit.utils.CarbonVote.TimeVote;
+import net.teamcarbon.carbonlib.Misc.NumUtils;
+import net.teamcarbon.carbonlib.Misc.TypeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import net.teamcarbon.carbonkit.CarbonKit;
@@ -16,11 +18,14 @@ import net.teamcarbon.carbonkit.utils.CarbonVote.TargetedVote.TargetedVoteType;
 import net.teamcarbon.carbonkit.utils.CarbonVote.TimeVote.TimeTerm;
 import net.teamcarbon.carbonkit.utils.CarbonVote.Vote;
 import net.teamcarbon.carbonkit.utils.CarbonVote.Vote.VoteType;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonVoteModule extends Module {
-	public CarbonVoteModule() throws DuplicateModuleException { super("CarbonVote", "cvote"); }
+	public CarbonVoteModule() throws DuplicateModuleException {
+		super("CarbonVote", "cvote");
+		addRequires("Essentials");
+	}
 	private static Vote activeVote;
 	public static final String VMSG_PERM = "carbonkit.carbonvote.receive-messages";
 	public static CarbonVoteModule inst;
@@ -41,8 +46,6 @@ public class CarbonVoteModule extends Module {
 		initModule();
 	}
 	protected boolean needsListeners() { return true; }
-	// TODO Make dependency per vote type?
-	public boolean hasAllDependencies() { return MiscUtils.checkPlugin("Essentials", true); }
 	
 	/*=============================================================*/
 	/*===[                     LISTENERS                       ]===*/
@@ -282,10 +285,10 @@ public class CarbonVoteModule extends Module {
 			try {
 				int hours, mins = 0;
 				if (time.contains(":")) {
-					hours = MiscUtils.normalizeInt(Integer.parseInt(time.split(":")[0]), 0, 24);
-					mins = MiscUtils.normalizeInt(Integer.parseInt(time.split(":")[1].replace("pm", "").replace("am", "").replace("p", "").replace("a", "")), 0, 60);
+					hours = NumUtils.normalizeInt(Integer.parseInt(time.split(":")[0]), 0, 24);
+					mins = NumUtils.normalizeInt(Integer.parseInt(time.split(":")[1].replace("pm", "").replace("am", "").replace("p", "").replace("a", "")), 0, 60);
 				} else {
-					hours = MiscUtils.normalizeInt(Integer.parseInt(time.replace("pm", "").replace("am", "").replace("p", "").replace("a", "")), 0, 24);
+					hours = NumUtils.normalizeInt(Integer.parseInt(time.replace("pm", "").replace("am", "").replace("p", "").replace("a", "")), 0, 24);
 				}
 				if (hours < 13 && time.contains("p"))
 					hours += 12;
@@ -293,7 +296,7 @@ public class CarbonVoteModule extends Module {
 				return (hours * 1000L) + Math.round((double) mins * 16.6);
 			} catch (Exception e) {}
 		}
-		if (MiscUtils.isLong(time))
+		if (TypeUtils.isLong(time))
 			return Long.parseLong(time);
 		return 0L;
 	}

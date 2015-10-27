@@ -5,8 +5,10 @@ import net.teamcarbon.carbonkit.modules.CarbonPerksModule.TrailEffect;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Messages.Clr;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.NumUtils;
+import net.teamcarbon.carbonlib.Misc.TypeUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -137,10 +139,10 @@ public class TrailCommand extends ModuleCmd {
 				}
 				int num = maxTrails;
 				if (multiple && args.length > 1) {
-					if (MiscUtils.isInteger(args[1])) {
-						num = MiscUtils.normalizeInt(Integer.parseInt(args[1]), 1, maxTrails);
+					if (TypeUtils.isInteger(args[1])) {
+						num = NumUtils.normalizeInt(Integer.parseInt(args[1]), 1, maxTrails);
 					}
-				} else { num = multiple ? MiscUtils.rand(1, maxTrails) : 1; }
+				} else { num = multiple ? NumUtils.rand(1, maxTrails) : 1; }
 				List<TrailEffect> fx = new ArrayList<TrailEffect>(), randList = new ArrayList<TrailEffect>();
 				for (TrailEffect e : TrailEffect.values())
 					if (MiscUtils.perm(sender, "carbonkit.perks.trails.set." + e.lname().replace("_", "")))
@@ -154,15 +156,15 @@ public class TrailCommand extends ModuleCmd {
 				for (int i = 0; i < fx.size(); i++) fxNames[i] = fx.get(i).name().toLowerCase().replace("_","");
 				rep.put("{EFFECTLIST}", MiscUtils.stringFromArray(", ", fxNames));
 				sender.sendMessage(MiscUtils.massReplace(CustomMessage.CP_SET_RANDOM.pre(), rep));
-			} else if (MiscUtils.eq(args[0], "toggle", "t") || MiscUtils.isBoolean(args[0])) {
+			} else if (MiscUtils.eq(args[0], "toggle", "t") || TypeUtils.isBoolean(args[0])) {
 				if (!MiscUtils.perm(sender, "carbonkit.perks.trails.toggle")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
-				if (!MiscUtils.eq(args[0], "t") && MiscUtils.isBoolean(args[0])) {
-					CarbonPerksModule.setTrailEnabled((Player) sender, MiscUtils.toBoolean(args[0]));
-				} else if (args.length > 1 && MiscUtils.isBoolean(args[1])) {
-					CarbonPerksModule.setTrailEnabled((Player) sender, MiscUtils.toBoolean(args[1]));
+				if (!MiscUtils.eq(args[0], "t") && TypeUtils.isBoolean(args[0])) {
+					CarbonPerksModule.setTrailEnabled((Player) sender, TypeUtils.toBoolean(args[0]));
+				} else if (args.length > 1 && TypeUtils.isBoolean(args[1])) {
+					CarbonPerksModule.setTrailEnabled((Player) sender, TypeUtils.toBoolean(args[1]));
 				} else { CarbonPerksModule.toggleTrailEnabled((Player) sender); }
 				HashMap<String, String> rep = new HashMap<String, String>();
 				rep.put("{TRAILSTATE}", CarbonPerksModule.isTrailEnabled((Player) sender) ? "enabled" : "disabled");
@@ -176,7 +178,7 @@ public class TrailCommand extends ModuleCmd {
 				sender.sendMessage(CustomMessage.CP_CLEARED.pre());
 			} else if (MiscUtils.eq(args[0], "list", "l")) {
 				int typesPerPage = 12, curPage = 1, pages = (int)Math.ceil(CarbonPerksModule.getEffectNames().size()/10);
-				if (args.length > 1 && MiscUtils.isInteger(args[1])) { curPage = MiscUtils.normalizeInt(Integer.parseInt(args[1]), 1, pages); }
+				if (args.length > 1 && TypeUtils.isInteger(args[1])) { curPage = NumUtils.normalizeInt(Integer.parseInt(args[1]), 1, pages); }
 				CustomMessage.printHeader(sender, "Particle Trail Types [pg. "+curPage+"/"+pages+"]:");
 				int disp = 0;
 				for (TrailEffect te : TrailEffect.values()) {

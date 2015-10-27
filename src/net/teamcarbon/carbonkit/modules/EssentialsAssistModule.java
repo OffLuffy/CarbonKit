@@ -17,21 +17,23 @@ import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings({"UnusedDeclaration", "SuspiciousMethodCalls"})
 public class EssentialsAssistModule extends Module { // TODO Implement essentials user purging into EssAssist?
-	public EssentialsAssistModule() throws DuplicateModuleException { super("EssentialsAssist", "essassist", "eassist", "ea"); }
-	private static List<OfflinePlayer> noInteract;
+	public EssentialsAssistModule() throws DuplicateModuleException {
+		super("EssentialsAssist", "essassist", "eassist", "ea");
+		addRequires("Essentials");
+	}
+	private static List<OfflinePlayer> noInteract = new ArrayList<OfflinePlayer>();
 	private final static String VT = "vanish-toggles.prevent-";
 	public static EssentialsAssistModule inst;
 	public void initModule() {
 		inst = this;
-		if (noInteract == null)
-			noInteract = new ArrayList<OfflinePlayer>();
+		if (!noInteract.isEmpty()) noInteract.clear();
 		else
 			noInteract.clear();
 		if (Bukkit.getOnlinePlayers().size() > 0) {
@@ -45,7 +47,7 @@ public class EssentialsAssistModule extends Module { // TODO Implement essential
 		registerListeners();
 	}
 	public void disableModule() {
-		noInteract.clear();
+		if (!noInteract.isEmpty()) noInteract.clear();
 		unregisterListeners();
 	}
 	public void reloadModule() {
@@ -55,7 +57,6 @@ public class EssentialsAssistModule extends Module { // TODO Implement essential
 		initModule();
 	}
 	protected boolean needsListeners() { return true; }
-	public boolean hasAllDependencies() { return MiscUtils.checkPlugin("Essentials", true); }
 	
 	/*=============================================================*/
 	/*===[                     LISTENERS                       ]===*/

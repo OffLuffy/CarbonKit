@@ -1,11 +1,17 @@
 package net.teamcarbon.carbonkit;
 
+import net.milkbowl.vault.chat.Chat;
+import net.teamcarbon.carbonkit.events.coreEvents.FinishModuleLoadingEvent;
 import net.teamcarbon.carbonkit.modules.*;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonlib.*;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+import net.teamcarbon.carbonlib.Misc.CarbonException;
+import net.teamcarbon.carbonlib.Misc.ConfigAccessor;
+import net.teamcarbon.carbonlib.Misc.Log;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
@@ -19,9 +25,12 @@ import java.util.List;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonKit extends JavaPlugin implements Listener {
+
+	public static String NMS_VER;
 	public static Log log;
 	public static boolean checkOffline;
 	private static List<Class<? extends Module>> modules;
+
 	public enum ConfType {
 		DATA("data.yml"), MESSAGES("messages.yml"), TRIVIA("trivia.yml"), HELP("help.yml"), NEWS("news.yml");
 		private String fn;
@@ -41,6 +50,7 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	public static PluginManager pm;
 	public static Permission perms;
 	public static Economy econ;
+	public static Chat chat;
 
 	/* ====================================
 	=====[         OVERRIDES         ]=====
@@ -49,11 +59,13 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable() {
+		NMS_VER = Bukkit.getServer().getClass().getPackage().getName();
+		NMS_VER = NMS_VER.substring(NMS_VER.lastIndexOf('.') + 1);
 		modules = new ArrayList<Class<? extends Module>>();
-		Collections.addAll(modules, CoreModule.class, AntiPortalModule.class, CarbonCraftingModule.class,
-				WatcherModule.class, EssentialsAssistModule.class, CarbonPerksModule.class,
-				GoldenSmiteModule.class, MiscModule.class, SkullShopModule.class, CarbonVoteModule.class,
-				CarbonTriviaModule.class, CarbonNewsModule.class/*, AnvilEnchants.class*/);
+		Collections.addAll(modules, CarbonCoreModule.class, CarbonCraftingModule.class,
+				CarbonWatcherModule.class, EssentialsAssistModule.class, CarbonPerksModule.class,
+				CarbonSmiteModule.class, CarbonToolsModule.class, CarbonSkullsModule.class, CarbonVoteModule.class,
+				CarbonTriviaModule.class, CarbonNewsModule.class, CarbonTeleportModule.class);
 		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
 			public void run() {
 				enablePlugin();
@@ -63,7 +75,7 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	@Override
 	public void onDisable() {
 		saveAllConfigs();
-		CoreModule.inst.disableModule();
+		CarbonCoreModule.inst.disableModule();
 	}
 
 	/* ====================================
@@ -84,7 +96,7 @@ public class CarbonKit extends JavaPlugin implements Listener {
 			saveDefaultConfig();
 			log = new Log(this, "core.enable-debug-messages");
 			log.debug("Log initialized and files loaded after " + (System.currentTimeMillis() - time) + "ms");
-			if (!setupPermissions() || !setupEconomy()) {
+			if (!setupPermissions() || !setupEconomy() || !setupChat()) {
 				log.severe("Couldn't find Vault! Disabling CarbonKit.");
 				pm.disablePlugin(this);
 				return;
@@ -104,7 +116,7 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	 */
 	public static void loadPlugin(long startTime) {
 		if (Module.getAllModules().size() > 0) { // Modules already loaded. Prep for reload
-			CoreModule.inst.disableModule();
+			CarbonCoreModule.inst.disableModule();
 			Module.flushData();
 		}
 		CarbonKit.inst.reloadConfig();
@@ -112,19 +124,23 @@ public class CarbonKit extends JavaPlugin implements Listener {
 		for (ConfType ct : ConfType.values()) if (ct.isInitialized()) { ct.reloadConfig(); } else { ct.initConfType(); }
 		CustomMessage.loadMessages();
 		List<Long> times = new ArrayList<Long>();
+		List<Module> enabledModules = new ArrayList<Module>(), disabledModules = new ArrayList<Module>();
 		for (Class<? extends Module> mc : modules) {
 			String name = mc.getSimpleName();
 			try {
 				long mtime = System.currentTimeMillis();
 				Module m = mc.newInstance();
 				name = m.getName();
-				if (!(m instanceof CoreModule)) {
-					long dtime = System.currentTimeMillis();
-					log.debug(m.getName() + " enabled after " + (dtime - startTime) + "ms, took " + (dtime - mtime) + "ms to load.");
-					if (!log.isDebugEnabled())
-						log.info(m.getName() + " module initialized");
-					times.add(dtime - mtime);
-				}
+				if (m.isEnabled()) {
+					enabledModules.add(m);
+					if (!(m instanceof CarbonCoreModule)) {
+						long dtime = System.currentTimeMillis();
+						/*log.debug(m.getName() + " enabled after " + (dtime - startTime) + "ms, took " + (dtime - mtime) + "ms to load.");
+						if (!log.isDebugEnabled())
+							log.info(m.getName() + " module initialized");*/
+						times.add(dtime - mtime);
+					}
+				} else { disabledModules.add(m); }
 			} catch (Exception e) {
 				log.severe("===[ An exception occurred while trying to enable module: " + name + " ]===");
 				(new CarbonException(inst, e)).printStackTrace();
@@ -139,7 +155,8 @@ public class CarbonKit extends JavaPlugin implements Listener {
 			avg = avg / times.size();
 			avgText = " Average module load time was " + avg + "ms.";
 		}
-		log.debug("Enabled in " + (System.currentTimeMillis() - startTime) + "ms." + avgText);
+		log.debug("Enabled for NMS version " + NMS_VER + " in " + (System.currentTimeMillis() - startTime) + "ms." + avgText);
+		pm.callEvent(new FinishModuleLoadingEvent(enabledModules, disabledModules));
 	}
 	public static FileConfiguration getDefConfig() { return CarbonKit.inst.getConfig(); }
 	public static FileConfiguration getConfig(ConfType ct) { return ct.getConfig(); }
@@ -167,5 +184,11 @@ public class CarbonKit extends JavaPlugin implements Listener {
 		if (ep != null)
 			econ = ep.getProvider();
 		return econ != null;
+	}
+	private boolean setupChat() {
+		RegisteredServiceProvider<Chat> ep = getServer().getServicesManager().getRegistration(Chat.class);
+		if (ep != null)
+			chat = ep.getProvider();
+		return chat != null;
 	}
 }

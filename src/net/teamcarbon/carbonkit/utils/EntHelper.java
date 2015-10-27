@@ -6,7 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Tameable;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 import static org.bukkit.entity.EntityType.*;
 
@@ -58,6 +58,7 @@ public class EntHelper {
 	public static boolean isPassive(LivingEntity ent) { return (isPassive(ent.getType())); }
 	public static boolean isPlayer(LivingEntity ent) { return (isPlayer(ent.getType())); }
 	public static boolean isTamed(LivingEntity ent) { return (ent instanceof Tameable && ((Tameable)ent).isTamed()); }
+	@SuppressWarnings("deprecation")
 	public static EntityType getType(String type) {
 		if (EntityType.fromName(type) != null) return EntityType.fromName(type);
 		else for (EntityType t : EntityType.values()) { if (MiscUtils.eq(type, t.getName())) return t; }

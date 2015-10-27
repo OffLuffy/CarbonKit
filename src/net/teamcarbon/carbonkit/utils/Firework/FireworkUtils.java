@@ -1,8 +1,9 @@
 package net.teamcarbon.carbonkit.utils.Firework;
 
 import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonlib.CarbonException;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.CarbonException;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.NumUtils;
 import org.bukkit.*;
 import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.FireworkEffect.Type;
@@ -379,7 +380,7 @@ public final class FireworkUtils {
 				(new CarbonException(CarbonKit.inst, e)).printStackTrace();
 			}
 		} else {
-			fm.setPower(MiscUtils.normalizeInt(power, 1, 6));
+			fm.setPower(NumUtils.normalizeInt(power, 1, 6));
 			fw.setFireworkMeta(fm);
 		}
 	}

@@ -6,8 +6,8 @@ import net.teamcarbon.carbonkit.utils.*;
 import net.teamcarbon.carbonkit.utils.CarbonTrivia.Question;
 import net.teamcarbon.carbonkit.utils.CarbonTrivia.TriviaRound;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.Messages.Clr;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -49,7 +49,6 @@ public class CarbonTriviaModule extends Module {
 		initModule();
 	}
 	protected boolean needsListeners() { return true; }
-	public boolean hasAllDependencies() { return true; }
 	
 	/*=============================================================*/
 	/*===[                     LISTENERS                       ]===*/

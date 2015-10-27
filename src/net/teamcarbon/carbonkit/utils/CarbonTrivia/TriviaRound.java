@@ -10,6 +10,7 @@ import net.teamcarbon.carbonkit.modules.CarbonTriviaModule;
 import net.teamcarbon.carbonkit.tasks.NextQuestionTask;
 import net.teamcarbon.carbonkit.tasks.SkipQuestionTask;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
+import net.teamcarbon.carbonlib.Misc.TypeUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
@@ -19,7 +20,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 @SuppressWarnings("UnusedDeclaration")
 public class TriviaRound {
@@ -119,12 +120,12 @@ public class TriviaRound {
 					String[] matParts = parts[0].split(":");
 					if (MiscUtils.getMaterial(matParts[0]) != null)
 						mat = MiscUtils.getMaterial(matParts[0]);
-					if (MiscUtils.isInteger(matParts[1]))
+					if (TypeUtils.isInteger(matParts[1]))
 						data = (short)Integer.parseInt(matParts[1]);
 				} else if (MiscUtils.getMaterial(parts[0]) != null) {
 					mat = MiscUtils.getMaterial(parts[0]);
 				}
-				if (parts.length > 1 && MiscUtils.isInteger(parts[1])) {
+				if (parts.length > 1 && TypeUtils.isInteger(parts[1])) {
 					amount = Integer.parseInt(parts[1]);
 				}
 				if (mat == null) {

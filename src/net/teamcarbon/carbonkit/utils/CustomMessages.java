@@ -1,13 +1,18 @@
 package net.teamcarbon.carbonkit.utils;
 
-import net.teamcarbon.carbonlib.MiscUtils;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
+import net.teamcarbon.carbonkit.utils.CarbonNews.FormattedMessage;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
-import net.teamcarbon.carbonlib.Messages.Clr;
+import net.teamcarbon.carbonlib.Misc.NumUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CustomMessages {
@@ -18,7 +23,7 @@ public class CustomMessages {
 	public enum CustomMessage {
 		// CORE MODULE
 		CORE_PREFIX(CK+"prefix", "&6&l[CarbonKit] &r"),
-		CORE_RELOADED(CK+"reloaded", "&bReloaded"),
+		CORE_RELOADED(CK+"reloaded", "&bReloaded {MODULE}"),
 		CORE_NOT_MODULE(CK+"not-module", "&cCouldn't find a module by that name"),
 		CORE_MODULE_ENABLED(CK+"module-enabled", "&aThe {MODULENAME} module has been enabled"),
 		CORE_MODULE_DISABLED(CK+"module-disabled", "&cThe {MODULENAME} module has been disabled"),
@@ -142,20 +147,20 @@ public class CustomMessages {
 		MISC_MODE_SET_OTHER(M+"gammoede-set-other", "You've set &b{USER}'s &agamemode to &b{MODE}"),
 		MISC_MODE_CHANGE(M+"gamemode-change", "&aYour gamemode has been set to &b{MODE}"),
 		// SKULLSHOP MODULE
-		SS_PREFIX(S+"prefix", "&6&l[SkullShop] &r"),
+		SS_PREFIX(S+"prefix", "&6&l[CarbonSkulls] &r"),
 		SS_INVENTORY_FULL(S+"inventory-full", "&cYour inventory is full! Try again when you have at least one slot open"),
 		SS_SKULL_GIVEN(S+"skull-given", "&bYou've been given &a{SKULLOWNER}'s &bhead for ${PRICE}!"),
 		SS_UPDATED_GIVEN(S+"skull-updated", "&bYou've been given &a{SKULLOWNER}'s &bhead for ${PRICE}!"),
 		SS_SKULL_GIVEN_FREE(S+"skull-given-free", "&bYou've been given &a{SKULLOWNER}'s &bhead"),
 		SS_UPDATED_GIVEN_FREE(S+"skull-updated-free", "&bYou've been given &a{SKULLOWNER}'s &bhead"),
 		SS_SKULL_CHECK(S+"skull-check", "&bThis is &a{SKULLOWNER}'s &bhead."),
-		SS_GET_SKULL(S+"get-skull", "&bSaved &a{SKULLOWNER}'s &bhead. Type &6/getskull &bto buy it for ${PRICE}!"),
-		SS_GET_SKULL_FREE(S+"get-skull-free", "&bSaved &a{SKULLOWNER}'s &bhead. Type &6/getskull &bto get it!"),
+		SS_GET_SKULL(S+"get-skull", "&bBookmarked &a{SKULLOWNER}'s &bhead. Type &6/gskull &bto buy it for &a${PRICE}&b!"),
+		SS_GET_SKULL_FREE(S+"get-skull-free", "&bBookmarked &a{SKULLOWNER}'s &bhead. Type &6/gskull &bto get it!"),
 		SS_NO_SKULL_SAVED(S+"no-skull-saved", "&cThere is no skull saved. Right click one to save it."),
 		SS_NOT_ENOUGH_MONEY(S+"not-enough-money", "&cYou can't afford to buy a player head! They cost {SKULLCOST}"),
 		SS_TRANSACTION_FAILED(S+"transaction-failed", "&cThere was an error withdrawing the money required for this head"),
 		// CKWATCHER MESSAGES
-		CW_PREFIX(W+"prefix", "&6&l[CKWatcher] &r"),
+		CW_PREFIX(W+"prefix", "&6&l[CarbonWatcher] &r"),
 		CW_WATCH_ENABLED(W+"watch-enabled", "&bYou are now watching commands"),
 		CW_WATCH_DISABLED(W+"watch-disabled", "&5You are no longer watching commands"),
 		CW_WATCH_ENABLED_OTHER(W+"watch-enabled-others", "&bCommand watching for {PLAYER} enabled"),
@@ -221,23 +226,55 @@ public class CustomMessages {
 		 */
 		public static void printHeader(CommandSender sender, String header) {
 			if (header != null && !header.isEmpty())
-				sender.sendMessage(Clr.fromChars("6lm") + "=-=[ " + Clr.fromChars("r6l") + header + Clr.fromChars("6lm") + " ]=-=-=-=");
+				sender.sendMessage(Clr.fromChars("6lm") + "=-=[" + Clr.fromChars("r6") + " " + header + " " + Clr.fromChars("6lm") + "]=-=-=-=");
 			else printFooter(sender);
 		}
 		/**
 		 * Prints a formatted divider for the specified CommandSender
 		 * @param sender The CommandSender to send the message to
 		 */
-		public static void printDivider(CommandSender sender) { sender.sendMessage(Clr.fromChars("6lm") + "-------------"); }
+		public static void printDivider(CommandSender sender) { sender.sendMessage(Clr.fromChars("6lm") + "----------------"); }
 		/**
 		 * Prints a formatted footer for the specified CommandSender
 		 * @param sender The CommandSender to send the message to
 		 */
-		public static void printFooter(CommandSender sender) { sender.sendMessage(Clr.fromChars("6lm") + "=-=-=-=-=-=-="); }
+		public static void printFooter(CommandSender sender) { sender.sendMessage(Clr.fromChars("6lm") + "=-=-=-=-=-=-=-=-="); }
 		public String toString() {
 			if (!init)
 				loadMessages();
 			return msg;
+		}
+
+		/**
+		 * Sends a formatted interactive  pagination footer to a Player (not supported for CommandSender)
+		 * @param pl The Player to send the footer to
+		 * @param numPages The number of pages in total
+		 * @param curPage The currently viewed page
+		 * @param cmdFormat The String used in String.format() with a single %d placeholder to build the command<br />
+		 *                  <b>Example:</b> "/ticket listall %d" where %d will be replaced with the page number
+		 */
+		public static void printPaginatedFooter(Player pl, int numPages, int curPage, String cmdFormat) {
+			final char PREV = '\u25C0', NEXT = '\u25B6';
+			final String DPREV = PREV + "" + PREV, DNEXT = NEXT + "" + NEXT;
+			final String PGIND = "[" + curPage + "/" + numPages + "]", PGINDT = "Page " + curPage + " of " + numPages;
+			final Locale L = Locale.ENGLISH;
+			curPage = NumUtils.normalizeInt(curPage, 1, numPages);
+			boolean hasPrev = curPage != 1, hasNext = curPage != numPages;
+			ChatColor nextClr = hasNext ? ChatColor.GREEN : ChatColor.GRAY;
+			ChatColor prevClr = hasPrev ? ChatColor.GREEN : ChatColor.GRAY;
+			ChatColor gldClr = ChatColor.GOLD, ylwClr = ChatColor.YELLOW;
+			ChatColor[] bsClrs = new ChatColor[]{ChatColor.BOLD, ChatColor.STRIKETHROUGH};
+			FormattedMessage fm = new FormattedMessage("");
+			fm.then("=-=-=[").color(gldClr).style(bsClrs) .then(" " + DPREV + " ").color(prevClr);
+			if (hasPrev) fm.command(String.format(L, cmdFormat, 1)).tooltip("First page");
+			fm.then("-").color(gldClr).style(bsClrs) .then(" " + PREV + " ").color(prevClr);
+			if (hasPrev) fm.command(String.format(L, cmdFormat, curPage-1)).tooltip("Prev page");
+			fm.then(PGIND).color(ylwClr).tooltip(PGINDT).then(" " + NEXT + " ").color(nextClr);
+			if (hasNext) fm.command(String.format(L, cmdFormat, curPage+1)).tooltip("Next page");
+			fm.then("-").color(gldClr).style(bsClrs).then(" " + DNEXT + " ").color(nextClr);
+			if (hasNext) fm.command(String.format(L, cmdFormat, numPages)).tooltip("Last page");
+			fm.then("]=-=-=").color(gldClr).style(bsClrs);
+			fm.send(pl);
 		}
 	}
 }

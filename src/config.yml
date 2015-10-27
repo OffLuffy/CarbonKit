@@ -3,26 +3,17 @@ core:
   match-offline-players: false
 modules:
   AntiPortal: true
-  AnvilEnchants: true
   CarbonCrafting: true
   CarbonNews: true
   CarbonPerks: true
   CarbonTrivia: true
   CarbonVote: true
-  CKWatcher: true
+  CarbonWatcher: true
+  Essentials: true
   EssentialsAssist: true
   GoldenSmite: true
-  Misc: true
-  NetherSpawners: true
-  SkullShop: true
-AntiPortal:
-  worlds:
-  - world_the_end
-  drop-egg: true
-  generate-egg: false
-  platform-mat: GLOWSTONE
-  protect-egg: true
-  egg-protect-seconds: 30
+  CarbonTools: true
+  CarbonSkulls: true
 CarbonCombat:
   pvp-enabled:
   - world
@@ -141,7 +132,7 @@ CarbonVote:
     ban: 300
     kick: 120
     mute: 300
-CKWatcher:
+CarbonWatcher:
   match-aliases: true
   blacklist:
   - ej
@@ -156,16 +147,6 @@ CKWatcher:
   - register
   - changepw
   exempt: []
-CmdBlockTools:
-  item-limit: 50
-  spawn-limit: 50
-  kill-radius-limit: 1000
-  clear-radius-limit: 1000
-  log-messages:
-    spawn: true
-    kill: true
-    clear: true
-    item: true
 EssentialsAssist:
   message-on-auto-anti-interact: false
   vanish-toggles:
@@ -173,14 +154,14 @@ EssentialsAssist:
     prevent-pressure: true
     prevent-mob-targeting: true
     prevent-damage: true
-Fireworks:
+CarbonFireworks:
   per-player-presets: 10
   extra-arrow-player-damage: 0.0
   extra-arrow-mob-damage: 0.0
   extra-snowball-player-damage: 0.0
   extra-snowball-mob-damage: 0.0
   presets: {}
-GoldenSmite:
+CarbonSmite:
   range: 100
   radius: 8
   removeMobDrops: true
@@ -189,7 +170,7 @@ GoldenSmite:
   explosionEffect: false
   lightningEffect: false
   fireworkEffect: true
-Misc:
+CarbonTools:
   ban-message-settings:
     enable-replace: false
     replace-msg: ''
@@ -209,39 +190,12 @@ Misc:
     show-hours: true
     show-minutes: true
     show-seconds: false
-AnvilEnchants:
-  allow-any-enchant: false
-  allow-uncombinable-enchants: false
-  max-ench-level-overrides:
-    arrow_damage: 10
-    arrow_fire: 1
-    arrow_infinite: 1
-    arrow_knockback: 2
-    damage_all: 10
-    damage_arthropods: 10
-    damage_undead: 10
-    depth_strider: 3
-    dig_speed: 10
-    durability: 10
-    fire_aspect: 10
-    knockback: 2
-    loot_bonus_blocks: 10
-    loot_bonus_mobs: 10
-    luck: 10
-    lure: 10
-    oxygen: 10
-    protection_environmental: 10
-    protection_explosions: 10
-    protection_fall: 10
-    protection_projectile: 10
-    silk_touch: 1
-    thorns: 10
-    water_worker: 1
-NetherSpawners:
-  enabled: true
-  enabled-worlds:
-  - world_nether
-  per-chunk-chance-percent: 10
-SkullShop:
-  buy-price: 2000
+  hud-settings:
+    must-have-in-hand: false
+    time-item: WATCH
+    location-item: MAP
+    direction-item: COMPASS
+    tps-item: REDSTONE
+CarbonSkulls:
+  buy-price: 5000
   update-price: 500

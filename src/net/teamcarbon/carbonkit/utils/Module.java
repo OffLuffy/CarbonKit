@@ -7,14 +7,14 @@ import java.util.UUID;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException.DupeType;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import net.teamcarbon.carbonkit.modules.CoreModule;
+import net.teamcarbon.carbonkit.modules.CarbonCoreModule;
 
 // TODO Figure out why commands don't re-register when module is re-enabled
 
@@ -31,6 +31,7 @@ public abstract class Module implements Listener {
 	private List<ModuleCmd> modCmds;
 	private boolean enabled;
 	protected List<String> requires;
+	protected String reqVer = "ANY";
 
 	/**
 	 * Initializes a new Module with the give name and aliases
@@ -51,10 +52,11 @@ public abstract class Module implements Listener {
 		for (String a : aliases)
 			this.aliases.add(a.toLowerCase());
 		id = UUID.randomUUID();
-		setEnabled(this instanceof CoreModule || (isConfigEnabled() && hasAllDependencies()));
+		setEnabled(this instanceof CarbonCoreModule || (isConfigEnabled() && hasAllDependencies()));
 		if (isConfigEnabled() && !hasAllDependencies()) {
-			CarbonKit.log.warn(getName() + " module could not be enabled, missing dependencies:");
-			CarbonKit.log.warn(MiscUtils.stringFromArray(", ", getDependencies().toArray(new String[getDependencies().size()])));
+			CarbonKit.log.warn(getName() + " module could not be enabled, server does not meet some requirements. This module requires:");
+			CarbonKit.log.warn("Plugins: " + MiscUtils.stringFromArray(", ", getDependencies()));
+			CarbonKit.log.warn("Required Bukkit server version: " + reqVer);
 		}
 		CarbonKit.getDefConfig().set("modules." + getName(), isEnabled());
 		CarbonKit.inst.saveConfig();
@@ -70,13 +72,16 @@ public abstract class Module implements Listener {
 	 * Unregisters listeners associated with this Module
 	 */
 	protected void unregisterListeners() { if (needsListeners()) { HandlerList.unregisterAll(this); } }
-
 	/**
 	 * Registers any listeners included in this Module
 	 */
 	protected void registerListeners() { if (needsListeners()) { CarbonKit.pm.registerEvents(this, CarbonKit.inst); } }
+	/**
+	 * Adds a required plugin name to the required plugins list
+	 */
+	protected void addRequires(String req) { if (!requires.contains(req)) requires.add(req); }
 
-	/*=======================[ PUBLIC ]=======================*/
+	/*=======================[ PUBLIC ABSTRACT ]=======================*/
 
 	/**
 	 * Method called when the module is initialized
@@ -94,10 +99,16 @@ public abstract class Module implements Listener {
 	 * @return Returns true if module needs to register listeners
 	 */
 	protected abstract boolean needsListeners();
+
+	/*=======================[ PUBLIC ]=======================*/
 	/**
 	 * @return Returns true if all the plugins a module requires are enabled
 	 */
-	public abstract boolean hasAllDependencies();
+	public boolean hasAllDependencies() {
+		if (getDependencies().isEmpty()) return true;
+		for (String p : getDependencies()) { if (!MiscUtils.checkPlugin(p, true)) return false; }
+		return !reqVer.equals("ANY") && CarbonKit.NMS_VER.equalsIgnoreCase(reqVer);
+	}
 	/**
 	 * @return Returns a List of Strings of dependency names this module requires
 	 */
@@ -212,6 +223,8 @@ public abstract class Module implements Listener {
 
 	/*=======================[ OVERRIDES ]=======================*/
 
+	@Override
+	public String toString() { return name; }
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) return false;

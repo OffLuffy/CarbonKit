@@ -5,9 +5,10 @@ import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.commands.CarbonPerks.TrailCommand;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonlib.CarbonException;
-import net.teamcarbon.carbonlib.LocUtils;
-import net.teamcarbon.carbonlib.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.CarbonException;
+import net.teamcarbon.carbonlib.Misc.LocUtils;
+import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonlib.Misc.NumUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -77,14 +78,7 @@ public class CarbonPerksModule extends Module {
 			for (TrailEffect te : values()) allowed.add(te.name());
 			return allowed;
 		}
-		public static TrailEffect fromEffect(Effect e) {
-			for (TrailEffect te : values()) {
-				if (te.getEffect() == e) {
-					return te;
-				}
-			}
-			return null;
-		}
+		public static TrailEffect fromEffect(Effect e) { for (TrailEffect te : values()) if (te.getEffect() == e) return te; return null; }
 	}
 	private static HashMap<Player, List<TrailEffect>> fx = new HashMap<Player, List<TrailEffect>>();
 	private static List<Player> enabledPlayers = new ArrayList<Player>();
@@ -113,7 +107,6 @@ public class CarbonPerksModule extends Module {
 		initModule();
 	}
 	protected boolean needsListeners() { return true; }
-	public boolean hasAllDependencies() { return true; }
 	
 	/*=============================================================*/
 	/*===[                     LISTENERS                       ]===*/
@@ -785,7 +778,7 @@ public class CarbonPerksModule extends Module {
 	 * @param e The Effects to set it to. A null value or empty list will clear Effects
 	 * @see #clearCachedData(Player)
 	 */
-	public static void setTrailEffects(Player p, List<TrailEffect> e) { setTrailEffects(p, e, true);}
+	public static void setTrailEffects(Player p, List<TrailEffect> e) { setTrailEffects(p, e, true); }
 
 	/**
 	 * Sets the Player's Effect and enables effects if not already enabled
@@ -803,8 +796,7 @@ public class CarbonPerksModule extends Module {
 			for (TrailEffect effect : new ArrayList<TrailEffect>(e))
 				if (!MiscUtils.perm(p, "carbonkit.perks.trails.set." + effect.name().toLowerCase().replace("_", "")))
 					e.remove(effect);
-			if (e.size() > maxEffects)
-				e = e.subList(0,maxEffects-1);
+			if (e.size() > maxEffects) e = e.subList(0,maxEffects-1);
 			fx.put(p, e);
 			setTrailEnabled(p, enabled);
 		}
@@ -849,6 +841,7 @@ public class CarbonPerksModule extends Module {
 	public static void clearCachedData(Player p) {
 		if (fx.containsKey(p)) { fx.remove(p); }
 		if (isTrailEnabled(p)) setTrailEnabled(p, false);
+		CarbonKit.log.debug("Perks cache cleared for " + p.getName());
 	}
 
 	/**
@@ -878,16 +871,14 @@ public class CarbonPerksModule extends Module {
 		if (enabled && !isTrailEnabled(p)) { enabledPlayers.add(p); }
 		else if (!enabled && isTrailEnabled(p)) { enabledPlayers.remove(p); }
 		saveTrailData(p);
+		CarbonKit.log.debug("Trail enabled for " + p.getName());
 	}
 
 	/**
 	 * Toggles whether the Player's particle trail is enabled or not
 	 * @param p The Player to set
 	 */
-	public static void toggleTrailEnabled(Player p) {
-		setTrailEnabled(p, !isTrailEnabled(p));
-		saveTrailData(p);
-	}
+	public static void toggleTrailEnabled(Player p) { setTrailEnabled(p, !isTrailEnabled(p)); }
 
 	/**
 	 * Saves the List of Effects the Player has applied to disk
@@ -920,13 +911,16 @@ public class CarbonPerksModule extends Module {
 	 * @param p The Player whose TrailEffects to load
 	 */
 	public static void loadTrailData(Player p) {
+		CarbonKit.log.debug("Loading perks data for " + p.getName());
 		String id = p.getUniqueId().toString();
 		String cpfx = "CarbonPerks.effects.", cpe = "CarbonPerks.enabled-effects";
-		List<String> effects = new ArrayList<String>();
-		if(data().contains(cpfx + id)) effects = data().getStringList(cpfx + id);
+		List<String> enabled = data().getStringList(cpe);
 		List<TrailEffect> parsed = new ArrayList<TrailEffect>();
-		for (String e : effects) { if (getEffect(e) != null) parsed.add(getEffect(e)); }
-		setTrailEffects(p, parsed, data().getStringList(cpe).contains(id));
+		if(data().contains(cpfx + id)) {
+			List<String> effects = data().getStringList(cpfx + id);
+			for (String e : effects) { if (getEffect(e) != null) parsed.add(getEffect(e)); }
+		}
+		setTrailEffects(p, parsed, enabled.contains(id));
 		saveTrailData(p); // Save again in case valid effects have changed since last load
 	}
 
@@ -942,7 +936,7 @@ public class CarbonPerksModule extends Module {
 		// loop to prevent failing to parse Effects that aren't supported in some Bukkit versions
 		for (int i = 0; i < 20; i++) {
 			try {
-				return TrailEffect.values()[MiscUtils.rand(0, TrailEffect.values().length-1)];
+				return TrailEffect.values()[NumUtils.rand(0, TrailEffect.values().length - 1)];
 			} catch(Exception e) { /* Failed to get effect. Probably older version of Bukkit */ }
 		}
 		return null; // give up after 20 tries
@@ -953,7 +947,7 @@ public class CarbonPerksModule extends Module {
 	 * @param effects The List of TrailEffects to choose from
 	 * @return Returns a TrailEffect from the List provided
 	 */
-	public static TrailEffect getRandomEffect(List<TrailEffect> effects) { return effects.get(MiscUtils.rand(0, effects.size())); }
+	public static TrailEffect getRandomEffect(List<TrailEffect> effects) { return effects.get(NumUtils.rand(0, effects.size())); }
 
 	/**
 	 * Fetches a copy of the list of String names representing the TrailEffects which are allowed

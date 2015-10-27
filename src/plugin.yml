@@ -106,7 +106,15 @@ commands:
   ticket:
     description: Creates a ticket for suggestions/reports/bugs, etc
     usage: /ticket [message]
-    aliases: [report, ckticket, ckreport]
+    aliases: [report, ckticket, ckreport, cticket, creport, rpt, tk, ckrpt, cktk, crpt, ctk]
+  dice:
+    description: Roll a virtual dice for a random number
+    usage: /dice [max] [min]
+    aliases: [roll, ckdice, ckroll]
+  animalinfo:
+    description: View info about an animal
+    usage: /animalinfo
+    aliases: [ckanimalinfo, ckainfo, ckai, ai]
   disabledcmd:
     description: Command to register disabled module commands to
 permissions:
@@ -305,6 +313,104 @@ permissions:
     default: op
   carbonkit.misc.onlinetime.others:
     description: View other players' online time
+    default: op
+  carbonkit.misc.hud.location:
+    description: Having or holding the location item will show coordinates on the HUD
+    default: op
+  carbonkit.misc.hud.direction:
+    description: Having or holding the direction item will show cardinal direction on the HUD
+    default: op
+  carbonkit.misc.hud.clock:
+    description: Having or holding the clock item will show server time on the HUD
+    default: op
+  carbonkit.misc.hud.tps:
+    description: Having or holding the TPS item will show server TPS on the HUD
+    default: op
+  carbonkit.misc.hud.location.override:
+    description: Bypasses needing to have or hold the location item to show coordinates on the HUD
+    default: op
+  carbonkit.misc.hud.direction.override:
+    description: Bypasses needing to have or hold the direction item to show cardinal direction on the HUD
+    default: op
+  carbonkit.misc.hud.clock.override:
+    description: Bypasses needing to have or hold the clock item to show server time on the HUD
+    default: op
+  carbonkit.misc.hud.tps.override:
+    description: Bypasses needing to have or hold the TPS item to show server TPS on the HUD
+    default: op
+  carbonkit.misc.hud.bypassholding:
+    description: Bypasses needing to hold any item to show it on the HUD. Still needs to be in inventory
+    default: op
+  carbonkit.misc.hud.*:
+    description: All HUD permissions
+    default: op
+    children:
+      carbonkit.misc.hud.loading: true
+      carbonkit.misc.hud.direction: true
+      carbonkit.misc.hud.clock: true
+      carbonkit.misc.hud.tps: true
+      carbonkit.misc.hud.loading.override: true
+      carbonkit.misc.hud.direction.override: true
+      carbonkit.misc.hud.clock.override: true
+      carbonkit.misc.hud.tps.override: true
+      carbonkit.misc.hud.bypassholding: true
+  carbonkit.ticket.*:
+    description: All ticket permissions
+    default: op
+    children:
+      carbonkit.ticket.create: true
+      carbonkit.ticket.append.self: true
+      carbonkit.ticket.append.others: true
+      carbonkit.ticket.delete.self: true
+      carbonkit.ticket.delete.others: true
+      carbonkit.ticket.info.self: true
+      carbonkit.ticket.info.others: true
+      carbonkit.ticket.view: true
+      carbonkit.ticket.viewall: true
+      carbonkit.ticket.search.self: true
+      carbonkit.ticket.search.others: true
+  carbonkit.ticket.user:
+    description: Standard user access for tickets
+    default: op
+    children:
+      carbonkit.ticket.create: true
+      carbonkit.ticket.append.self: true
+      carbonkit.ticket.delete.self: true
+      carbonkit.ticket.info.self: true
+      carbonkit.ticket.view: true
+      carbonkit.ticket.search.self: true
+  carbonkit.ticket.create:
+    description: Create a new ticket
+    default: op
+  carbonkit.ticket.append.self:
+    description: Access to adding text to the end of your tickets
+    default: op
+  carbonkit.ticket.append.others:
+    description: Access to adding text to the end of any tickets
+    default: op
+  carbonkit.ticket.delete.self:
+    description: Access to delete your own tickets
+    default: op
+  carbonkit.ticket.delete.others:
+    description: Access to delete any tickets
+    default: op
+  carbonkit.ticket.info.self:
+    description: Access to view your ticket info
+    default: op
+  carbonkit.ticket.info.others:
+    description: Access to view info about any tickets
+    default: op
+  carbonkit.ticket.view:
+    description: Access to list your tickets
+    default: op
+  carbonkit.ticket.viewall:
+    description: Access to list all tickets
+    default: op
+  carbonkit.ticket.search.self:
+    description: Access to search your tickets
+    default: op
+  carbonkit.ticket.search.others:
+    description: Access to search all tickets
     default: op
   carbonkit.carbonvote.receive-messages:
     description: Access to receive messages pertaining to voting

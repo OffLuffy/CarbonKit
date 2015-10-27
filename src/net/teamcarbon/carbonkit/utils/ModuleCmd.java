@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonlib.CarbonException;
-import net.teamcarbon.carbonlib.Messages.Clr;
+import net.teamcarbon.carbonlib.Misc.CarbonException;
+import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
