@@ -21,9 +21,9 @@ import java.util.UUID;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonWatcherModule extends Module {
+	public static CarbonWatcherModule inst;
 	public CarbonWatcherModule() throws DuplicateModuleException { super("CarbonWatcher", "commandwatcher", "cwatcher", "ckw", "cw"); }
 	private static List<UUID> watchers = new ArrayList<UUID>();
-	private static CarbonWatcherModule inst;
 	public void initModule() {
 		inst = this;
 		if (!watchers.isEmpty()) watchers.clear();
@@ -64,11 +64,11 @@ public class CarbonWatcherModule extends Module {
 		if (getConfig().getStringList("exempt").contains(sender.getUniqueId().toString()) || isBlacklisted(label)) return;
 		for (Player opl : Bukkit.getOnlinePlayers()) {
 			if (watchers.contains(opl.getUniqueId()) && !sender.equals(opl)) {
-				if (!MiscUtils.perm(opl, "carbonkit.ckwatcher.watchplayers", "carbonkit.ckwatcher.watchconsole")) {
+				if (!perm(opl, "watchplayers", "watchconsole")) {
 					setWatching(opl, false);
 					return;
 				}
-				if (!MiscUtils.perm(opl, "carbonkit.ckwatcher.watchplayers")) return;
+				if (!perm(opl, "watchplayers")) return;
 				opl.sendMessage(Clr.GRAY + "[CW] " + Clr.GOLD + sender.getName() + ": " + Clr.DARKAQUA + e.getMessage());
 			}
 		}
@@ -85,11 +85,11 @@ public class CarbonWatcherModule extends Module {
 				watchers.remove(id);
 				return;
 			}
-			if (!MiscUtils.perm(cwp, "carbonkit.ckwatcher.watchplayers", "carbonkit.ckwatcher.watchconsole")) {
+			if (!perm(cwp, "watchplayers", "watchconsole")) {
 				setWatching(cwp, false);
 				return;
 			}
-			if (!MiscUtils.perm(cwp, "carbonkit.ckwatcher.watchconsole")) return;
+			if (!perm(cwp, "watchconsole")) return;
 			cwp.sendMessage(Clr.GRAY + "[CW] " + Clr.GOLD + "CONSOLE: " + Clr.DARKAQUA + e.getCommand());
 		}
 	}

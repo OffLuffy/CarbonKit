@@ -9,8 +9,7 @@ modules:
   CarbonTrivia: true
   CarbonVote: true
   CarbonWatcher: true
-  Essentials: true
-  EssentialsAssist: true
+  CarbonEssentials: true
   GoldenSmite: true
   CarbonTools: true
   CarbonSkulls: true
@@ -70,9 +69,7 @@ CarbonNews:
     delaySeconds: 2
     requirePermission: false
     messageLines:
-    - '&3Welcome to {TTP~&aVisit our website @ team-carbon.org|TXT~&aTeam-Carbon}&3!
-      Know the {CMD~/rules|TTP~Click to view the rules|TXT~&brules}&3 and
-      enjoy your stay!'
+    - '[{"text":"Welcome to ","color":"dark_aqua","bold":true},{"text":"Team-Carbon","color":"green","clickEvent":{"action":"open_url","value":"http://team-carbon.org/"},"hoverEvent":{"action":"show_text","value":{"text":"","extra":[{"text":"Click to visit our website @ ","color":"aqua"},{"text":"team-carbon.org","color":"green"}]}},"bold":false},{"text":"! Know the ","color":"dark_aqua"},{"text":"rules","color":"aqua","clickEvent":{"action":"run_command","value":"/rules"},"hoverEvent":{"action":"show_text","value":{"text":"","extra":[{"text":"Click to view the rules","color":"aqua"}]}}},{"text":" and enjoy your stay!","color":"dark_aqua"}]'
 CarbonPerks:
   max-trails: 3
   firework-bow-damage-percent:
@@ -141,7 +138,7 @@ CarbonWatcher:
   - msg
   - r
   - thru
-  - goldensmite
+  - carbonsmite
   - mail
   - login
   - register
@@ -154,13 +151,6 @@ EssentialsAssist:
     prevent-pressure: true
     prevent-mob-targeting: true
     prevent-damage: true
-CarbonFireworks:
-  per-player-presets: 10
-  extra-arrow-player-damage: 0.0
-  extra-arrow-mob-damage: 0.0
-  extra-snowball-player-damage: 0.0
-  extra-snowball-mob-damage: 0.0
-  presets: {}
 CarbonSmite:
   range: 100
   radius: 8

@@ -2,6 +2,7 @@ package net.teamcarbon.carbonkit.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import net.teamcarbon.carbonkit.CarbonKit;
@@ -10,13 +11,15 @@ import net.teamcarbon.carbonkit.utils.DuplicateModuleException.DupeType;
 import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import net.teamcarbon.carbonkit.modules.CarbonCoreModule;
-
-// TODO Figure out why commands don't re-register when module is re-enabled
 
 /**
  * Abstract Module class to keep track of initialized modules and organize universal module information
@@ -65,6 +68,12 @@ public abstract class Module implements Listener {
 	/*=======================[ PRIVATE ]=======================*/
 
 	private void setName(String n) { name = n; }
+
+	private String[] prefixPerms(String[] perms) {
+		String[] prePerms = new String[perms.length];
+		for (int i = 0; i < perms.length; i++) prePerms[i] = "carbonkit." + getName().toLowerCase() + "." + perms[i];
+		return prePerms;
+	}
 
 	/*=======================[ PROTECTED ]=======================*/
 
@@ -160,10 +169,7 @@ public abstract class Module implements Listener {
 	 * @param command The ModuleCmd to register
 	 * @see ModuleCmd
 	 */
-	public void addCmd(ModuleCmd command) {
-		if (!modCmds.contains(command))
-			modCmds.add(command);
-	}
+	public void addCmd(ModuleCmd command) { if (!modCmds.contains(command)) modCmds.add(command); }
 	/**
 	 * @return Returns a ConcifugrationSection contains this module's config
 	 */
@@ -179,6 +185,48 @@ public abstract class Module implements Listener {
 		ConfigurationSection dataSect = CarbonKit.getConfig(ConfType.DATA).getConfigurationSection(getName());
 		if (dataSect == null) dataSect = new MemoryConfiguration();
 		return dataSect;
+	}
+	/**
+	 * Prefixes all permissions with 'carbonkit.[modulename].' before checking.
+	 * @see MiscUtils#perm(World, OfflinePlayer, String...)
+	 */
+	public boolean perm(World w, OfflinePlayer pl, String ... perms) { return MiscUtils.perm(w, pl, prefixPerms(perms)); }
+	/**
+	 * Prefixes all permissions with 'carbonkit.[modulename].' before checking.
+	 * @see MiscUtils#perm(OfflinePlayer, String...)
+	 */
+	public boolean perm(OfflinePlayer pl, String ... perms) { return MiscUtils.perm(pl, prefixPerms(perms)); }
+	/**
+	 * Prefixes all permissions with 'carbonkit.[modulename].' before checking.
+	 * @see MiscUtils#perm(Player, String...)
+	 */
+	public boolean perm(Player pl, String ... perms) { return MiscUtils.perm(pl, prefixPerms(perms)); }
+	/**
+	 * Prefixes all permissions with 'carbonkit.[modulename].' before checking.
+	 * @see MiscUtils#perm(CommandSender, String...)
+	 */
+	public boolean perm(CommandSender pl, String ... perms) { return MiscUtils.perm(pl, prefixPerms(perms)); }
+
+	/**
+	 * Sends a message formatted with {@link String#format(Locale, String, Object...)} to the CommandSender if they have the specified permission
+	 * @param sender The CommandSender to send the message to
+	 * @param format The format that the args are applied to via {@link String#format(Locale, String, Object...)}
+	 * @param perm The permission the sender must have before the message is sent. If this is null, the message is sent without checking permissions.
+	 * @param args The args that are inserted into the give format via {@link String#format(Locale, String, Object...)}
+	 */
+	public void sendFormatted(CommandSender sender, String format, String perm, String[] args) {
+		sendFormatted(sender, format, perm == null ? null : new String[]{perm}, args);
+	}
+
+	/**
+	 * Sends a message formatted with {@link String#format(Locale, String, Object...)} to the CommandSender if they have any of the specified permissions
+	 * @param sender The CommandSender to send the message to
+	 * @param format The format that the args are applied to via {@link String#format(Locale, String, Object...)}
+	 * @param perms The permissions the sender must have at least one of before the message is sent. If this is null, the message is sent without checking permissions.
+	 * @param args The args that are inserted into the give format via {@link String#format(Locale, String, Object...)}
+	 */
+	public void sendFormatted(CommandSender sender, String format, String[] perms, String[] args) {
+		if (perms == null || perm(sender, perms)) sender.sendMessage(String.format(Locale.ENGLISH, format, args));
 	}
 	
 	/*=======================[ STATIC ]=======================*/

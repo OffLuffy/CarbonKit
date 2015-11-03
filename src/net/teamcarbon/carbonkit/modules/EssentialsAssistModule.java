@@ -24,13 +24,13 @@ import java.util.List;
 
 @SuppressWarnings({"UnusedDeclaration", "SuspiciousMethodCalls"})
 public class EssentialsAssistModule extends Module { // TODO Implement essentials user purging into EssAssist?
+	public static EssentialsAssistModule inst;
 	public EssentialsAssistModule() throws DuplicateModuleException {
 		super("EssentialsAssist", "essassist", "eassist", "ea");
 		addRequires("Essentials");
 	}
 	private static List<OfflinePlayer> noInteract = new ArrayList<OfflinePlayer>();
 	private final static String VT = "vanish-toggles.prevent-";
-	public static EssentialsAssistModule inst;
 	public void initModule() {
 		inst = this;
 		if (!noInteract.isEmpty()) noInteract.clear();
@@ -56,6 +56,7 @@ public class EssentialsAssistModule extends Module { // TODO Implement essential
 		CarbonKit.reloadConfig(ConfType.DATA);
 		initModule();
 	}
+
 	protected boolean needsListeners() { return true; }
 	
 	/*=============================================================*/
@@ -161,7 +162,7 @@ public class EssentialsAssistModule extends Module { // TODO Implement essential
 		return false;
 	}
 	private void checkAutoInteract(Player pl) {
-		if (MiscUtils.perm(pl, "carbonkit.essassist.auto-anti-interact")) {
+		if (perm(pl, "auto-anti-interact")) {
 			if (!isEssVanished(pl) && noInteract.contains(pl)) {
 				setInteract(pl, false);
 				if (getConfig().getBoolean("message-on-auto-anti-interact", false))

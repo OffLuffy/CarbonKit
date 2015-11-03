@@ -90,7 +90,7 @@ public class TriviaRound {
 		if (o != null && (o instanceof Player || o instanceof String)) {
 			HashMap<String, String> rep = new HashMap<String, String>();
 			rep.put("{STARTER}", o instanceof Player?((Player)o).getName():(String)o);
-			mbc(MiscUtils.massReplace(CustomMessage.CT_PROVIDED_BY.noPre(), rep));
+			mbc(CustomMessage.CT_PROVIDED_BY.noPre(rep));
 		}
 	}
 
@@ -297,7 +297,7 @@ public class TriviaRound {
 					rep.put("{PLAYER}", "Herobrine");
 					rep.put("{POINTS}", "-666");
 				}
-				mbc(MiscUtils.massReplace(CustomMessage.CT_PLAYER_WINS.noPre(), rep));
+				mbc(CustomMessage.CT_PLAYER_WINS.noPre(rep));
 				rewardUsers(winners);
 			} else if (winners.size() > 1) {
 				rep.put("{POINTS}", points.get(winners.get(0)) + "");
@@ -307,7 +307,7 @@ public class TriviaRound {
 						wins += Bukkit.getPlayer(id).getName() + ", ";
 				wins = wins.substring(0, wins.length() - 2);
 				rep.put("{PLAYERS}", wins);
-				mbc(MiscUtils.massReplace(CustomMessage.CT_MULTI_WINS.noPre(), rep));
+				mbc(CustomMessage.CT_MULTI_WINS.noPre(rep));
 				rewardUsers(winners);
 			} else {
 				CarbonKit.log.warn("Something strange happened with the winner list!");
@@ -357,7 +357,7 @@ public class TriviaRound {
 		HashMap<String, String> rep = new HashMap<String, String>();
 		rep.put("{PLAYER}", p.getName());
 		rep.put("{ANSWER}", ans);
-		mbc(MiscUtils.massReplace(CustomMessage.CT_ANSWERED.noPre(), rep));
+		mbc(CustomMessage.CT_ANSWERED.noPre(rep));
 		UUID id = p.getUniqueId();
 		addPoints(p, 1);
 		CarbonKit.log.debug(p.getName() + " answered with '" + ans + "', now has " + getPoints(p) + " points");

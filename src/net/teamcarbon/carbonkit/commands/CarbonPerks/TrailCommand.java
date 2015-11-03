@@ -27,12 +27,12 @@ public class TrailCommand extends ModuleCmd {
 			sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 			return;
 		}
-		boolean multiple = MiscUtils.perm(sender, "carbonkit.perks.trails.multiple");
+		boolean multiple = mod.perm(sender, "trails.multiple");
 		int maxTrails = getMod().getConfig().getInt("max-trails", 3);
 		if (!multiple) maxTrails = 1;
 		if (args.length > 0) {
 			if (MiscUtils.eq(args[0], "set", "s")) {
-				if (!MiscUtils.perm(sender, "carbonkit.perks.trails.set")) {
+				if (!mod.perm(sender, "trails.set")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -41,17 +41,17 @@ public class TrailCommand extends ModuleCmd {
 					for (int i = 1; i < args.length && fx.size() < maxTrails; i++) {
 						if (CarbonPerksModule.getEffect(args[i]) != null) {
 							TrailEffect e = CarbonPerksModule.getEffect(args[i]);
-							if (MiscUtils.perm(sender, "carbonkit.perks.trails.set." + e.name().toLowerCase())) {
+							if (mod.perm(sender, "trails.set." + e.name().toLowerCase())) {
 								fx.add(e);
 							} else {
 								HashMap<String, String> rep = new HashMap<String, String>();
 								rep.put("{EFFECT}", e.name().toLowerCase().replace("_", ""));
-								sender.sendMessage(MiscUtils.massReplace(CustomMessage.CP_NO_EFFECT_PERM.pre(), rep));
+								sender.sendMessage(CustomMessage.CP_NO_EFFECT_PERM.pre(rep));
 							}
 						} else {
 							HashMap<String, String> rep = new HashMap<String, String>();
 							rep.put("{QUERY}", args[i]);
-							sender.sendMessage(MiscUtils.massReplace(CustomMessage.CP_INVALID_TRAIL.pre(), rep));
+							sender.sendMessage(CustomMessage.CP_INVALID_TRAIL.pre(rep));
 						}
 					}
 					if (fx.size() < 1) return;
@@ -61,14 +61,14 @@ public class TrailCommand extends ModuleCmd {
 					String[] fxNames = new String[fx.size()];
 					for (int i = 0; i < fx.size(); i++) fxNames[i] = fx.get(i).name().toLowerCase().replace("_","");
 					rep.put("{EFFECTLIST}", MiscUtils.stringFromArray(", ", fxNames));
-					sender.sendMessage(MiscUtils.massReplace(CustomMessage.CP_SET_TRAIL.pre(), rep));
+					sender.sendMessage(CustomMessage.CP_SET_TRAIL.pre(rep));
 				} else {
 					if (multiple) { sender.sendMessage(Clr.AQUA + "/trail set [type] [type] ..."); }
 					else { sender.sendMessage(Clr.AQUA + "/trail set [type]"); }
 					sender.sendMessage(Clr.AQUA + "/trail list" + Clr.DARKAQUA + " to view types");
 				}
 			} else if (MiscUtils.eq(args[0], "add", "a")) {
-				if (!MiscUtils.perm(sender, "carbonkit.perks.trails.add")) {
+				if (!mod.perm(sender, "trails.add")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -81,17 +81,17 @@ public class TrailCommand extends ModuleCmd {
 					for (int i = 1; i < args.length && fx.size() <= maxTrails; i++) {
 						if (CarbonPerksModule.getEffect(args[i]) != null) {
 							TrailEffect e = CarbonPerksModule.getEffect(args[i]);
-							if (MiscUtils.perm(sender, "carbonkit.perks.trails.set." + e.name().toLowerCase())) {
+							if (mod.perm(sender, "trails.set." + e.name().toLowerCase())) {
 								fx.add(CarbonPerksModule.getEffect(args[i]));
 							} else {
 								HashMap<String, String> rep = new HashMap<String, String>();
 								rep.put("{EFFECT}", e.name().toLowerCase().replace("_", ""));
-								sender.sendMessage(MiscUtils.massReplace(CustomMessage.CP_NO_EFFECT_PERM.pre(), rep));
+								sender.sendMessage(CustomMessage.CP_NO_EFFECT_PERM.pre(rep));
 							}
 						} else {
 							HashMap<String, String> rep = new HashMap<String, String>();
 							rep.put("{QUERY}", args[i]);
-							sender.sendMessage(MiscUtils.massReplace(CustomMessage.CP_INVALID_TRAIL.pre(), rep));
+							sender.sendMessage(CustomMessage.CP_INVALID_TRAIL.pre(rep));
 						}
 					}
 					if (fx.size() < 1) return;
@@ -102,14 +102,14 @@ public class TrailCommand extends ModuleCmd {
 					String[] fxNames = new String[fx.size()];
 					for (int i = 0; i < fx.size(); i++) fxNames[i] = fx.get(i).name().toLowerCase().replace("_","");
 					rep.put("{EFFECTLIST}", MiscUtils.stringFromArray(", ", fxNames));
-					sender.sendMessage(MiscUtils.massReplace(CustomMessage.CP_ADD_TRAIL.pre(), rep));
+					sender.sendMessage(CustomMessage.CP_ADD_TRAIL.pre(rep));
 				} else {
 					if (multiple) { sender.sendMessage(Clr.AQUA + "/trail add [type] [type] ..."); }
 					else { sender.sendMessage(Clr.AQUA + "/trail add [type]"); }
 					sender.sendMessage(Clr.AQUA + "/trail list" + Clr.DARKAQUA + " to view types");
 				}
 			} else if (MiscUtils.eq(args[0], "remove", "rem")) {
-				if (!MiscUtils.perm(sender, "carbonkit.perks.trails.remove")) {
+				if (!mod.perm(sender, "trails.remove")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -120,20 +120,20 @@ public class TrailCommand extends ModuleCmd {
 							CarbonPerksModule.removeTrailEffect((Player)sender, e);
 							HashMap<String, String> rep = new HashMap<String, String>();
 							rep.put("{EFFECT}", e.name().toLowerCase().replace("_",""));
-							sender.sendMessage(MiscUtils.massReplace(CustomMessage.CP_REM_TRAIL.pre(), rep));
+							sender.sendMessage(CustomMessage.CP_REM_TRAIL.pre(rep));
 						} else {
 							sender.sendMessage(CustomMessage.CP_REM_NOT_FOUND.pre());
 						}
 					} else {
 						HashMap<String, String> rep = new HashMap<String, String>();
 						rep.put("{QUERY}", args[1]);
-						sender.sendMessage(MiscUtils.massReplace(CustomMessage.CP_INVALID_TRAIL.pre(), rep));
+						sender.sendMessage(CustomMessage.CP_INVALID_TRAIL.pre(rep));
 					}
 				} else {
 					sender.sendMessage(Clr.AQUA + "/trail rem [type]");
 				}
 			} else if (MiscUtils.eq(args[0], "random", "rand", "r")) {
-				if (!MiscUtils.perm(sender, "carbonkit.perks.trails.random")) {
+				if (!mod.perm(sender, "trails.random")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -145,7 +145,7 @@ public class TrailCommand extends ModuleCmd {
 				} else { num = multiple ? NumUtils.rand(1, maxTrails) : 1; }
 				List<TrailEffect> fx = new ArrayList<TrailEffect>(), randList = new ArrayList<TrailEffect>();
 				for (TrailEffect e : TrailEffect.values())
-					if (MiscUtils.perm(sender, "carbonkit.perks.trails.set." + e.lname().replace("_", "")))
+					if (mod.perm(sender, "trails.set." + e.lname().replace("_", "")))
 						randList.add(e);
 				for (int i = 0; i < num; i++) { fx.add(CarbonPerksModule.getRandomEffect(randList)); }
 				if (fx.size() < 1) return;
@@ -155,9 +155,9 @@ public class TrailCommand extends ModuleCmd {
 				String[] fxNames = new String[fx.size()];
 				for (int i = 0; i < fx.size(); i++) fxNames[i] = fx.get(i).name().toLowerCase().replace("_","");
 				rep.put("{EFFECTLIST}", MiscUtils.stringFromArray(", ", fxNames));
-				sender.sendMessage(MiscUtils.massReplace(CustomMessage.CP_SET_RANDOM.pre(), rep));
+				sender.sendMessage(CustomMessage.CP_SET_RANDOM.pre(rep));
 			} else if (MiscUtils.eq(args[0], "toggle", "t") || TypeUtils.isBoolean(args[0])) {
-				if (!MiscUtils.perm(sender, "carbonkit.perks.trails.toggle")) {
+				if (!mod.perm(sender, "trails.toggle")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -168,9 +168,9 @@ public class TrailCommand extends ModuleCmd {
 				} else { CarbonPerksModule.toggleTrailEnabled((Player) sender); }
 				HashMap<String, String> rep = new HashMap<String, String>();
 				rep.put("{TRAILSTATE}", CarbonPerksModule.isTrailEnabled((Player) sender) ? "enabled" : "disabled");
-				sender.sendMessage(MiscUtils.massReplace(CustomMessage.CP_TOGGLED.pre(), rep));
+				sender.sendMessage(CustomMessage.CP_TOGGLED.pre(rep));
 			} else if (MiscUtils.eq(args[0], "clear", "reset", "c")) {
-				if (!MiscUtils.perm(sender, "carbonkit.perks.trails.clear")) {
+				if (!mod.perm(sender, "trails.clear")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -182,7 +182,7 @@ public class TrailCommand extends ModuleCmd {
 				CustomMessage.printHeader(sender, "Particle Trail Types [pg. "+curPage+"/"+pages+"]:");
 				int disp = 0;
 				for (TrailEffect te : TrailEffect.values()) {
-					if (MiscUtils.perm(sender, "carbonkit.perks.trails.set." + te.lname().replace("_", ""))) {
+					if (mod.perm(sender, "trails.set." + te.lname().replace("_", ""))) {
 						if (disp >= ((typesPerPage * curPage) - typesPerPage)) {
 							String aliases = "";
 							if (te.getAliases().size() > 0)
@@ -196,36 +196,26 @@ public class TrailCommand extends ModuleCmd {
 				}
 			}
 		} else {
-			if (!MiscUtils.perm(sender, "carbonkit.perks.trails.help")) {
-				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
-				return;
-			}
 			CustomMessage.printHeader(sender, "Particle Trails");
-			if (MiscUtils.perm(sender, "carbonkit.perks.trails.set")) {
-				if (multiple) {
-					sender.sendMessage(Clr.AQUA + "/trail set <type> [type] ..." + Clr.DARKAQUA + " - Sets your particle trails");
-				} else {
-					sender.sendMessage(Clr.AQUA + "/trail set <type>" + Clr.DARKAQUA + " - Sets your particle trail");
-				}
+			if (multiple) {
+				sf(sender, "trails.set", "set <type> [type] ...", "Sets your particle trails");
+				sf(sender, "trails.random", "random [#]", "Sets random particle trails");
+				sf(sender, "trails.add", "add <type> [type] ...", "Adds particle trails");
+			} else {
+				sf(sender, "trails.set", "set <type>", "Sets your particle trail");
+				sf(sender, "trails.random", "random", "Sets a random particle trail");
+				sf(sender, "trails.add", "add <type>", "Adds a particle trail");
 			}
-			if (MiscUtils.perm(sender, "carbonkit.perks.trails.random")) {
-				if (multiple) {
-					sender.sendMessage(Clr.AQUA + "/trail random [#]" + Clr.DARKAQUA + " - Sets random particle trails");
-				} else {
-					sender.sendMessage(Clr.AQUA + "/trail random" + Clr.DARKAQUA + " - Sets a random particle trail");
-				}
-			}
-			if (MiscUtils.perm(sender, "carbonkit.perks.trails.add")) {
-				if (multiple) {
-					sender.sendMessage(Clr.AQUA + "/trail add <type> [type] ..." + Clr.DARKAQUA + " - Adds particle trails");
-				} else {
-					sender.sendMessage(Clr.AQUA + "/trail add <type>" + Clr.DARKAQUA + " - Adds a particle trail");
-				}
-			}
-			MiscUtils.permSend(sender, "carbonkit.perks.trails.remove", Clr.AQUA + "/trail rem <type>" + Clr.DARKAQUA + " - Removes a particle trail");
-			MiscUtils.permSend(sender, "carbonkit.perks.trails.toggle", Clr.AQUA + "/trail toggle" + Clr.DARKAQUA + " - Toggles particle trails on/off");
-			MiscUtils.permSend(sender, "carbonkit.perks.trails.clear", Clr.AQUA + "/trail clear" + Clr.DARKAQUA + " - Removes your particle trail(s)");
-			MiscUtils.permSend(sender, "carbonkit.perks.trails.list", Clr.AQUA + "/trail list [page]" + Clr.DARKAQUA + " - Lists effect types");
+			sf(sender, "trails.remove", "rem <type>", "Removes a particle trail");
+			sf(sender, "trails.toggle", "toggle", "Toggles particle trails on/off");
+			sf(sender, "trails.clear", "clear", "Removes your particle trail(s)");
+			sf(sender, "trails.list", "list [page]", "Lists trail types");
 		}
 	}
+
+	private void sf(CommandSender s, String[] p, String a, String d) {
+		String f = Clr.AQUA + "/trail %s " + Clr.DARKAQUA + " - %s";
+		mod.sendFormatted(s, f, p, new String[] {a,d});
+	}
+	private void sf(CommandSender s, String p, String a, String d) { sf(s, new String[] {p}, a, d); }
 }

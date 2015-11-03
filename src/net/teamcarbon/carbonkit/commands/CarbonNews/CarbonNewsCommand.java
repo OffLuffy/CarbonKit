@@ -18,6 +18,8 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.HashMap;
 
+// TODO Parse raw JSON
+
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonNewsCommand extends ModuleCmd {
 
@@ -38,7 +40,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 		if (args.length < 1 || MiscUtils.eq(args[0], "help")) { // '/cn help' or '/cn'
 			printHelp(sender);
 		} else if (MiscUtils.eq(args[0], "toggle")) { // '/cn toggle <set> [on|off]'
-			if (!perm(sender, "set.enabled")) {
+			if (!mod.perm(sender, "set.enabled")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
@@ -47,13 +49,13 @@ public class CarbonNewsCommand extends ModuleCmd {
 					HashMap<String, String> rep = new HashMap<String, String>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
-					if (perm(sender, "listsets"))
+					if (mod.perm(sender, "listsets"))
 						listAvailbleGroups(sender);
 					return;
 				}
 			} else {
 				sender.sendMessage(CustomMessage.CN_NEEDS_SET.pre());
-				if (perm(sender, "listsets")) listAvailbleGroups(sender);
+				if (mod.perm(sender, "listsets")) listAvailbleGroups(sender);
 				return;
 			}
 			BroadcastTask bt = BroadcastTask.getTask(args[1]);
@@ -67,26 +69,26 @@ public class CarbonNewsCommand extends ModuleCmd {
 				bt.setEnabled(!bt.isEnabled());
 			sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + (bt.isEnabled()?Clr.LIME + " enabled":Clr.RED + " disabled"));
 		} else if (MiscUtils.eq(args[0], "listsets", "lists", "ls", "list")) { // '/cn listsets'
-			if (!perm(sender, "listsets")) {
+			if (!mod.perm(sender, "listsets")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
 			listAvailbleGroups(sender);
 		} else if (MiscUtils.eq(args[0], "listmessages", "listm", "lm")) { // '/cn listmessages <set>'
-			if (!perm(sender, "listmessages")) {
+			if (!mod.perm(sender, "listmessages")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
 			if (args.length < 2){
 				sender.sendMessage(CustomMessage.CN_NEEDS_SET.pre());
-				if (perm(sender, "listsets")) listAvailbleGroups(sender);
+				if (mod.perm(sender, "listsets")) listAvailbleGroups(sender);
 				return;
 			}
 			if (!BroadcastTask.isTask(args[1])){
 				HashMap<String, String> rep = new HashMap<String, String>();
 				rep.put("{SETNAME}", args[1]);
 				sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
-				if (perm(sender, "listsets")) listAvailbleGroups(sender);
+				if (mod.perm(sender, "listsets")) listAvailbleGroups(sender);
 				return;
 			}
 			BroadcastTask bt = BroadcastTask.getTask(args[1]);
@@ -102,13 +104,13 @@ public class CarbonNewsCommand extends ModuleCmd {
 				sender.sendMessage(Clr.GRAY + "This set has no messages! Add some with /cn addm " + bt.getSetName() + " <msg>");
 			}
 		} else if (MiscUtils.eq(args[0], "setinfo", "sinfo", "si", "info", "i")) { // '/cn setinfo <set>'
-			if (!perm(sender, "setinfo")) {
+			if (!mod.perm(sender, "setinfo")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
 			if (args.length <2){
 				sender.sendMessage(CustomMessage.CN_NEEDS_SET.pre());
-				if (perm(sender, "listsets"))
+				if (mod.perm(sender, "listsets"))
 					listAvailbleGroups(sender);
 				return;
 			}
@@ -116,7 +118,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 				HashMap<String, String> rep = new HashMap<String, String>();
 				rep.put("{SETNAME}", args[1]);
 				sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
-				if (perm(sender, "listsets"))
+				if (mod.perm(sender, "listsets"))
 					listAvailbleGroups(sender);
 				return;
 			}
@@ -133,7 +135,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 			sender.sendMessage(Clr.AQUA + "Prefix: " + Clr.GRAY + bt.getPrefix());
 			sender.sendMessage(Clr.AQUA + "Postfix: " + Clr.GRAY + bt.getPostfix());
 		} else if (MiscUtils.eq(args[0], "reload", "rl", "r")) { // '/cn reload'
-			if (!perm(sender, "reload")) {
+			if (!mod.perm(sender, "reload")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
@@ -142,7 +144,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 			rep.put("{MODULE}", CarbonNewsModule.NAME);
 			sender.sendMessage(CustomMessage.CORE_RELOADED.pre(rep));
 		} else if (MiscUtils.eq(args[0], "set")) { // '/cn set <set> <setting> <value>'
-			if (!perm(sender, allSetPerms)) {
+			if (!mod.perm(sender, allSetPerms)) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
@@ -152,7 +154,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 					if (args.length > 2) {
 						String opt = args[2];
 						if (MiscUtils.eq(opt, "setenabled", "enabed")) {
-							if (!perm(sender, "set.enabled")) {
+							if (!mod.perm(sender, "set.enabled")) {
 								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 								return;
 							}
@@ -176,7 +178,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 							}
 							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + (bt.isEnabled()?Clr.LIME + " enabled":Clr.RED+ " disabled"));
 						} else if (MiscUtils.eq(opt, "delayseconds", "delay", "time")) {
-							if (!perm(sender, "set.delay")) {
+							if (!mod.perm(sender, "set.delay")) {
 								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 								return;
 							}
@@ -191,7 +193,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 								sender.sendMessage(Clr.RED + "'" + opt + "' must be set to a whole number above 0");
 							}
 						} else if (MiscUtils.eq(opt, "requirepermission", "requireperm")) {
-							if (!perm(sender, "set.requireperms")) {
+							if (!mod.perm(sender, "set.requireperms")) {
 								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 								return;
 							}
@@ -207,7 +209,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 							}
 							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + " will " + (bt.requirePerms()?"now":"no longer") + " require perms to listen.");
 						} else if (MiscUtils.eq(opt, "prefix", "pre")) {
-							if (!perm(sender, "set.prefix")) {
+							if (!mod.perm(sender, "set.prefix")) {
 								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 								return;
 							}
@@ -222,7 +224,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 							}
 							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + "'s postfix " + (bt.getPostfix().equals("")?"removed":"set"));
 						} else if (MiscUtils.eq(opt, "postfix", "post")) {
-							if (!perm(sender, "set.postfix")) {
+							if (!mod.perm(sender, "set.postfix")) {
 								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 								return;
 							}
@@ -237,7 +239,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 							}
 							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + "'s postfix " + (bt.getPostfix().equals("")?"removed":"set"));
 						} else if (MiscUtils.eq(opt, "randomorder", "random")) {
-							if (!perm(sender, "set.random")) {
+							if (!mod.perm(sender, "set.random")) {
 								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 								return;
 							}
@@ -253,7 +255,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 							}
 							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + " will " + (bt.isRandom()?"now":"no longer") + " be randomized.");
 						} else if (MiscUtils.eq(opt, "sendtoconsole", "sendconsole")) {
-							if (!perm(sender, "set.sendtoconsole")) {
+							if (!mod.perm(sender, "set.sendtoconsole")) {
 								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 								return;
 							}
@@ -269,7 +271,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 							}
 							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + " will " + (bt.isSentToConole()?"now":"no longer") + " send to the console.");
 						} else if (MiscUtils.eq(opt, "colorconsolemessages", "colorconsole", "consolecolor", "colorconsole")) {
-							if (!perm(sender, "set.colorconsole")) {
+							if (!mod.perm(sender, "set.colorconsole")) {
 								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 								return;
 							}
@@ -285,7 +287,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 							}
 							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + " will " + (bt.isConsoleColorized()?"now":"no longer") + " color console messages.");
 						} else if (MiscUtils.eq(opt, "sendtoplayers", "sendplayers")) {
-							if (!perm(sender, "set.sendtoplayers")) {
+							if (!mod.perm(sender, "set.sendtoplayers")) {
 								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 								return;
 							}
@@ -301,49 +303,49 @@ public class CarbonNewsCommand extends ModuleCmd {
 							}
 							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + " will " + (bt.isSentToPlayers()?"now":"no longer") + " send to players.");
 						} else {
-							if (perm(sender, allSetPerms)) {
+							if (mod.perm(sender, allSetPerms)) {
 								String opts = "";
-								if (perm(sender, "set.enabled"))
+								if (mod.perm(sender, "set.enabled"))
 									opts += (opts.equals("")?"enabled":", enabled");
-								if (perm(sender, "set.delay"))
+								if (mod.perm(sender, "set.delay"))
 									opts += (opts.equals("")?"delay":", delay");
-								if (perm(sender, "set.requireperms"))
+								if (mod.perm(sender, "set.requireperms"))
 									opts += (opts.equals("")?"requireperms":", requireperms");
-								if (perm(sender, "set.prefix"))
+								if (mod.perm(sender, "set.prefix"))
 									opts += (opts.equals("")?"prefix":", prefix");
-								if (perm(sender, "set.postfix"))
+								if (mod.perm(sender, "set.postfix"))
 									opts += (opts.equals("")?"postfix":", postfix");
-								if (perm(sender, "set.random"))
+								if (mod.perm(sender, "set.random"))
 									opts += (opts.equals("")?"random":", random");
-								if (perm(sender, "set.sendtoconsole"))
+								if (mod.perm(sender, "set.sendtoconsole"))
 									opts += (opts.equals("")?"sendtoconsole":", sendtoconsole");
-								if (perm(sender, "set.colorconsole"))
+								if (mod.perm(sender, "set.colorconsole"))
 									opts += (opts.equals("")?"colorconsole":", colorconsole");
-								if (perm(sender, "set.sendtoplayer"))
+								if (mod.perm(sender, "set.sendtoplayer"))
 									opts += (opts.equals("")?"sendtoplayer":", sendtoplayer");
 								sender.sendMessage(Clr.AQUA + "Available set options: " + opts);
 							}
 						}
 					} else {
-						if (perm(sender, allSetPerms)) {
+						if (mod.perm(sender, allSetPerms)) {
 							String opts = "";
-							if (perm(sender, "set.enabled"))
+							if (mod.perm(sender, "set.enabled"))
 								opts += (opts.equals("")?"enabled":", enabled");
-							if (perm(sender, "set.delay"))
+							if (mod.perm(sender, "set.delay"))
 								opts += (opts.equals("")?"delay":", delay");
-							if (perm(sender, "set.requireperms"))
+							if (mod.perm(sender, "set.requireperms"))
 								opts += (opts.equals("")?"requireperms":", requireperms");
-							if (perm(sender, "set.prefix"))
+							if (mod.perm(sender, "set.prefix"))
 								opts += (opts.equals("")?"prefix":", prefix");
-							if (perm(sender, "set.postfix"))
+							if (mod.perm(sender, "set.postfix"))
 								opts += (opts.equals("")?"postfix":", postfix");
-							if (perm(sender, "set.random"))
+							if (mod.perm(sender, "set.random"))
 								opts += (opts.equals("")?"random":", random");
-							if (perm(sender, "set.sendtoconsole"))
+							if (mod.perm(sender, "set.sendtoconsole"))
 								opts += (opts.equals("")?"sendtoconsole":", sendtoconsole");
-							if (perm(sender, "set.colorconsole"))
+							if (mod.perm(sender, "set.colorconsole"))
 								opts += (opts.equals("")?"colorconsole":", colorconsole");
-							if (perm(sender, "set.sendtoplayer"))
+							if (mod.perm(sender, "set.sendtoplayer"))
 								opts += (opts.equals("")?"sendtoplayer":", sendtoplayer");
 							sender.sendMessage(Clr.AQUA + "Available set options: " + opts);
 						}
@@ -352,20 +354,20 @@ public class CarbonNewsCommand extends ModuleCmd {
 					HashMap<String, String> rep = new HashMap<String, String>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
-					if (perm(sender, "listsets")) listAvailbleGroups(sender);
+					if (mod.perm(sender, "listsets")) listAvailbleGroups(sender);
 				}
 			} else {
 				sender.sendMessage(CustomMessage.CN_NEEDS_SET.pre());
-				if (perm(sender, "listsets")) listAvailbleGroups(sender);
+				if (mod.perm(sender, "listsets")) listAvailbleGroups(sender);
 			}
 		} else if (MiscUtils.eq(args[0], "addmessage", "addm", "am")) { // '/cn addm <set> <msg>'
-			if (!perm(sender, "addmessage")) {
+			if (!mod.perm(sender, "addmessage")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
 			if (args.length < 2) {
 				sender.sendMessage(CustomMessage.CN_NEEDS_SET.pre());
-				if (perm(sender, "listsets")) listAvailbleGroups(sender);
+				if (mod.perm(sender, "listsets")) listAvailbleGroups(sender);
 				return;
 			}
 			if (args.length < 3) {
@@ -383,18 +385,18 @@ public class CarbonNewsCommand extends ModuleCmd {
 					HashMap<String, String> rep = new HashMap<String, String>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
-					if (perm(sender, "listsets"))
+					if (mod.perm(sender, "listsets"))
 						listAvailbleGroups(sender);
 				}
 			}
 		} else if (MiscUtils.eq(args[0], "removemessage", "removem", "deletemessage", "deletem", "delmessage", "delm", "rm", "dm")) { // '/cn removem <set> <msgID>'
-			if (!perm(sender, "removemessage")) {
+			if (!mod.perm(sender, "removemessage")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
 			if (args.length < 2) {
 				sender.sendMessage(CustomMessage.CN_NEEDS_SET.pre());
-				if (perm(sender, "listsets"))
+				if (mod.perm(sender, "listsets"))
 					listAvailbleGroups(sender);
 				return;
 			}
@@ -427,18 +429,18 @@ public class CarbonNewsCommand extends ModuleCmd {
 					HashMap<String, String> rep = new HashMap<String, String>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
-					if (perm(sender, "listsets"))
+					if (mod.perm(sender, "listsets"))
 						listAvailbleGroups(sender);
 				}
 			}
 		} else if (MiscUtils.eq(args[0], "setmessage", "setm", "sm", "udpatemessage", "updatem", "um")) { // '/cn setm <set> <msgID> <newMsg>'
-			if (!perm(sender, "setmessage")) {
+			if (!mod.perm(sender, "setmessage")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
 			if (args.length < 2) {
 				sender.sendMessage(CustomMessage.CN_NEEDS_SET.pre());
-				if (perm(sender, "listsets"))
+				if (mod.perm(sender, "listsets"))
 					listAvailbleGroups(sender);
 				return;
 			}
@@ -469,18 +471,18 @@ public class CarbonNewsCommand extends ModuleCmd {
 					HashMap<String, String> rep = new HashMap<String, String>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
-					if (perm(sender, "listsets"))
+					if (mod.perm(sender, "listsets"))
 						listAvailbleGroups(sender);
 				}
 			}
 		} else if (MiscUtils.eq(args[0], "addset", "addg", "ag")) { // '/cn addg <set>'
-			if (!perm(sender, "addset")) {
+			if (!mod.perm(sender, "addset")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
 			if (args.length < 2) {
 				sender.sendMessage(CustomMessage.CN_NEEDS_SET.pre());
-				if (perm(sender, "listsets"))
+				if (mod.perm(sender, "listsets"))
 					listAvailbleGroups(sender);
 				return;
 			}
@@ -493,13 +495,13 @@ public class CarbonNewsCommand extends ModuleCmd {
 			boolean pl = BroadcastTask.taskListSize() != 1;
 			sender.sendMessage(Clr.GRAY + "Message set '" + args[1] + "' created. " + BroadcastTask.taskListSize() + " set" + (pl?"s":"") +  " now exist" + (pl?"":"s") + ".");
 		} else if (MiscUtils.eq(args[0], "removeset", "removeg", "deleteset", "deleteg", "delset", "delg", "rg", "dg")) { // '/cn removeg <set>'
-			if (!perm(sender, "removeset")) {
+			if (!mod.perm(sender, "removeset")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
 			if (args.length < 2) {
 				sender.sendMessage(CustomMessage.CN_NEEDS_SET.pre());
-				if (perm(sender, "listsets"))
+				if (mod.perm(sender, "listsets"))
 					listAvailbleGroups(sender);
 				return;
 			}
@@ -511,7 +513,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 			boolean pl = BroadcastTask.taskListSize() != 1;
 			sender.sendMessage(Clr.GRAY + "Message set '" + args[1] + "' removed. " + BroadcastTask.taskListSize() + " set" + (pl?"s":"") +  " now exist" + (pl?"":"s") + ".");
 		} else if (MiscUtils.eq(args[0], "broadcast", "bcast", "bc")) { // '/cn bcast <set> <msgID>'
-			if (!perm(sender, "broadcast")) {
+			if (!mod.perm(sender, "broadcast")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
@@ -542,7 +544,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 					HashMap<String, String> rep = new HashMap<String, String>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
-					if (perm(sender, "listsets"))
+					if (mod.perm(sender, "listsets"))
 						listAvailbleGroups(sender);
 				}
 			}
@@ -553,12 +555,12 @@ public class CarbonNewsCommand extends ModuleCmd {
 	}
 
 	private void printHelp(CommandSender sender) {
-		if (!MiscUtils.perm(sender, allPerms) && !perm(sender, "info")) {
+		if (!mod.perm(sender, allPerms) && !mod.perm(sender, "info")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
 		CustomMessage.printHeader(sender, "CarbonNews");
-		if (perm(sender, "info")) {
+		if (mod.perm(sender, "info")) {
 			int ts = BroadcastTask.taskListSize(), enabled = 0, toPlayers = 0, toConsole = 0;
 			sender.sendMessage(Clr.DARKAQUA + "" + ts + " sets currently loaded");
 			for (BroadcastTask bt : BroadcastTask.getTasks()) {
@@ -570,40 +572,34 @@ public class CarbonNewsCommand extends ModuleCmd {
 			sender.sendMessage(Clr.DARKAQUA + "" + toPlayers + "/" + ts + " sets shown to players");
 			sender.sendMessage(Clr.DARKAQUA + "" + toConsole + "/" + ts + " sets shown to console");
 		}
-		if (perm(sender, allPerms)) {
+		if (mod.perm(sender, allPerms)) {
 			CustomMessage.printDivider(sender);
-			sf(sender, new String[]{"set.enabled"}, "toggle <set> [on|off]", "Toggles a message set on or off");
-			sf(sender, new String[]{"reload"}, "reload", "Reloads CarbonNews");
-			sf(sender, new String[]{"setinfo"}, "info <set>", "Lists info about a message set");
-			sf(sender, new String[]{"listsets"}, "list", "Lists message sets");
-			sf(sender, new String[]{"listmessages"}, "listmessages <set>", "List messages in a set");
-			sf(sender, new String[]{"addmessage"}, "addmessage <set> <msg>", "Adds a message to a set");
-			sf(sender, new String[]{"removemessage"}, "removemessage <set> <msgID>", "Removes a message from a set");
-			sf(sender, new String[]{"setmessage"}, "setmessage <set> <msgID> <newMsg>", "Sets a message in a set");
-			sf(sender, new String[]{"addset"}, "addset <set>", "Adds a blank message set");
-			sf(sender, new String[]{"removeset"}, "removeset <set>", "Removes a message set");
+			sf(sender, "set.enabled", "toggle <set> [on|off]", "Toggles a message set on or off");
+			sf(sender, "reload", "reload", "Reloads CarbonNews");
+			sf(sender, "setinfo", "info <set>", "Lists info about a message set");
+			sf(sender, "listsets", "list", "Lists message sets");
+			sf(sender, "listmessages", "listmessages <set>", "List messages in a set");
+			sf(sender, "addmessage", "addmessage <set> <msg>", "Adds a message to a set");
+			sf(sender, "removemessage", "removemessage <set> <msgID>", "Removes a message from a set");
+			sf(sender, "setmessage", "setmessage <set> <msgID> <newMsg>", "Sets a message in a set");
+			sf(sender, "addset", "addset <set>", "Adds a blank message set");
+			sf(sender, "removeset", "removeset <set>", "Removes a message set");
 			sf(sender, allSetPerms, "set <set> <setting> <value>", "Sets message set options");
 		}
 		CustomMessage.printFooter(sender);
 	}
 
-	private void sf(CommandSender sender, String[] perm, String args, String desc) {
-		if (perm(sender, perm))
-			sender.sendMessage(String.format(Clr.AQUA + "/cn %s " + Clr.DARKAQUA + " - %s", args, desc));
+	private void sf(CommandSender s, String[] p, String a, String d) {
+		String f = Clr.AQUA + "/cn %s " + Clr.DARKAQUA + " - %s";
+		mod.sendFormatted(s, f, p, new String[] {a,d});
 	}
+	private void sf(CommandSender s, String p, String a, String d) { sf(s, new String[] {p}, a, d); }
 
 	private void listAvailbleGroups(CommandSender sender) {
 		String gList = "";
 		for (BroadcastTask bt : BroadcastTask.getTasks())
 			gList += Clr.GRAY + (gList.equals("")?"":", ") + (bt.isEnabled()?Clr.LIME:Clr.RED) + bt.getSetName();
 		sender.sendMessage(Clr.AQUA + "Available sets: " + ((gList.length()>0)?gList:Clr.GRAY + "No sets"));
-	}
-
-	private boolean perm(CommandSender sender, String... nodes) {
-		for (String n : nodes)
-			if (MiscUtils.perm(sender, "carbonkit.news." + n))
-				return true;
-		return false;
 	}
 
 }

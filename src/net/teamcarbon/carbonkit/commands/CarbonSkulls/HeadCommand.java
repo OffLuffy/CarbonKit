@@ -28,13 +28,12 @@ public class HeadCommand extends ModuleCmd {
 			sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 			return;
 		}
-		if (!MiscUtils.perm(sender, "carbonkit.skullshop.skull") && !MiscUtils.perm(sender, "carbonkit.skullshop.skull.free")) {
+		if (!mod.perm(sender, "skull") && !mod.perm(sender, "skull.free")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
-		double price = CarbonKit.getDefConfig().getDouble("CarbonSkulls.buy-price", 2000.0);
-		if (MiscUtils.perm(sender, "carbonkit.skullshop.skull.free") || price < 0)
-			price = 0;
+		double price = mod.getConfig().getDouble("buy-price", 2000.0);
+		if (mod.perm(sender, "skull.free") || price < 0) price = 0;
 		if (args.length > 0) {
 			String pName = args[0];
 			OfflinePlayer opl = MiscUtils.getPlayer(args[0], CarbonKit.checkOffline);
@@ -56,11 +55,11 @@ public class HeadCommand extends ModuleCmd {
 					((Player) sender).getInventory().addItem(skull);
 					HashMap<String, String> rep = new HashMap<String, String>();
 					rep.put("{SKULLOWNER}", pName);
-					if (price <= 0.0 || MiscUtils.perm(sender, "carbonkit.skullshop.skull.free")) {
-						sender.sendMessage(MiscUtils.massReplace(CustomMessage.SS_SKULL_GIVEN_FREE.pre(), rep));
+					if (price <= 0.0 || mod.perm(sender, "skull.free")) {
+						sender.sendMessage(CustomMessage.SS_SKULL_GIVEN_FREE.pre(rep));
 					} else {
 						rep.put("{PRICE}", price + "");
-						sender.sendMessage(MiscUtils.massReplace(CustomMessage.SS_SKULL_GIVEN.pre(), rep));
+						sender.sendMessage(CustomMessage.SS_SKULL_GIVEN.pre(rep));
 					}
 				} else {
 					sender.sendMessage(CustomMessage.SS_NOT_ENOUGH_MONEY.pre());
@@ -69,26 +68,25 @@ public class HeadCommand extends ModuleCmd {
 				sender.sendMessage(CustomMessage.SS_INVENTORY_FULL.pre());
 			}
 		} else {
-			double p = CarbonKit.getDefConfig().getDouble("CarbonSkulls.price", 50000);
+			double up = mod.getConfig().getDouble("update-price", 2000.0);
 			CustomMessage.printHeader(sender, "CarbonSkulls");
-			if (MiscUtils.perm(sender, "carbonkit.skullshop.skull.free") || price <= 0)
+			if (mod.perm(sender, "skull.free") || price <= 0)
 				sender.sendMessage(Clr.AQUA + "/skull <player>" + Clr.DARKAQUA + " - Get a player's head");
-			else if (MiscUtils.perm(sender, "carbonkit.skullshop.skull"))
-				sender.sendMessage(Clr.AQUA + "/skull <player>" + Clr.DARKAQUA + " - Buy a player's head" + ((price > 0)?" for $" + price:""));
-			if (MiscUtils.perm(sender, "carbonkit.skullshop.getskull")) {
-				if (MiscUtils.perm(sender, "carbonkit.skullshop.skull.free") || price <= 0)
+			else if (mod.perm(sender, "skull"))
+				sender.sendMessage(Clr.AQUA + "/skull <player>" + Clr.DARKAQUA + " - Buy a player's head for $" + price);
+			if (mod.perm(sender, "getskull")) {
+				if (mod.perm(sender, "skull.free") || price <= 0)
 					sender.sendMessage(Clr.AQUA + "/gskull" + Clr.DARKAQUA + " - Get a bookmarked player head");
 				else
-					sender.sendMessage(Clr.AQUA + "/gskull" + Clr.DARKAQUA + " - Buy a bookmarked player head" + ((price > 0)?" for $" + price:""));
+					sender.sendMessage(Clr.AQUA + "/gskull" + Clr.DARKAQUA + " - Buy a bookmarked player head for $" + price);
 			}
-			if (MiscUtils.perm(sender, "carbonkit.skullshop.updateskull")) {
-				if (MiscUtils.perm(sender, "carbonkit.skullshop.skull.free") || price <= 0)
+			if (mod.perm(sender, "updateskull")) {
+				if (mod.perm(sender, "skull.free") || up <= 0)
 					sender.sendMessage(Clr.AQUA + "/uskull <player>" + Clr.DARKAQUA + " - Update the skin of a player head");
 				else
-					sender.sendMessage(Clr.AQUA + "/uskull <player>" + Clr.DARKAQUA + " - Update the skin of a player head" + ((price > 0)?" for $" + price:""));
+					sender.sendMessage(Clr.AQUA + "/uskull <player>" + Clr.DARKAQUA + " - Update the skin of a player head for $" + up);
 			}
-			if (MiscUtils.perm(sender, "carbonkit.skullshop.getskull"))
-				sender.sendMessage(Clr.GRAY + "Right click a skull to check who it is and bookmark it.");
+			mod.sendFormatted(sender, "%s", "getskull", new String[] {"Right click a skull to check who it is and bookmark it"});
 		}
 	}
 

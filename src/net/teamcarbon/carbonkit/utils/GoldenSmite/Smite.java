@@ -19,6 +19,9 @@ import net.teamcarbon.carbonkit.CarbonKit;
 
 @SuppressWarnings("UnusedDeclaration")
 public class Smite {
+
+	private static CarbonSmiteModule modInst = CarbonSmiteModule.inst;
+
 	public enum SmiteType {
 		AXE, CMD, PROJECTILE;
 		public String lname() { return name().toLowerCase(); }
@@ -59,7 +62,7 @@ public class Smite {
 	}
 	
 	public static void smitePlayer(Player pl, Player vic) {
-		if (MiscUtils.perm(vic, "gsmite.immune.cmd"))
+		if (modInst.perm(vic, "immune.cmd"))
 			pl.sendMessage(Clr.RED + vic.getName() + " is immune!");
 		else {
 			Location effectLocation = vic.getLocation();
@@ -70,15 +73,14 @@ public class Smite {
 	}
 	
 	private static ArrayList<Entity> getTargets(Player pl, Location l, SmiteType smiteMethod) {
-		CarbonSmiteModule mod = CarbonSmiteModule.inst;
 		ArrayList<Entity> entList = new ArrayList<Entity>();
 		boolean host = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.HOSTILE), neut = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.NEUTRAL),
 				pass = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.PASSIVE), tame = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.TAMED),
 				play = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.PLAYER), drop = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.DROP);
 		if (host || neut || pass || tame || play || drop) {
-			if (mod == null) CarbonKit.log.warn("Module is null");
-			if (mod.getConfig() == null) CarbonKit.log.warn("Module config is null");
-			int rad = mod.getConfig().getInt("radius", 6), rng = mod.getConfig().getInt("range", 100) + rad;
+			if (modInst == null) CarbonKit.log.warn("Module is null");
+			if (modInst.getConfig() == null) CarbonKit.log.warn("Module config is null");
+			int rad = modInst.getConfig().getInt("radius", 6), rng = modInst.getConfig().getInt("range", 100) + rad;
 			ArrayList<Entity> ents = new ArrayList<Entity>();
 			for (Entity e : pl.getNearbyEntities(rng, rng, rng)) {
 				if ((EntHelper.isHostile(e.getType()) && host) || (EntHelper.isNeutral(e.getType()) && neut) ||(EntHelper.isPassive(e.getType()) && pass))
@@ -89,7 +91,7 @@ public class Smite {
 					ents.add(e);
 				if (EntHelper.isPlayer(e.getType()) && play) {
 					Player epl = (Player)e;
-					if (!MiscUtils.perm(epl, "carbonkit.goldensmite.immune." + smiteMethod.lname()))
+					if (!modInst.perm(epl, "immune." + smiteMethod.lname()))
 						ents.add(e);
 					else
 						ents.add(e);

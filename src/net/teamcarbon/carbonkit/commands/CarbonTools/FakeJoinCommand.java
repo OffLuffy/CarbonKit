@@ -15,17 +15,18 @@ import java.util.HashMap;
 
 @SuppressWarnings("UnusedDeclaration")
 public class FakeJoinCommand extends ModuleCmd {
+	private CarbonToolsModule modInst = CarbonToolsModule.inst;
 	public FakeJoinCommand(Module module) { super(module, "fakejoin"); }
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!MiscUtils.perm(sender, "carbonkit.misc.fakejoin", "carbonkit.misc.fakejoin.others")) {
+		if (!mod.perm(sender, "fakejoin", "fakejoin.others")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
 		String user, m, me, addr = NumUtils.rand(16, 255) + "." + NumUtils.rand(16,255) + "." + NumUtils.rand(16,255) + "." + NumUtils.rand(16,255);
 		HashMap<String, String> rep = new HashMap<String, String>();
 		if (args.length > 0) {
-			if (!MiscUtils.perm(sender, "carbonkit.misc.fakejoin.others")) {
+			if (!mod.perm(sender, "fakejoin.others")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
@@ -36,7 +37,7 @@ public class FakeJoinCommand extends ModuleCmd {
 					addr = CarbonToolsModule.addressMap.get(pl.getUniqueId());
 			} else user = args[0];
 		} else {
-			if (!MiscUtils.perm(sender, "carbonkit.misc.fakejoin")) {
+			if (!mod.perm(sender, "fakejoin")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
@@ -49,11 +50,11 @@ public class FakeJoinCommand extends ModuleCmd {
 		rep.put("{STATUS}", "");
 		rep.put("{PLAYER}", user);
 		rep.put("{IP}", addr);
-		m = MiscUtils.massReplace(CustomMessage.MISC_JOIN.noPre(), rep);
-		me = MiscUtils.massReplace(CustomMessage.MISC_JOIN_EXT.noPre(), rep);
+		m = CustomMessage.MISC_JOIN.noPre(rep);
+		me = CustomMessage.MISC_JOIN_EXT.noPre(rep);
 		Player p = (Player)sender;
 		String statuses = "";
 		for (Player opl : CarbonKit.inst.getServer().getOnlinePlayers())
-			if(MiscUtils.perm(opl, "carbonkit.misc.joinmsg.extended")) opl.sendMessage(me); else opl.sendMessage(m);
+			if(modInst.perm(opl, "joinmsg.extended")) opl.sendMessage(me); else opl.sendMessage(m);
 	}
 }

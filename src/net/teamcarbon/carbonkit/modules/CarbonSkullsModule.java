@@ -20,9 +20,9 @@ import java.util.HashMap;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonSkullsModule extends Module {
+	public static CarbonSkullsModule inst;
 	public CarbonSkullsModule() throws DuplicateModuleException { super("CarbonSkulls", "headshop", "sshop", "hshop", "ss"); }
 	public static HashMap<Player, String> getSkulls = new HashMap<Player, String>();
-	public static CarbonSkullsModule inst;
 	public void initModule() {
 		inst = this;
 		if (!getSkulls.isEmpty()) getSkulls.clear();
@@ -52,19 +52,19 @@ public class CarbonSkullsModule extends Module {
 		if (!isEnabled()) return;
 		if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 			if (e.getClickedBlock().getState() instanceof Skull) {
-				if (MiscUtils.perm(e.getPlayer(), "carbonkit.skullshop.check")) {
+				if (perm(e.getPlayer(), "check")) {
 					Skull sb = (Skull)e.getClickedBlock().getState();
 					if (sb.hasOwner()) {
 						getSkulls.put(e.getPlayer(), sb.getOwner());
 						HashMap<String, String> rep = new HashMap<String, String>();
 						rep.put("{SKULLOWNER}", sb.getOwner());
-						if (!MiscUtils.perm(e.getPlayer(), "carbonkit.skullshop.getskull", "carbonkit.skullshop.skull.free"))
-							e.getPlayer().sendMessage(MiscUtils.massReplace(CustomMessage.SS_SKULL_CHECK.pre(), rep));
-						if (MiscUtils.perm(e.getPlayer(), "carbonkit.skullshop.skull.free") || getConfig().getDouble("price", 5000) <= 0) {
-							e.getPlayer().sendMessage(MiscUtils.massReplace(CustomMessage.SS_GET_SKULL_FREE.pre(), rep));
-						} else if (MiscUtils.perm(e.getPlayer(), "carbonkit.skullshop.getskull")) {
+						if (!perm(e.getPlayer(), "getskull", "skull.free"))
+							e.getPlayer().sendMessage(CustomMessage.SS_SKULL_CHECK.pre(rep));
+						if (perm(e.getPlayer(), "skull.free") || getConfig().getDouble("price", 5000) <= 0) {
+							e.getPlayer().sendMessage(CustomMessage.SS_GET_SKULL_FREE.pre(rep));
+						} else if (perm(e.getPlayer(), "getskull")) {
 							rep.put("{PRICE}", getConfig().getDouble("price", 5000) + "");
-							e.getPlayer().sendMessage(MiscUtils.massReplace(CustomMessage.SS_GET_SKULL.pre(), rep));
+							e.getPlayer().sendMessage(CustomMessage.SS_GET_SKULL.pre(rep));
 						}
 					}
 				}

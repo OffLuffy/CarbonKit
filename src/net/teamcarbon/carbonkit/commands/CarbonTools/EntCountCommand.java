@@ -3,12 +3,12 @@ package net.teamcarbon.carbonkit.commands.CarbonTools;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import net.teamcarbon.carbonkit.CarbonKit;
+import net.teamcarbon.carbonkit.modules.CarbonToolsModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.EntHelper;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import net.teamcarbon.carbonlib.Misc.NumUtils;
 import net.teamcarbon.carbonlib.Misc.TypeUtils;
 import org.bukkit.Bukkit;
@@ -27,6 +27,8 @@ import java.util.List;
 @SuppressWarnings("UnusedDeclaration")
 public class EntCountCommand extends ModuleCmd {
 
+	private CarbonToolsModule modInst = CarbonToolsModule.inst;
+
 	public EntCountCommand(Module module) { super(module, "entitycount"); }
 
 	@Override
@@ -40,7 +42,7 @@ public class EntCountCommand extends ModuleCmd {
 		if (CarbonKit.pm.isPluginEnabled("WorldEdit")) {
 			if (args.length > 0) {
 				if (TypeUtils.isDouble(args[0])) {
-					if (!MiscUtils.perm(p, "carbonkit.misc.entcount.radius")) {
+					if (!modInst.perm(p, "entcount.radius")) {
 						sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 						return;
 					}
@@ -51,7 +53,7 @@ public class EntCountCommand extends ModuleCmd {
 					p.sendMessage(Clr.GRAY + "Entity count in radius: " + r);
 					printResults(p, ents);
 				} else if (Bukkit.getWorld(args[0]) != null) {
-					if (!MiscUtils.perm(p, "carbonkit.misc.entcount.world")) {
+					if (!modInst.perm(p, "entcount.world")) {
 						sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 						return;
 					}
@@ -66,7 +68,7 @@ public class EntCountCommand extends ModuleCmd {
 				WorldEditPlugin we = (WorldEditPlugin)CarbonKit.pm.getPlugin("WorldEdit");
 				Selection sel = we.getSelection(p);
 				if (sel != null) {
-					if (!MiscUtils.perm(p, "carbonkit.misc.entcount.selection")) {
+					if (!modInst.perm(p, "entcount.selection")) {
 						sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 						return;
 					}
@@ -86,7 +88,7 @@ public class EntCountCommand extends ModuleCmd {
 					p.sendMessage(Clr.GRAY + "Entity count in selection");
 					printResults(p, ents);
 				} else {
-					if (!MiscUtils.perm(p, "carbonkit.misc.entcount.world")) {
+					if (!modInst.perm(p, "entcount.world")) {
 						sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 						return;
 					}

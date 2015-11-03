@@ -41,9 +41,9 @@ public class CarbonKit extends JavaPlugin implements Listener {
 			ca = new ConfigAccessor(CarbonKit.inst, fn);
 			init = true;
 		}
-		public FileConfiguration getConfig() { return ca.getConfig(); }
-		public void saveConfig() { ca.saveConfig(); }
-		public void reloadConfig() { ca.reloadConfig(); }
+		public FileConfiguration getConfig() { return ca.config(); }
+		public void saveConfig() { ca.save(); }
+		public void reloadConfig() { ca.reload(); }
 		public boolean isInitialized() { return init; }
 	}
 	public static CarbonKit inst;
@@ -63,9 +63,9 @@ public class CarbonKit extends JavaPlugin implements Listener {
 		NMS_VER = NMS_VER.substring(NMS_VER.lastIndexOf('.') + 1);
 		modules = new ArrayList<Class<? extends Module>>();
 		Collections.addAll(modules, CarbonCoreModule.class, CarbonCraftingModule.class,
-				CarbonWatcherModule.class, EssentialsAssistModule.class, CarbonPerksModule.class,
+				CarbonWatcherModule.class, CarbonEssentialsModule.class, CarbonPerksModule.class,
 				CarbonSmiteModule.class, CarbonToolsModule.class, CarbonSkullsModule.class, CarbonVoteModule.class,
-				CarbonTriviaModule.class, CarbonNewsModule.class, CarbonTeleportModule.class);
+				CarbonTriviaModule.class, CarbonNewsModule.class/*, EssentialsAssistModule.class*/);
 		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
 			public void run() {
 				enablePlugin();

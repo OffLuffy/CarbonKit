@@ -21,7 +21,7 @@ public class AnimalInfoCommand extends ModuleCmd {
 			sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 			return;
 		}
-		if (!MiscUtils.perm(sender, "carbonkit.misc.animalinfo")) {
+		if (!mod.perm(sender, "animalinfo")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}

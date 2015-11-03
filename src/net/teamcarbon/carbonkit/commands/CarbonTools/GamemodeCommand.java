@@ -65,16 +65,16 @@ public class GamemodeCommand extends ModuleCmd {
 				HashMap<String, String> rep = new HashMap<String, String>();
 				rep.put("{MODE}", m.lname());
 				if (args.length > 1) {
-					if (MiscUtils.perm(sender, "carbonkit.gamemode.others." + m.lname())) {
+					if (mod.perm(sender, "gamemode.others." + m.lname())) {
 						OfflinePlayer p = MiscUtils.getPlayer(args[1], false);
 						if (p != null && p.isOnline()) {
 							((Player) p).setGameMode(m.getGameMode());
 							rep.put("{USER}", p.getName());
 							if (!p.equals(sender)) {
-								sender.sendMessage(MiscUtils.massReplace(CustomMessage.MISC_MODE_SET_OTHER.pre(), rep));
-								((Player) p).sendMessage(MiscUtils.massReplace(CustomMessage.MISC_MODE_CHANGE.pre(), rep));
+								sender.sendMessage(CustomMessage.MISC_MODE_SET_OTHER.pre(rep));
+								((Player) p).sendMessage(CustomMessage.MISC_MODE_CHANGE.pre(rep));
 							} else {
-								sender.sendMessage(MiscUtils.massReplace(CustomMessage.MISC_MODE_SET_SELF.pre(), rep));
+								sender.sendMessage(CustomMessage.MISC_MODE_SET_SELF.pre(rep));
 							}
 						} else {
 							sender.sendMessage(CustomMessage.GEN_PLAYER_NOT_FOUND.noPre());
@@ -86,9 +86,9 @@ public class GamemodeCommand extends ModuleCmd {
 					if (!(sender instanceof Player)) {
 						sender.sendMessage(Clr.RED + "Usage: /gm [mode] [user]");
 					} else {
-						if (MiscUtils.perm(sender, "carbonkit.gamemode.self." + m.lname())) {
+						if (mod.perm(sender, "gamemode.self." + m.lname())) {
 							((Player) sender).setGameMode(m.getGameMode());
-							sender.sendMessage(MiscUtils.massReplace(CustomMessage.MISC_MODE_SET_SELF.pre(), rep));
+							sender.sendMessage(CustomMessage.MISC_MODE_SET_SELF.pre(rep));
 						} else {
 							sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 						}
@@ -96,23 +96,28 @@ public class GamemodeCommand extends ModuleCmd {
 				}
 			}
 		} else {
-			String pre = "carbonkit.gamemode.", o = "other.", s = "self.",
-				m0 = "survival", m1 = "creative", m2 = "adventure", m3 = "spectator";
-			if (MiscUtils.perm(sender, pre+s+m0, pre+s+m1, pre+s+m2, pre+s+m3)) {
-				sender.sendMessage(Clr.AQUA + "/gm [mode]" + Clr.DARKAQUA + " - Set your own mode");
-				sender.sendMessage(Clr.NOTE + "Allowed modes:"
-						+ (MiscUtils.perm(sender, pre + s + m0) ? " survival" : "")
-						+ (MiscUtils.perm(sender, pre + s + m1) ? " creative" : "")
-						+ (MiscUtils.perm(sender, pre + s + m2) ? " adventure" : "")
-						+ (MiscUtils.perm(sender, pre + s + m3) ? " spectator" : ""));
+			String[] sPerms = new String[GameMode.values().length], oPerms = new String[GameMode.values().length];
+			for (int i = 0; i < GameMode.values().length; i++) {
+				sPerms[i] = "gamemode.self." + GameMode.values()[i].name().toLowerCase();
+				oPerms[i] = "gamemode.other." + GameMode.values()[i].name().toLowerCase();
 			}
-			if (MiscUtils.perm(sender, pre+o+m0, pre+o+m1, pre+o+m2, pre+o+m3)) {
+			if (mod.perm(sender, sPerms)) {
+				sender.sendMessage(Clr.AQUA + "/gm [mode]" + Clr.DARKAQUA + " - Set your own mode");
+				String modes = Clr.NOTE + "Allowed modes:";
+				for (GameMode gm : GameMode.values()) {
+					String gml = gm.name().toLowerCase();
+					modes += (mod.perm(sender, "gamemode.self." + gml) ? " " + gml : "");
+				}
+				sender.sendMessage(modes);
+			}
+			if (mod.perm(sender, oPerms)) {
 				sender.sendMessage(Clr.AQUA + "/gm [mode] [user]" + Clr.DARKAQUA + " - Set another user's mode");
-				sender.sendMessage(Clr.NOTE + "Allowed modes:"
-						+ (MiscUtils.perm(sender, pre+o+m0)?" survival":"")
-						+ (MiscUtils.perm(sender, pre+o+m1)?" creative":"")
-						+ (MiscUtils.perm(sender, pre+o+m2)?" adventure":"")
-						+ (MiscUtils.perm(sender, pre+o+m3)?" spectator":""));
+				String modes = Clr.NOTE + "Allowed modes:";
+				for (GameMode gm : GameMode.values()) {
+					String gml = gm.name().toLowerCase();
+					modes += (mod.perm(sender, "gamemode.other." + gml) ? " " + gml : "");
+				}
+				sender.sendMessage(modes);
 			}
 		}
 	}

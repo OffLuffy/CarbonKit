@@ -27,20 +27,20 @@ public class OnlineTimeCommand extends ModuleCmd {
 			OfflinePlayer p = MiscUtils.getPlayer(args[0], CarbonKit.checkOffline);
 			if (p != null) {
 				if (sender.equals(p)) {
-					if (!MiscUtils.perm(sender, "carbonkit.misc.onlinetime.self")) {
+					if (!mod.perm(sender, "onlinetime.self")) {
 						sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 						return;
 					}
 					displayOnlineTime(sender, p);
 				} else {
-					if (!MiscUtils.perm(sender, "carbonkit.misc.onlinetime.others")) {
+					if (!mod.perm(sender, "onlinetime.others")) {
 						sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 						return;
 					}
 					displayOnlineTime(sender, p);
 				}
 			} else {
-				if (MiscUtils.perm(sender, "carbonkit.misc.onlinetime.others")) {
+				if (mod.perm(sender, "onlinetime.others")) {
 					sender.sendMessage(CustomMessage.GEN_PLAYER_NOT_FOUND.noPre());
 				} else {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
@@ -51,12 +51,12 @@ public class OnlineTimeCommand extends ModuleCmd {
 				sender.sendMessage(Clr.RED + "Console usage: /" + label + " <user>");
 				return;
 			}
-			if (!MiscUtils.perm(sender, "carbonkit.misc.onlinetime.self")) {
+			if (!mod.perm(sender, "onlinetime.self")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
 			displayOnlineTime(sender, (Player) sender);
-			if (MiscUtils.perm(sender, "carbonkit.misc.onlinetime.others")) {
+			if (mod.perm(sender, "onlinetime.others")) {
 				sender.sendMessage(Clr.NOTE + "To view another user's online time, use "
 						+ Clr.fromChars("3o") + "/ot <user>");
 			}

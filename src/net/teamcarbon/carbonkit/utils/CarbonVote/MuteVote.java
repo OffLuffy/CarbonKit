@@ -30,23 +30,20 @@ public class MuteVote extends TargetedVote {
 			rep.put("{DURATION}", "");
 		}
 		rep.put("{TARGET}", target.getName());
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList((Player)target),
-				MiscUtils.massReplace(CustomMessage.CV_MUTE_VOTE_PASSED.pre(), rep));
-		if (target.isOnline())
-			((Player)target).sendMessage(MiscUtils.massReplace(CustomMessage.CV_MUTE_MESSAGE.pre(), rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList((Player)target), CustomMessage.CV_MUTE_VOTE_PASSED.pre(rep));
+		if (target.isOnline()) ((Player)target).sendMessage(CustomMessage.CV_MUTE_MESSAGE.pre(rep));
 	}
 	protected void voteFail() {
 		HashMap<String, String> rep = new HashMap<String, String>();
 		rep.put("{YESPERCENT}", String.format(Locale.ENGLISH, "%.2f", getAgreePercentage(true)));
 		rep.put("{NOPERCENT}", String.format(Locale.ENGLISH, "%.2f", (100 - getAgreePercentage(true))));
 		rep.put("{VOTETYPE}", "Mute");
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList((Player)target),
-				MiscUtils.massReplace(CustomMessage.CV_VOTE_FAILED.pre(),rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList((Player)target), CustomMessage.CV_VOTE_FAILED.pre(rep));
 	}
 	protected void broadcastStart() {
 		HashMap<String, String> rep = new HashMap<String, String>();
 		rep.put("{VOTETYPE}", getTargetedVoteType().lname());
 		rep.put("{VOTEREASON}", "to " + getTargetedVoteType().lname() + " " + target.getName());
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.massReplace(CustomMessage.CV_VOTE_STARTED.pre(), rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_STARTED.pre(rep));
 	}
 }

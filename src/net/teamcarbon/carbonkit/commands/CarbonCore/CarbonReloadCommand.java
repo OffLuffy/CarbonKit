@@ -17,16 +17,17 @@ public class CarbonReloadCommand extends ModuleCmd {
 
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!MiscUtils.perm(sender, "carbonkit.reload")) {
+		if (!mod.perm(sender, "reload")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
 		HashMap<String, String> rep = new HashMap<String, String>();
+		CarbonKit.reloadAllConfigs();
 		if (args.length > 0) {
-			if (Module.getModule(args[0]) != null) {
-				CarbonKit.reloadAllConfigs();
-				Module.getModule(args[0]).reloadModule();
-				rep.put("{MODULE}", Module.getModule(args[0]).getName());
+			Module m = Module.getModule(args[0]);
+			if (m != null) {
+				m.reloadModule();
+				rep.put("{MODULE}", m.getName());
 				sender.sendMessage(CustomMessage.CORE_RELOADED.pre(rep));
 			} else {
 				sender.sendMessage(CustomMessage.CORE_NOT_MODULE.pre());

@@ -16,7 +16,7 @@ public class CarbonTriviaCommand extends ModuleCmd {
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
 		if (args.length > 0) {
 			if (MiscUtils.eq(args[0], "start")) {
-				if (!MiscUtils.perm(sender, "carbonkit.carbontrivia.start")) {
+				if (!mod.perm(sender, "start")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -31,7 +31,7 @@ public class CarbonTriviaCommand extends ModuleCmd {
 				} else { TriviaRound.newTriviaRound(sender); }
 				return;
 			} else if (MiscUtils.eq(args[0], "end")) {
-				if (!MiscUtils.perm(sender, "carbonkit.carbontrivia.end")) {
+				if (!mod.perm(sender, "end")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -42,7 +42,7 @@ public class CarbonTriviaCommand extends ModuleCmd {
 				}
 				return;
 			} else if (MiscUtils.eq(args[0], "cancel")) {
-				if (!MiscUtils.perm(sender, "carbonkit.carbontrivia.cancel")) {
+				if (!mod.perm(sender, "cancel")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -58,13 +58,13 @@ public class CarbonTriviaCommand extends ModuleCmd {
 	}
 
 	private void help(CommandSender sender) {
-		if (MiscUtils.perm(sender, "carbonkit.carbontrivia.help")) {
+		if (mod.perm(sender, "help")) {
 			CustomMessage.printHeader(sender, "CarbonTrivia");
-			if (MiscUtils.perm(sender, "carbonkit.carbontrivia.start"))
+			if (mod.perm(sender, "start"))
 				sender.sendMessage(Clr.LIME + "/ctr start" + Clr.DARKAQUA + " - Start a trivia round");
-			if (MiscUtils.perm(sender, "carbonkit.carbontrivia.end"))
+			if (mod.perm(sender, "end"))
 				sender.sendMessage(Clr.LIME + "/ctr end" + Clr.DARKAQUA + " - End an ongoing trivia round");
-			if (MiscUtils.perm(sender, "carbonkit.carbontrivia.cancel"))
+			if (mod.perm(sender, "cancel"))
 				sender.sendMessage(Clr.LIME + "/ctr cancel" + Clr.DARKAQUA + " - Cancel an ongoing trivia round (no rewards)");
 		} else { sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre()); }
 	}

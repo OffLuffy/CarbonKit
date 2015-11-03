@@ -30,6 +30,7 @@ import java.util.*;
 
 @SuppressWarnings({"UnusedDeclaration", "deprecation"})
 public class CarbonPerksModule extends Module {
+	public static CarbonPerksModule inst;
 	private HashMap<Projectile, Byte> paintballs;
 	private EntityType projType = EntityType.ARROW;
 	public enum TrailEffect {
@@ -87,6 +88,7 @@ public class CarbonPerksModule extends Module {
 	private Random r = new Random(System.currentTimeMillis());
 	public CarbonPerksModule() throws DuplicateModuleException { super("CarbonPerks", "cperks", "cperk", "perks", "perk", "cp"); }
 	public void initModule() {
+		inst = this;
 		addCmd(new TrailCommand(this));
 		for (Player p : Bukkit.getOnlinePlayers()) loadTrailData(p);
 		if (MiscUtils.checkPlugin("Essentials", true)) {
@@ -175,7 +177,7 @@ public class CarbonPerksModule extends Module {
 			Block hit = null;
 			while (i.hasNext()) {
 				hit = i.next();
-				if (!isPermeable(hit.getType())) break;
+				if (!MiscUtils.isPermeable(hit.getType())) break;
 			}
 			if (hit != null) {
 				boolean allow = true;
@@ -205,41 +207,41 @@ public class CarbonPerksModule extends Module {
 
 				boolean changed = false;
 
-				String pre = "carbonkit.perks.paintball.";
+				String pre = "paintball.";
 				byte bd = hit.getData();
 				if (paintballs.get(ent) == (byte)-1) {
 					switch (hit.getType()) {
 						case WOOL:
-							if (!MiscUtils.perm(shooter, pre + "wool.clean")) return;
+							if (!perm(shooter, pre + "wool.clean")) return;
 							changed = bd != (byte) 0;
 							hit.setData((byte)0);
 							break;
 						case CARPET:
-							if (!MiscUtils.perm(shooter, pre + "carpet.clean")) return;
+							if (!perm(shooter, pre + "carpet.clean")) return;
 							changed = bd != (byte) 0;
 							hit.setData((byte) 0);
 							break;
 						case STAINED_GLASS:
-							if (!MiscUtils.perm(shooter, pre + "glass.clean")) return;
+							if (!perm(shooter, pre + "glass.clean")) return;
 							changed = hit.getType() != Material.GLASS || bd != (byte) 0;
 							hit.setType(Material.GLASS);
 							hit.setData((byte) 0);
 							break;
 						case STAINED_GLASS_PANE:
-							if (!MiscUtils.perm(shooter, pre + "thinglass.clean")) return;
+							if (!perm(shooter, pre + "thinglass.clean")) return;
 							changed = hit.getType() != Material.THIN_GLASS || bd != (byte) 0;
 							hit.setType(Material.THIN_GLASS);
 							hit.setData((byte) 0);
 							break;
 						case STAINED_CLAY:
-							if (!MiscUtils.perm(shooter, pre + "clay.clean")) return;
+							if (!perm(shooter, pre + "clay.clean")) return;
 							changed = hit.getType() != Material.HARD_CLAY || bd != (byte) 0;
 							hit.setType(Material.HARD_CLAY);
 							hit.setData((byte) 0);
 							break;
 						case LOG:
 						case LOG_2:
-							if (!MiscUtils.perm(shooter, pre + "logs.clean")) return;
+							if (!perm(shooter, pre + "logs.clean")) return;
 							changed = hit.getType() != Material.LOG || bd != (byte) 0;
 							hit.setType(Material.LOG);
 							hit.setData((byte) (bd%4));
@@ -255,16 +257,16 @@ public class CarbonPerksModule extends Module {
 							break;*/
 						case WOOD_DOUBLE_STEP:
 						case DOUBLE_STEP:
-							if (hit.getType() == Material.DOUBLE_STEP  && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
-							if (!MiscUtils.perm(shooter, pre + "wood.clean")) return;
+							if (hit.getType() == Material.DOUBLE_STEP  && !perm(shooter, pre + "wood.purple")) return;
+							if (!perm(shooter, pre + "wood.clean")) return;
 							changed = hit.getType() != Material.WOOD_DOUBLE_STEP || bd != (byte) 0;
 							hit.setType(Material.WOOD_DOUBLE_STEP);
 							hit.setData((byte) 0);
 							break;
 						case WOOD:
 						case NETHER_BRICK:
-							if (hit.getType() == Material.NETHER_BRICK && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
-							if (!MiscUtils.perm(shooter, pre + "wood.clean")) return;
+							if (hit.getType() == Material.NETHER_BRICK && !perm(shooter, pre + "wood.purple")) return;
+							if (!perm(shooter, pre + "wood.clean")) return;
 							changed = hit.getType() != Material.WOOD || bd != (byte) 0;
 							hit.setType(Material.WOOD);
 							hit.setData((byte) 0);
@@ -274,7 +276,7 @@ public class CarbonPerksModule extends Module {
 						case JUNGLE_FENCE_GATE:
 						case ACACIA_FENCE_GATE:
 						case DARK_OAK_FENCE_GATE:
-							if (!MiscUtils.perm(shooter, pre + "gates.clean")) return;
+							if (!perm(shooter, pre + "gates.clean")) return;
 							changed = hit.getType() != Material.FENCE_GATE;
 							hit.setType(Material.FENCE_GATE);
 							hit.setData(bd);
@@ -285,8 +287,8 @@ public class CarbonPerksModule extends Module {
 						case ACACIA_FENCE:
 						case DARK_OAK_FENCE:
 						case NETHER_FENCE:
-							if (hit.getType() == Material.NETHER_FENCE && !MiscUtils.perm(shooter, pre + "fences.purple")) return;
-							if (!MiscUtils.perm(shooter, pre + "fences.clean")) return;
+							if (hit.getType() == Material.NETHER_FENCE && !perm(shooter, pre + "fences.purple")) return;
+							if (!perm(shooter, pre + "fences.clean")) return;
 							changed = hit.getType() != Material.FENCE;
 							hit.setType(Material.FENCE);
 							hit.setData(bd);
@@ -297,16 +299,16 @@ public class CarbonPerksModule extends Module {
 						case ACACIA_STAIRS:
 						case DARK_OAK_STAIRS:
 						case NETHER_BRICK_STAIRS:
-							if (hit.getType() == Material.NETHER_BRICK_STAIRS && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
-							if (!MiscUtils.perm(shooter, pre + "wood.clean")) return;
+							if (hit.getType() == Material.NETHER_BRICK_STAIRS && !perm(shooter, pre + "wood.purple")) return;
+							if (!perm(shooter, pre + "wood.clean")) return;
 							changed = hit.getType() != Material.WOOD_STAIRS;
 							hit.setType(Material.WOOD_STAIRS);
 							hit.setData(bd);
 							break;
 						case WOOD_STEP:
 						case STEP:
-							if (hit.getType() == Material.STEP && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
-							if (!MiscUtils.perm(shooter, pre + "wood.clean")) return;
+							if (hit.getType() == Material.STEP && !perm(shooter, pre + "wood.purple")) return;
+							if (!perm(shooter, pre + "wood.clean")) return;
 							byte bdm = bd >= 8 ? (byte) 8 : (byte) 0;
 							changed = hit.getType() != Material.WOOD_STEP || bd != (byte) 0;
 							hit.setType(Material.WOOD_STEP);
@@ -317,51 +319,51 @@ public class CarbonPerksModule extends Module {
 				} else {
 					switch (hit.getType()) {
 						case WOOL:
-							if (!MiscUtils.perm(shooter, pre + "wool." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (!perm(shooter, pre + "wool." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							changed = bd != paintballs.get(ent);
 							hit.setData(paintballs.get(ent));
 							break;
 						case CARPET:
-							if (!MiscUtils.perm(shooter, pre + "carpet." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (!perm(shooter, pre + "carpet." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							changed = bd != paintballs.get(ent);
 							hit.setData(paintballs.get(ent));
 							break;
 						case GLASS:
-							if (!MiscUtils.perm(shooter, pre + "glass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (!perm(shooter, pre + "glass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							changed = hit.getType() != Material.STAINED_GLASS || bd != paintballs.get(ent);
 							hit.setType(Material.STAINED_GLASS);
 							hit.setData(paintballs.get(ent));
 							break;
 						case THIN_GLASS:
-							if (!MiscUtils.perm(shooter, pre + "thinglass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (!perm(shooter, pre + "thinglass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							changed = hit.getType() != Material.STAINED_GLASS_PANE || bd != paintballs.get(ent);
 							hit.setType(Material.STAINED_GLASS_PANE);
 							hit.setData(paintballs.get(ent));
 							break;
 						case STAINED_GLASS:
-							if (!MiscUtils.perm(shooter, pre + "glass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (!perm(shooter, pre + "glass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							changed = bd != paintballs.get(ent);
 							hit.setData(paintballs.get(ent));
 							break;
 						case STAINED_GLASS_PANE:
-							if (!MiscUtils.perm(shooter, pre + "thinglass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (!perm(shooter, pre + "thinglass." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							changed = bd != paintballs.get(ent);
 							hit.setData(paintballs.get(ent));
 							break;
 						case HARD_CLAY:
-							if (!MiscUtils.perm(shooter, pre + "clay." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (!perm(shooter, pre + "clay." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							changed = hit.getType() != Material.STAINED_CLAY || bd != paintballs.get(ent);
 							hit.setType(Material.STAINED_CLAY);
 							hit.setData(paintballs.get(ent));
 							break;
 						case STAINED_CLAY:
-							if (!MiscUtils.perm(shooter, pre + "clay." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (!perm(shooter, pre + "clay." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							changed = bd != paintballs.get(ent);
 							hit.setData(paintballs.get(ent));
 							break;
 						case LOG:
 						case LOG_2:
-							if (!MiscUtils.perm(shooter, pre + "logs." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (!perm(shooter, pre + "logs." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							int rotMod = hit.getData() / 4;
 							switch (paintballs.get(ent)) {
 								case 14: // SPRUCE
@@ -427,7 +429,7 @@ public class CarbonPerksModule extends Module {
 						case JUNGLE_FENCE_GATE:
 						case ACACIA_FENCE_GATE:
 						case DARK_OAK_FENCE_GATE:
-							if (!MiscUtils.perm(shooter, pre + "gates." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (!perm(shooter, pre + "gates." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							switch (paintballs.get(ent)) {
 								case 14: // SPRUCE
 									changed = hit.getType() != Material.SPRUCE_FENCE_GATE;
@@ -463,8 +465,8 @@ public class CarbonPerksModule extends Module {
 						case ACACIA_FENCE:
 						case DARK_OAK_FENCE:
 						case NETHER_FENCE:
-							if (hit.getType() == Material.NETHER_FENCE && !MiscUtils.perm(shooter, pre + "fences.purple")) return;
-							if (!MiscUtils.perm(shooter, pre + "fences." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (hit.getType() == Material.NETHER_FENCE && !perm(shooter, pre + "fences.purple")) return;
+							if (!perm(shooter, pre + "fences." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							switch (paintballs.get(ent)) {
 								case 14: // SPRUCE
 									changed = hit.getType() != Material.SPRUCE_FENCE;
@@ -499,8 +501,8 @@ public class CarbonPerksModule extends Module {
 						case ACACIA_STAIRS:
 						case DARK_OAK_STAIRS:
 						case NETHER_BRICK_STAIRS:
-							if (hit.getType() == Material.NETHER_BRICK_STAIRS && !MiscUtils.perm(shooter, pre + "fences.purple")) return;
-							if (!MiscUtils.perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (hit.getType() == Material.NETHER_BRICK_STAIRS && !perm(shooter, pre + "fences.purple")) return;
+							if (!perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							switch (paintballs.get(ent)) {
 								case 14: // SPRUCE
 									changed = hit.getType() != Material.SPRUCE_WOOD_STAIRS;
@@ -535,8 +537,8 @@ public class CarbonPerksModule extends Module {
 							break;
 						case WOOD_STEP:
 						case STEP:
-							if (hit.getType() == Material.STEP && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
-							if (!MiscUtils.perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (hit.getType() == Material.STEP && !perm(shooter, pre + "wood.purple")) return;
+							if (!perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							int bdm = bd >= 8 ? 8 : 0; // data modifier, determines if slab is inverted or not
 							switch (paintballs.get(ent)) {
 								case 14: // SPRUCE
@@ -573,8 +575,8 @@ public class CarbonPerksModule extends Module {
 							break;
 						case WOOD_DOUBLE_STEP:
 						case DOUBLE_STEP:
-							if (hit.getType() == Material.DOUBLE_STEP && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
-							if (!MiscUtils.perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (hit.getType() == Material.DOUBLE_STEP && !perm(shooter, pre + "wood.purple")) return;
+							if (!perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							switch (paintballs.get(ent)) {
 								case 14: // SPRUCE
 									changed = hit.getType() != Material.WOOD_DOUBLE_STEP || bd != (byte) 1;
@@ -610,8 +612,8 @@ public class CarbonPerksModule extends Module {
 							break;
 						case WOOD:
 						case NETHER_BRICK:
-							if (hit.getType() == Material.NETHER_BRICK && !MiscUtils.perm(shooter, pre + "wood.purple")) return;
-							if (!MiscUtils.perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
+							if (hit.getType() == Material.NETHER_BRICK && !perm(shooter, pre + "wood.purple")) return;
+							if (!perm(shooter, pre + "wood." + DyeColor.getByData(paintballs.get(ent)).name().toLowerCase())) return;
 							switch (paintballs.get(ent)) {
 								case 14: // SPRUCE
 									changed = hit.getType() != Material.WOOD || bd != (byte) 1;
@@ -648,7 +650,7 @@ public class CarbonPerksModule extends Module {
 					}
 				}
 				if (changed) {
-					if (shooter.getGameMode() != GameMode.CREATIVE || MiscUtils.perm(shooter, pre + "infinite")) {
+					if (shooter.getGameMode() != GameMode.CREATIVE || perm(shooter, pre + "infinite")) {
 						ItemStack is = new ItemStack(Material.INK_SACK, 1, (short) (DyeColor.values().length - paintballs.get(ent)));
 						Inventory inv = shooter.getInventory();
 						if (inv.contains(is)) {
@@ -736,22 +738,6 @@ public class CarbonPerksModule extends Module {
 	/*===[                      METHODS                        ]===*/
 	/*=============================================================*/
 
-	// For paintballs, checks if the BlockIterator should ignore this Material and look for the next solid block
-	private boolean isPermeable(Material mat) {
-		return mat == Material.AIR || MiscUtils.objEq(mat, Material.VINE, Material.COCOA, Material.LADDER,
-				Material.SIGN, Material.SIGN_POST, Material.WALL_SIGN, Material.BANNER, Material.STANDING_BANNER,
-				Material.WALL_BANNER, Material.SAPLING, Material.WATER, Material.STATIONARY_WATER, Material.LAVA,
-				Material.STATIONARY_LAVA, Material.RAILS, Material.ACTIVATOR_RAIL, Material.DETECTOR_RAIL,
-				Material.POWERED_RAIL, Material.LONG_GRASS, Material.WEB, Material.YELLOW_FLOWER,
-				Material.BROWN_MUSHROOM, Material.RED_MUSHROOM, Material.TORCH, Material.FIRE, Material.REDSTONE,
-				Material.LEVER, Material.REDSTONE_TORCH_OFF, Material.REDSTONE_TORCH_ON, Material.STONE_BUTTON,
-				Material.WOOD_BUTTON, Material.STONE_PLATE, Material.WOOD_PLATE, Material.REDSTONE_COMPARATOR_OFF,
-				Material.REDSTONE_COMPARATOR_ON, Material.DIODE_BLOCK_OFF, Material.DIODE_BLOCK_ON, Material.MELON_STEM,
-				Material.PUMPKIN_STEM, Material.WATER_LILY, Material.NETHER_WARTS, Material.TRIPWIRE,
-				Material.TRIPWIRE_HOOK, Material.CARROT, Material.CROPS, Material.POTATO, Material.FLOWER_POT,
-				Material.DOUBLE_PLANT, Material.RED_ROSE);
-	}
-
 	/**
 	 * Attempts to parse a String query to an Effect if the TrailEffect is allowed
 	 * @param query The String query (the TrailEffect name or alias)
@@ -792,9 +778,9 @@ public class CarbonPerksModule extends Module {
 			clearCachedData(p);
 		} else {
 			int maxEffects = CarbonKit.getDefConfig().getInt("CarbonPerks.max-trails", 3);
-			if (!MiscUtils.perm(p, "carbonkit.perks.trails.multiple")) maxEffects = 1;
+			if (!inst.perm(p, "trails.multiple")) maxEffects = 1;
 			for (TrailEffect effect : new ArrayList<TrailEffect>(e))
-				if (!MiscUtils.perm(p, "carbonkit.perks.trails.set." + effect.name().toLowerCase().replace("_", "")))
+				if (!inst.perm(p, "trails.set." + effect.name().toLowerCase().replace("_", "")))
 					e.remove(effect);
 			if (e.size() > maxEffects) e = e.subList(0,maxEffects-1);
 			fx.put(p, e);
@@ -810,8 +796,8 @@ public class CarbonPerksModule extends Module {
 	 */
 	public static void addTrailEffect(Player p, TrailEffect te) {
 		int maxEffects = CarbonKit.getDefConfig().getInt("CarbonPerks.max-trails", 3);
-		if (!MiscUtils.perm(p, "carbonkit.perks.trails.multiple")) maxEffects = 1;
-		if (!MiscUtils.perm(p, "carbonkit.perks.trails.set." + te.name().toLowerCase().replace("_", ""))) return;
+		if (!inst.perm(p, "trails.multiple")) maxEffects = 1;
+		if (!inst.perm(p, "trails.set." + te.name().toLowerCase().replace("_", ""))) return;
 		if (getTrailEffects(p).size() < maxEffects) {
 			List<TrailEffect> effects = getTrailEffects(p);
 			effects.add(te);
@@ -929,17 +915,10 @@ public class CarbonPerksModule extends Module {
 
 	/**
 	 * Fetches a random allowed TrailEffect
-	 * @return Returns a random TrailEffect or null if it fails to parse one
+	 * @return Returns a random TrailEffect
 	 */
 	public static TrailEffect getRandomEffect() {
-		// Loops over random allowed Effect names and tries to parse an Effect from one. Done in a
-		// loop to prevent failing to parse Effects that aren't supported in some Bukkit versions
-		for (int i = 0; i < 20; i++) {
-			try {
-				return TrailEffect.values()[NumUtils.rand(0, TrailEffect.values().length - 1)];
-			} catch(Exception e) { /* Failed to get effect. Probably older version of Bukkit */ }
-		}
-		return null; // give up after 20 tries
+		return TrailEffect.values()[NumUtils.rand(0, TrailEffect.values().length - 1)];
 	}
 
 	/**

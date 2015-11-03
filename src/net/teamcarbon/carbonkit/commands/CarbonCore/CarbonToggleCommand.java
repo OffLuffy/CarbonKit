@@ -20,12 +20,12 @@ public class CarbonToggleCommand extends ModuleCmd {
 
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!MiscUtils.perm(sender, "carbonkit.toggle", "carbonkit.list")) {
+		if (!mod.perm(sender, "toggle", "list")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
 		if (args.length > 0) {
-			if (!MiscUtils.perm(sender, "carbonkit.toggle")) {
+			if (!mod.perm(sender, "toggle")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
@@ -42,15 +42,15 @@ public class CarbonToggleCommand extends ModuleCmd {
 				rep.put("{MODULENAME}", m.getName());
 				if (state) {
 					if (!m.isEnabled()) {
-						sender.sendMessage(MiscUtils.massReplace(CustomMessage.CORE_MODULE_ENABLED.pre(), rep));
+						sender.sendMessage(CustomMessage.CORE_MODULE_ENABLED.pre(rep));
 					} else {
-						sender.sendMessage(MiscUtils.massReplace(CustomMessage.CORE_MODULE_ALREADY_ENABLED.pre(), rep));
+						sender.sendMessage(CustomMessage.CORE_MODULE_ALREADY_ENABLED.pre(rep));
 					}
 				} else if (!state) {
 					if (m.isEnabled()) {
-						sender.sendMessage(MiscUtils.massReplace(CustomMessage.CORE_MODULE_DISABLED.pre(), rep));
+						sender.sendMessage(CustomMessage.CORE_MODULE_DISABLED.pre(rep));
 					} else {
-						sender.sendMessage(MiscUtils.massReplace(CustomMessage.CORE_MODULE_ALREADY_DISABLED.pre(), rep));
+						sender.sendMessage(CustomMessage.CORE_MODULE_ALREADY_DISABLED.pre(rep));
 					}
 				}
 				m.setEnabled(state);
@@ -59,7 +59,7 @@ public class CarbonToggleCommand extends ModuleCmd {
 				sender.sendMessage(CustomMessage.CORE_NOT_MODULE.pre());
 			}
 		} else {
-			if (!MiscUtils.perm(sender, "carbonkit.list")) {
+			if (!mod.perm(sender, "list")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}

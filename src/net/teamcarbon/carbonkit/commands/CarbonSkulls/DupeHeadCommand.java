@@ -28,12 +28,12 @@ public class DupeHeadCommand extends ModuleCmd {
 			sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 			return;
 		}
-		if (!MiscUtils.perm(sender, "carbonkit.skullshop.getskull")) {
+		if (!mod.perm(sender, "getskull")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
 		double price = CarbonKit.getDefConfig().getDouble("CarbonSkulls.price", 5000.0);
-		if (MiscUtils.perm(sender, "carbonkit.skullshop.skull.free") || price < 0)
+		if (mod.perm(sender, "skull.free") || price < 0)
 			price = 0;
 		if (CarbonSkullsModule.hasSavedSkull((Player) sender)) {
 			if (((Player)sender).getInventory().firstEmpty() > -1) {
@@ -53,11 +53,11 @@ public class DupeHeadCommand extends ModuleCmd {
 					((Player) sender).getInventory().addItem(skull);
 					HashMap<String, String> rep = new HashMap<String, String>();
 					rep.put("{SKULLOWNER}", CarbonSkullsModule.getSavedSkull((Player) sender));
-					if (price <= 0.0 || MiscUtils.perm(sender, "carbonkit.skullshop.skull.free")) {
-						sender.sendMessage(MiscUtils.massReplace(CustomMessage.SS_SKULL_GIVEN_FREE.pre(), rep));
+					if (price <= 0.0 || mod.perm(sender, "skull.free")) {
+						sender.sendMessage(CustomMessage.SS_SKULL_GIVEN_FREE.pre(rep));
 					} else {
 						rep.put("{PRICE}", price + "");
-						sender.sendMessage(MiscUtils.massReplace(CustomMessage.SS_SKULL_GIVEN.pre(), rep));
+						sender.sendMessage(CustomMessage.SS_SKULL_GIVEN.pre(rep));
 					}
 				} else {
 					sender.sendMessage(CustomMessage.SS_NOT_ENOUGH_MONEY.pre());

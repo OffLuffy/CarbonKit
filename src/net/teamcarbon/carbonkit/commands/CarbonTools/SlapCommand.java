@@ -9,14 +9,13 @@ import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 @SuppressWarnings("UnusedDeclaration")
 public class SlapCommand extends ModuleCmd {
 	public SlapCommand(Module module) { super(module, "slap"); }
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!MiscUtils.perm(sender, "carbonkit.misc.slap")) {
+		if (!mod.perm(sender, "slap")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}

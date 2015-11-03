@@ -7,7 +7,6 @@ import net.teamcarbon.carbonkit.utils.CarbonTrivia.Question;
 import net.teamcarbon.carbonkit.utils.CarbonTrivia.TriviaRound;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -20,7 +19,7 @@ import net.teamcarbon.carbonkit.commands.CarbonTrivia.CarbonTriviaCommand;
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonTriviaModule extends Module {
 	public static CarbonTriviaModule inst;
-	public CarbonTriviaModule() throws DuplicateModuleException { super("CarbonTrivia", "ctrivia", "trivia", "ctr", "ct"); }
+	public CarbonTriviaModule() throws DuplicateModuleException { super("CarbonTrivia", "ctrivia", "trivia", "ctr"); }
 
 	public static String mpre;
 	public static String qpre;
@@ -61,7 +60,7 @@ public class CarbonTriviaModule extends Module {
 		final TriviaRound r = TriviaRound.getActiveRound();
 		if (r != null && r.isStarted() && !r.isQuestionAnswered()) {
 			final Player p = e.getPlayer();
-			if (!r.isBlacklisted(p) && MiscUtils.perm(p, "carbonkit.carbontrivia.answer")) {
+			if (!r.isBlacklisted(p) && perm(p, "answer")) {
 				Question q = r.getCurrentQuestion();
 				String m = e.getMessage();
 				if (q.checkAnswer(m)) {

@@ -103,15 +103,16 @@ public abstract class Vote {
 	}
 	public String getTypeName() { return typeName; }
 
+	/**
+	 * Calculates the percentage of yes votes with weighted votes for non-voters
+	 * @param y The number of yes votes
+	 * @param n The number of no votes
+	 * @param x The number of non-voters
+	 * @param xw The percent weight of a non-vote (-100 for a no vote, 100 for a yes vote, 0 for no weight)
+	 * @return Returns the percentage of yes votes
+	 */
 	public static float calc(float y, float n, float x, float xw) {
-		if (y == 0) return 0;
-		if (n == 0 && x == 0) return 100;
-		if (xw < 0) {
-			xw = Math.abs(xw)/100;
-			return (y / ( y + n + (x * xw))) * 100f;
-		} else {
-			xw /= 100;
-			return (y + (x * xw)) / ((y + n + (x * xw))) * 100f;
-		}
+		if (xw == 0f) x = 0f; else x *= (Math.abs(xw) / 100f);
+		return (y + ((xw > 0) ? x : 0)) / (y + n + x) * 100f;
 	}
 }

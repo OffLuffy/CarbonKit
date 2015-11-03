@@ -51,20 +51,20 @@ public class WeatherVote extends Vote {
 			world.setThundering(true);
 			rep.put("{WEATHER}", "stormy");
 		}
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.massReplace(CustomMessage.CV_WEATHER_VOTE_PASSED.pre(), rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_WEATHER_VOTE_PASSED.pre(rep));
 	}
 	protected void voteFail() {
 		HashMap<String, String> rep = new HashMap<String, String>();
 		rep.put("{YESPERCENT}", String.format(Locale.ENGLISH, "%.2f", getAgreePercentage(true)));
 		rep.put("{NOPERCENT}", String.format(Locale.ENGLISH, "%.2f", (100-getAgreePercentage(true))));
 		rep.put("{VOTETYPE}", "Weather");
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.massReplace(CustomMessage.CV_VOTE_FAILED.pre(),rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_FAILED.pre(rep));
 	}
 	protected void broadcastStart() {
 		HashMap<String, String> rep = new HashMap<String, String>();
 		rep.put("{VOTETYPE}", "weather");
 		rep.put("{VOTEREASON}", "for " + wtype.lname());
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.massReplace(CustomMessage.CV_VOTE_STARTED.pre(), rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_STARTED.pre(rep));
 	}
 	/**
 	 * Attempts to resolve a String into a WeatherType

@@ -25,7 +25,7 @@ public class TicketCommand extends ModuleCmd {
 	private String l;
 	private CommandSender s;
 	private boolean isConsole;
-	private static final String p = "carbonkit.ticket.";
+	private static final String p = "ticket.";
 	private static HashMap<UUID, Integer> delConfirm = new HashMap<UUID, Integer>();
 	private static HashMap<UUID, String> lastSearch = new HashMap<UUID, String>();
 	private static String lastConsoleSearch;
@@ -45,7 +45,7 @@ public class TicketCommand extends ModuleCmd {
 		} else {
 			String fa = args[0].toLowerCase();
 			if (MiscUtils.eq(args[0], "new", "create", "n", "c")) {
-				if (!MiscUtils.perm(s, p + "create")) {
+				if (!mod.perm(s, p + "create")) {
 					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -59,7 +59,7 @@ public class TicketCommand extends ModuleCmd {
 				MiscUtils.permBroadcast(p + "notify.create", avoid, Clr.DARKAQUA + "[Tickets] " + Clr.NOTE +
 						(isConsole ? "Console" : s.getName()) + " created ticket #" + tid);
 			} else if (MiscUtils.eq(args[0], "append", "a")) {
-				if (!MiscUtils.perm(s, p + "append.others", p + "append.self")) {
+				if (!mod.perm(s, p + "append.others", p + "append.self")) {
 					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -76,8 +76,8 @@ public class TicketCommand extends ModuleCmd {
 					s.sendMessage(Clr.RED + "Couldn't find a ticket with ID: " + tid);
 					return;
 				}
-				if (isConsole || MiscUtils.perm(s, p + "append.others")
-						|| (isAuthor(((Player) s).getUniqueId(), tid) && MiscUtils.perm(s, p + "append.self"))) {
+				if (isConsole || mod.perm(s, p + "append.others")
+						|| (isAuthor(((Player) s).getUniqueId(), tid) && mod.perm(s, p + "append.self"))) {
 					appendToTicket(tid, MiscUtils.stringFromSubArray(" ", 2, args));
 					s.sendMessage(Clr.GOLD + "[Tickets] " + Clr.AQUA + "Modified ticket #" + tid);
 					List<Player> avoid = MiscUtils.quickList((Player) s);
@@ -85,7 +85,7 @@ public class TicketCommand extends ModuleCmd {
 							(isConsole ? "Console" : s.getName()) + " modified ticket #" + tid);
 				}
 			} else if (MiscUtils.eq(args[0], "delete", "remove", "del", "rem")) {
-				if (!MiscUtils.perm(s, p + "delete.others", p + "delete.self")) {
+				if (!mod.perm(s, p + "delete.others", p + "delete.self")) {
 					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -102,8 +102,8 @@ public class TicketCommand extends ModuleCmd {
 					s.sendMessage(Clr.RED + "Couldn't find a ticket with ID: " + tid);
 					return;
 				}
-				if (isConsole || MiscUtils.perm(s, p + "delete.others")
-						|| (isAuthor(((Player) s).getUniqueId(), tid) && MiscUtils.perm(s, p + "delete.self"))) {
+				if (isConsole || mod.perm(s, p + "delete.others")
+						|| (isAuthor(((Player) s).getUniqueId(), tid) && mod.perm(s, p + "delete.self"))) {
 					if (!isConsole && !delConfirm.containsKey(((Player) s).getUniqueId())) {
 						FormattedMessage fm = new FormattedMessage("Are you sure you want to delete ticket #" + tid + "?");
 						fm.color(ChatColor.RED).then(" Yes ").command("/" + l + " " + fa + " " + tid)
@@ -121,7 +121,7 @@ public class TicketCommand extends ModuleCmd {
 							(isConsole ? "Console" : s.getName()) + " deleted ticket #" + tid);
 				}
 			} else if (MiscUtils.eq(args[0], "info", "i")) {
-				if (!MiscUtils.perm(s, p + "info.others", p + "info.self")) {
+				if (!mod.perm(s, p + "info.others", p + "info.self")) {
 					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -138,8 +138,8 @@ public class TicketCommand extends ModuleCmd {
 					s.sendMessage(Clr.RED + "Couldn't find a ticket with ID: " + tid);
 					return;
 				}
-				if (isConsole || MiscUtils.perm(s, p + "info.others") || (isAuthor(((Player) s).getUniqueId(), tid)
-						&& MiscUtils.perm(s, p + "info.self"))) {
+				if (isConsole || mod.perm(s, p + "info.others") || (isAuthor(((Player) s).getUniqueId(), tid)
+						&& mod.perm(s, p + "info.self"))) {
 					try {
 						Calendar cal = Calendar.getInstance();
 						Ticket t = new Ticket(tid);
@@ -154,8 +154,8 @@ public class TicketCommand extends ModuleCmd {
 							s.sendMessage(Clr.AQUA + "Witnesses: " + Clr.DARKAQUA + MiscUtils.stringFromArray(", ", t.witnesses.toArray()));
 						s.sendMessage(Clr.AQUA + "Message: " + Clr.DARKAQUA + t.msg);
 						FormattedMessage fm = new FormattedMessage("");
-						if (isConsole || MiscUtils.perm(s, p + "delete.others") || (isAuthor(((Player) s).getUniqueId(), tid)
-								&& MiscUtils.perm(s, p + "delete.self"))) {
+						if (isConsole || mod.perm(s, p + "delete.others") || (isAuthor(((Player) s).getUniqueId(), tid)
+								&& mod.perm(s, p + "delete.self"))) {
 							fm.then("[Delete]").command("/" + l + " delete " + tid).color(ChatColor.DARK_RED)
 									.tooltip("Click to delete this ticket");
 							fm.send((Player) s);
@@ -166,14 +166,14 @@ public class TicketCommand extends ModuleCmd {
 					}
 				}
 			} else if (MiscUtils.eq(args[0], "listall", "viewall", "la", "va")) {
-				if (!MiscUtils.perm(s, p + "view.all")) {
+				if (!mod.perm(s, p + "view.all")) {
 					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
 				int page = 1;
 				if (args.length > 1 && TypeUtils.isInteger(args[1])) page = Integer.parseInt(args[1]);
 				List<Ticket> tickets = new ArrayList<Ticket>();
-				for (int tid : getAllTicketIds()) try { tickets.add(new Ticket(tid)); } catch(Exception e) {}
+				for (int tid : getAllTicketIds()) try { tickets.add(new Ticket(tid)); } catch(Exception ignore) {}
 				if (tickets.size() < 1) { sender.sendMessage(Clr.DARKAQUA + "No tickets to view"); return; }
 				int pages = tickets.size() % PER_PAGE > 0 ? tickets.size() / PER_PAGE + 1 : tickets.size() / PER_PAGE;
 				page = NumUtils.normalizeInt(page, 1, pages);
@@ -185,7 +185,7 @@ public class TicketCommand extends ModuleCmd {
 				else
 					CustomMessage.printPaginatedFooter((Player) s, pages, page, "/" + l + " " + fa + " %d");
 			} else if (MiscUtils.eq(args[0], "list", "view", "l", "v")) {
-				if (!MiscUtils.perm(s, p + "view")) {
+				if (!mod.perm(s, p + "view")) {
 					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -196,7 +196,7 @@ public class TicketCommand extends ModuleCmd {
 					Ticket t = new Ticket(tid);
 					if (t.consoleAuthor && isConsole || isAuthor(((Player)s).getUniqueId(), tid))
 						tickets.add(t);
-				} catch(Exception e) {}
+				} catch(Exception ignore) {}
 				if (tickets.size() < 1) { sender.sendMessage(Clr.DARKAQUA + "No tickets to view"); return; }
 				int pages = tickets.size() % PER_PAGE > 0 ? tickets.size() / PER_PAGE + 1 : tickets.size() / PER_PAGE;
 				page = NumUtils.normalizeInt(page, 1, pages);
@@ -208,7 +208,7 @@ public class TicketCommand extends ModuleCmd {
 				else
 					CustomMessage.printPaginatedFooter((Player) s, pages, page, "/" + l + " " + fa + " %d");
 			} else if (MiscUtils.eq(args[0], "search", "find", "s", "f")) {
-				if (!MiscUtils.perm(s, p + "search.others", p + "search.self")) {
+				if (!mod.perm(s, p + "search.others", p + "search.self")) {
 					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -218,7 +218,7 @@ public class TicketCommand extends ModuleCmd {
 					return;
 				}
 				List<Ticket> found;
-				UUID ownerFilter = ((isConsole || MiscUtils.perm(s, p + "search.others")) ? null : ((Player) s).getUniqueId());
+				UUID ownerFilter = ((isConsole || mod.perm(s, p + "search.others")) ? null : ((Player) s).getUniqueId());
 				int page = 1;
 				if (TypeUtils.isInteger(args[1])) { // Specified page number
 					CarbonKit.log.debug("Page provided for search: " + Integer.parseInt(args[1]));
@@ -242,7 +242,7 @@ public class TicketCommand extends ModuleCmd {
 				int low = (page-1) * PER_PAGE, high = ((page-1) * PER_PAGE) + PER_PAGE;
 				int pages = found.size() % PER_PAGE > 0 ? found.size() / PER_PAGE + 1 : found.size() / PER_PAGE;
 				CustomMessage.printHeader(s, "Ticket Search Results");
-				for (Ticket t : found.subList(low, NumUtils.normalizeInt(high, 0, found.size()))) listTicket(t, MiscUtils.perm(s, p + "search.others"));
+				for (Ticket t : found.subList(low, NumUtils.normalizeInt(high, 0, found.size()))) listTicket(t, mod.perm(s, p + "search.others"));
 				if (isConsole)
 					CustomMessage.printFooter(s);
 				else
@@ -265,18 +265,18 @@ public class TicketCommand extends ModuleCmd {
 			s.sendMessage(Clr.GRAY + "[" + t.id + "] " + (showName ? t.authorName + ": " : "") + Clr.DARKAQUA + msg);
 		} else {
 			FormattedMessage fm = new FormattedMessage("");
-			if (isConsole || MiscUtils.perm(s, p + "delete.others") || (isAuthor(((Player) s).getUniqueId(), t.id)
-					&& MiscUtils.perm(s, p + "delete.self"))) {
+			if (isConsole || mod.perm(s, p + "delete.others") || (isAuthor(((Player) s).getUniqueId(), t.id)
+					&& mod.perm(s, p + "delete.self"))) {
 				fm.then("[\u00D7]").command("/" + l + " delete " + t.id).color(ChatColor.RED).tooltip("Delete");
 			}
 			fm.then("[" + t.id + "]").color(ChatColor.GRAY);
-			if (isConsole || MiscUtils.perm(s, p + "info.others") || (isAuthor(((Player) s).getUniqueId(), t.id)
-					&& MiscUtils.perm(s, p + "info.self"))) {
+			if (isConsole || mod.perm(s, p + "info.others") || (isAuthor(((Player) s).getUniqueId(), t.id)
+					&& mod.perm(s, p + "info.self"))) {
 				fm.command("/" + l + " info " + t.id).tooltip("View Info");
 			}
 			if (showName) {
 				fm.then(" " + t.authorName + ":").color(ChatColor.GRAY);
-				if (MiscUtils.perm(s, p + "search.others", p + "search.self"))
+				if (mod.perm(s, p + "search.others", p + "search.self"))
 					fm.command("/" + l + " search " + t.authorName).tooltip("Search tickets for \"" + t.authorName + "\"");
 			}
 			fm.then(" " + (t.msg.length() > nl ? t.msg.substring(0, nl) + " ..." : t.msg)).color(ChatColor.DARK_AQUA);
@@ -288,7 +288,7 @@ public class TicketCommand extends ModuleCmd {
 		return m[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.DAY_OF_MONTH) + ", " + cal.get(Calendar.YEAR) + " @ "
 				+ hr(cal) + ":" + pad(cal.get(Calendar.MINUTE)) + " " + ampm(cal) + " " + cal.getTimeZone().getDisplayName(false, TimeZone.SHORT);
 	}
-	private String hr(Calendar cal) { return pad(cal.get(Calendar.HOUR)==0?12:cal.get(Calendar.HOUR)); }
+	private String hr(Calendar cal) { return pad(cal.get(Calendar.HOUR) == 0 ? 12 : cal.get(Calendar.HOUR)); }
 	private String pad(int i) { return (i < 10 ? "0":"") + i; }
 	private String ampm(Calendar cal) { return cal.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM"; }
 
@@ -301,7 +301,7 @@ public class TicketCommand extends ModuleCmd {
 				if ((ownerFilter == null || (!t.consoleAuthor && t.author.equals(ownerFilter))))
 					if (t.msg.toLowerCase().contains(query) || t.authorName.toLowerCase().contains(query))
 						tickets.add(t);
-			} catch (Exception e) {}
+			} catch (Exception ignore) {}
 		}
 		return tickets;
 	}
@@ -348,7 +348,7 @@ public class TicketCommand extends ModuleCmd {
 			Ticket t = new Ticket(id);
 			mod.getData().set("ticket-data.tickets." + t.id + ".message", t.msg + msg);
 			CarbonKit.saveConfig(ConfType.DATA);
-		} catch (Exception e) {}
+		} catch (Exception ignore) {}
 	}
 	private void deleteTicket(int id) {
 		mod.getData().set("ticket-data.tickets." + id, null);
@@ -358,7 +358,7 @@ public class TicketCommand extends ModuleCmd {
 	/* short-hand to send the block of help text */
 	private void showHelp() {
 		if (s == null) return;
-		if (MiscUtils.perm(s, p + "create", p + "append.others", p + "append.self", p + "delete.others", p + "delete.self",
+		if (mod.perm(s, p + "create", p + "append.others", p + "append.self", p + "delete.others", p + "delete.self",
 				p + "info.others", p + "info.self", p + "view.all", p + "view", p + "search.others", p + "search.self")) {
 			CustomMessage.printHeader(s, "Ticket Help");
 			s.sendMessage(Clr.NOTE + "Tickets are used to report infractions, suggest new ideas, etc. If " +
@@ -380,7 +380,7 @@ public class TicketCommand extends ModuleCmd {
 	}
 	/* short-hand to perm-check and print a command help line */
 	private void h(String args, String desc, String... perms) {
-		if (perms.length == 0 || MiscUtils.perm(s, perms)) {
+		if (perms.length == 0 || mod.perm(s, perms)) {
 			if (l == null || l.isEmpty()) l = "ticket";
 			String cp = Clr.AQUA + "/%s %s " + Clr.GRAY + "- %s";
 			s.sendMessage(String.format(Locale.ENGLISH, cp, l, args, desc));
@@ -410,7 +410,7 @@ public class TicketCommand extends ModuleCmd {
 					String[] parts = md.getString("author").split("\\|");
 					author = UUID.fromString(parts[0]);
 					authorName = parts[1];
-				} catch(Exception e) {}
+				} catch(Exception ignore) {}
 			} else {
 				author = null;
 				authorName = "CONSOLE";

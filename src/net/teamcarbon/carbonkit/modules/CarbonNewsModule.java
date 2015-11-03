@@ -22,14 +22,16 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonNewsModule extends Module {
+	public static CarbonNewsModule inst;
 
 	public static final String NAME = "CarbonNews";
 
 	public CarbonNewsModule() throws DuplicateModuleException {
-		super(NAME, "cnews", "cn");
+		super(NAME, "cnews", "news", "cn");
 		reqVer = "1_8_R3";
 	}
 	public void initModule() {
+		inst = this;
 
 		ConfigurationSection setDefaults = CarbonKit.getConfig(ConfType.NEWS).getConfigurationSection("setDefaults");
 		setDefaults.set("setEnabled", false);

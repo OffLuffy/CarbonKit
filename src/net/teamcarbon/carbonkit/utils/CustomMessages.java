@@ -16,7 +16,7 @@ import java.util.Locale;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CustomMessages {
-	private final static String CK = "carbonkit.", A = "antiportal.", C = "cmdblocktools.", V = "carbonvote.",
+	private final static String CK = "carbonkit.", A = "antiportal.", CE = "carbonessentials.", C = "cmdblocktools.", V = "carbonvote.",
 			E = "essentialsassist.", F = "fireworks.", G = "goldensmite", M = "misc.", S = "skullshop.",
 			W = "ckwatcher.", GEN = "generic.", T = "carbontrivia.", P = "carbonperks.", N = "carbonnews.";
 	private static boolean init = false;
@@ -34,6 +34,14 @@ public class CustomMessages {
 		// ANTIPORTAL MODULE
 		AP_PREFIX(A+"prefix", "&6&l[AntiPortal] &r"),
 		AP_ITEM_RESERVED(A+"item-reserved", "&cThat item is reservered for {PLAYER}. It will be released in {TIME}"),
+		// CARBONESSENTIALS MODULE
+		CE_PREFIX(CE+"prefix", "&6&l[CarbonEss] &r"),
+		CE_VANISH(CE+"vanish", "&bYou've been vanished"),
+		CE_UNVANISH(CE+"unvanish", "&bYou've been unvanished"),
+		CE_VANISH_OTHER(CE+"vanish", "&b{TARGET} has been vanished"),
+		CE_UNVANISH_OTHER(CE+"unvanish", "&b{TARGET} has been unvanished"),
+		CE_FREEZE(M+"freeze-message", "&bFreeze!"),
+		CE_UNFREEZE(M+"unfreeze-message", "&6You're free to go!"),
 		// CARBONVOTE MODULE
 		CV_PREFIX(V+"prefix", "&6&l[CarbonVote] &a"),
 		CV_WEATHER_VOTE_PASSED(V+"weather-vote-passed", "Weather vote passed! Weather changed to &b{WEATHER}"),
@@ -94,9 +102,6 @@ public class CustomMessages {
 		CP_REM_NOT_FOUND(P+"remove-not-found", "&cYou do not have the specified effect applied"),
 		CP_INVALID_TRAIL(P+"invalid-trail", "&4{QUERY} &cwas not a valid effect name"),
 		CP_NO_EFFECT_PERM(P+"no-effect-perm", "&cYou don't have permission to use the &4{EFFECT} &ceffect"),
-		// COMMANDBLOCKTOOLS MODULE
-		CB_PREFIX(C+"prefix", "&6&l[CmdBlockTools] &r"),
-		CB_NOT_CMD_BLOCK(C+"not-command-block", "&cThis command must be executed from a command block!"),
 		// ESSASSIST MODULE
 		EA_PREFIX(E+"prefix", "&6&l[EssAssist] &r"),
 		EA_ANTIINTERACT_ENALBED_SELF(E+"anti-interact-enabled-self", "&bEnabled anti-interact"),
@@ -134,8 +139,6 @@ public class CustomMessages {
 		GS_TOGGLED_SNOWBALL(G+"toggled-snowball", "&bYou've {STATUS} GSmite snowballs"),
 		// MISC MODULE
 		MISC_PREFIX(M+"prefix", "&6&l[CarbonKit] &r"),
-		MISC_FREEZE(M+"freeze-message", "&bFreeze!"),
-		MISC_UNFREEZE(M+"unfreeze-message", "&6You're free to go!"),
 		MISC_SLAPPED(M+"slapped", "&6You've been slapped!"),
 		MISC_SLAPPED_BROADCAST(M+"slapped-broadcast", "&6{SLAPPER} has slapped {SLAPPED}!"),
 		MISC_JOIN(M+"join-message", "&6&l[&r&a+&r&6&l] &e{PLAYER}&r&6 logged in!"),

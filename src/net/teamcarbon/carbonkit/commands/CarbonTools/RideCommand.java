@@ -25,7 +25,7 @@ public class RideCommand extends ModuleCmd {
 			return;
 		}
 		Player pl = (Player) sender;
-		if (!MiscUtils.perm(sender, "carbonkit.misc.ride", "carbonkit.misc.ride.players")) {
+		if (!mod.perm(sender, "ride", "ride.players")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
@@ -33,7 +33,7 @@ public class RideCommand extends ModuleCmd {
 			Entity ent = getTarget((Player) sender);
 			if (ent != null) {
 				if (ent instanceof Player) {
-					if (!MiscUtils.perm(sender, "carbonkit.misc.ride.players")) sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
+					if (!mod.perm(sender, "ride.players")) sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 				} else {
 					boolean allow = true;
 					if (MiscUtils.checkPlugin("GriefPrevention", true)) {
@@ -55,7 +55,7 @@ public class RideCommand extends ModuleCmd {
 				}
 			}
 		} else {
-			if (!MiscUtils.perm(sender, "carbonkit.misc.ride.players")) {
+			if (!mod.perm(sender, "ride.players")) {
 				sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 				return;
 			}

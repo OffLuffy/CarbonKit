@@ -15,17 +15,18 @@ import java.util.HashMap;
 
 @SuppressWarnings("UnusedDeclaration")
 public class FakeQuitCommand extends ModuleCmd {
+	private CarbonToolsModule modInst = CarbonToolsModule.inst;
 	public FakeQuitCommand(Module module) { super(module, "fakequit"); }
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!MiscUtils.perm(sender, "carbonkit.misc.fakequit") && !MiscUtils.perm(sender, "carbonkit.misc.fakequit.others")) {
+		if (!mod.perm(sender, "fakequit", "fakequit.others")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return ;
 		}
 		String user, m, me, addr = NumUtils.rand(16, 255) + "." + NumUtils.rand(16,255) + "." + NumUtils.rand(16, 255) + "." + NumUtils.rand(16,255);
 		HashMap<String, String> rep = new HashMap<String, String>();
 		if (args.length > 0) {
-			if (!MiscUtils.perm(sender, "carbonkit.misc.fakequit.others")) {
+			if (!mod.perm(sender, "fakequit.others")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return ;
 			}
@@ -36,7 +37,7 @@ public class FakeQuitCommand extends ModuleCmd {
 					addr = CarbonToolsModule.addressMap.get(pl.getUniqueId());
 			} else user = args[0];
 		} else {
-			if (!MiscUtils.perm(sender, "carbonkit.misc.fakequit")) {
+			if (!mod.perm(sender, "fakequit")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return ;
 			}
@@ -49,11 +50,11 @@ public class FakeQuitCommand extends ModuleCmd {
 		rep.put("{STATUS}", "");
 		rep.put("{PLAYER}", user);
 		rep.put("{IP}", addr);
-		m = MiscUtils.massReplace(CustomMessage.MISC_QUIT.noPre(), rep);
-		me = MiscUtils.massReplace(CustomMessage.MISC_QUIT_EXT.noPre(), rep);
+		m = CustomMessage.MISC_QUIT.noPre(rep);
+		me = CustomMessage.MISC_QUIT_EXT.noPre(rep);
 		Player p = (Player)sender;
 		String statuses = "";
 		for (Player opl : CarbonKit.inst.getServer().getOnlinePlayers())
-			if(MiscUtils.perm(opl, "carbonkit.misc.quitmsg.extended")) opl.sendMessage(me); else opl.sendMessage(m);
+			if(modInst.perm(opl, "quitmsg.extended")) opl.sendMessage(me); else opl.sendMessage(m);
 	}
 }

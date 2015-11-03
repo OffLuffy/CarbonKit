@@ -22,13 +22,13 @@ import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonVoteModule extends Module {
+	public static CarbonVoteModule inst;
 	public CarbonVoteModule() throws DuplicateModuleException {
 		super("CarbonVote", "cvote");
 		addRequires("Essentials");
 	}
 	private static Vote activeVote;
-	public static final String VMSG_PERM = "carbonkit.carbonvote.receive-messages";
-	public static CarbonVoteModule inst;
+	public static final String VMSG_PERM = "receive-messages";
 	public void initModule() {
 		inst = this;
 		addCmd(new CarbonVoteCommand(this));
@@ -294,7 +294,7 @@ public class CarbonVoteModule extends Module {
 					hours += 12;
 				hours = (hours - 6 < 0) ? 24 + (hours - 6) : hours - 6;
 				return (hours * 1000L) + Math.round((double) mins * 16.6);
-			} catch (Exception e) {}
+			} catch (Exception ignore) {}
 		}
 		if (TypeUtils.isLong(time))
 			return Long.parseLong(time);

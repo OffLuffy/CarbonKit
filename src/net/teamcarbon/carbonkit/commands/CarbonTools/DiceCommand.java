@@ -17,14 +17,14 @@ public class DiceCommand extends ModuleCmd {
 
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!MiscUtils.perm(sender, "carbonkit.misc.dice")) {
+		if (!mod.perm(sender, "dice")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
 		int min = 1, max = 6;
 		if (args.length > 0 ) {
 			if (TypeUtils.isInteger(args[0])) {
-				try {max = Integer.parseInt(args[0]); } catch (Exception e) {}
+				try {max = Integer.parseInt(args[0]); } catch (Exception ignore) {}
 			} else {
 				CustomMessage.printHeader(sender, "Dice Help");
 				sender.sendMessage(Clr.AQUA + "/dice" + Clr.DARKAQUA + " - Rolls a number between 1 and 6");

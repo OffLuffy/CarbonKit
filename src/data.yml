@@ -14,26 +14,7 @@ CarbonVote:
   last-kick-vote: 0
   last-mute-vote: 0
   last-trivia-vote: 0
-CarbonPerks:
-  enabled-effects: []
-  effects: {}
-EssentialsAssist:
-  no-interact: []
-Fireworks:
-  enabled-arrows: []
-  enabled-snowballs: []
-  arrow-effects: {}
-  snowball-effects: {}
-GoldenSmite:
-  enabled-kills: {}
-  enabled-arrows: []
-CKWatcher:
-  watchers: []
-Misc:
-  frozen-players: []
-  temp-frozen-players: {}
-  to-be-unfrozen: []
-  online-time: {}
+CarbonTools:
   ticket-data:
     next-ticket-id: 0
     cooldowns: {}

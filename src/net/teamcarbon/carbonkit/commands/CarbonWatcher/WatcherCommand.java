@@ -19,30 +19,30 @@ public class WatcherCommand extends ModuleCmd {
 	public WatcherCommand(Module module) { super(module, "carbonwatcher"); }
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!MiscUtils.perm(sender, "carbonkit.watcher.toggle", "carbonkit.watcher.toggle.others")) {
+		if (!mod.perm(sender, "toggle", "toggle.others")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
 		if (args.length > 0) {
 			if (MiscUtils.eq(args[0], "help", "h", "?")) {
-				CustomMessage.printHeader(sender, "Carbon Watcher Help");
-				if (sender instanceof Player && MiscUtils.perm(sender, "carbonkit.watcher.toggle"))
+				CustomMessage.printHeader(sender, mod.getName() + " Help");
+				if (sender instanceof Player && mod.perm(sender, "toggle"))
 					sender.sendMessage(Clr.AQUA + "/cw <on|off>" + Clr.DARKAQUA + " - Toggle your watching state, optionally specify on or off");
-				if (MiscUtils.perm(sender, "carbonkit.watcher.toggle.others"))
-					sender.sendMessage(Clr.AQUA + "/cw [player] <on|off>" + Clr.DARKAQUA + " - Toggle another user's watching state");
+				if (mod.perm(sender, "toggle.others"))
+					sender.sendMessage(Clr.AQUA + "/cw [player] <on|off>" + Clr.DARKAQUA + " - Toggle a user's command watcher");
 			} else if (TypeUtils.isBoolean(args[0])) {
 				if (!(sender instanceof Player)) {
 					sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 					return;
 				}
-				if (!MiscUtils.perm(sender, "carbonkit.watcher.toggle")) {
+				if (!mod.perm(sender, "toggle")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
 				CarbonWatcherModule.setWatching((Player) sender, TypeUtils.toBoolean(args[0]));
 				sender.sendMessage(CarbonWatcherModule.isWatching((Player) sender) ? CustomMessage.CW_WATCH_ENABLED.pre() : CustomMessage.CW_WATCH_DISABLED.pre());
 			} else if (Bukkit.getPlayer(args[0]) != null) {
-				if (!MiscUtils.perm(sender, "carbonkit.watcher.toggle.others")) {
+				if (!mod.perm(sender, "toggle.others")) {
 					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 					return;
 				}
@@ -54,20 +54,21 @@ public class WatcherCommand extends ModuleCmd {
 				else
 					CarbonWatcherModule.toggleWatching(target);
 				if (CarbonWatcherModule.isWatching(target)) {
-					sender.sendMessage(MiscUtils.massReplace(CustomMessage.CW_WATCH_ENABLED_OTHER.pre(), rep));
+					sender.sendMessage(CustomMessage.CW_WATCH_ENABLED_OTHER.pre(rep));
 					target.sendMessage(CustomMessage.CW_WATCH_ENABLED.pre());
 				} else {
-					sender.sendMessage(MiscUtils.massReplace(CustomMessage.CW_WATCH_DISABLED_OTHER.pre(), rep));
+					sender.sendMessage(CustomMessage.CW_WATCH_DISABLED_OTHER.pre(rep));
 					target.sendMessage(CustomMessage.CW_WATCH_DISABLED.pre());
 				}
 			}
 		} else {
 			if (!(sender instanceof Player)) {
-				CustomMessage.printHeader(sender, "Carbon Watcher Help");
-				sender.sendMessage(Clr.RED + "/cw [player] <on|off> - Toggle another user's watching state, optionally specify on or off");
+				CustomMessage.printHeader(sender, mod.getName() + " Help");
+				if (mod.perm(sender, "toggle.others"))
+					sender.sendMessage(Clr.AQUA + "/cw [player] <on|off>" + Clr.DARKAQUA + " - Toggle a user's command watcher");
 				return;
 			}
-			if (!MiscUtils.perm(sender, "carbonkit.watcher.toggle")) {
+			if (!mod.perm(sender, "toggle")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}

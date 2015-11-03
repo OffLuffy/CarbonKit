@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
-import net.teamcarbon.carbonkit.commands.CarbonSmite.GoldenSmiteCommand;
+import net.teamcarbon.carbonkit.commands.CarbonSmite.CarbonSmiteCommand;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.GoldenSmite.Smite;
@@ -30,13 +30,13 @@ import java.util.*;
 
 @SuppressWarnings({"UnusedDeclaration", "MismatchedQueryAndUpdateOfCollection"})
 public class CarbonSmiteModule extends Module {
+	public static CarbonSmiteModule inst;
 	public CarbonSmiteModule() throws DuplicateModuleException { super("CarbonSmite", "csmite", "smite", "cs"); }
 	public static List<Entity> killed = new ArrayList<Entity>();
 	private static List<UUID> enabledSmiteArrows = new ArrayList<UUID>();
 	private static List<UUID> enabledSmiteSnowballs = new ArrayList<UUID>();
 	private static List<Projectile> launchedProj = new ArrayList<Projectile>();
 	private static HashMap<UUID, List<EntityGroup>> enabledGroups = new HashMap<UUID, List<EntityGroup>>();
-	public static CarbonSmiteModule inst;
 	public void initModule() {
 		inst = this;
 		if (!killed.isEmpty()) killed.clear();
@@ -45,7 +45,7 @@ public class CarbonSmiteModule extends Module {
 		if (!launchedProj.isEmpty()) launchedProj.clear();
 		if (!enabledGroups.isEmpty()) enabledGroups.clear();
 		for (Player p : Bukkit.getOnlinePlayers()) { loadPlayer(p); }
-		addCmd(new GoldenSmiteCommand(this));
+		addCmd(new CarbonSmiteCommand(this));
 		registerListeners();
 	}
 	public void disableModule() {
@@ -73,9 +73,9 @@ public class CarbonSmiteModule extends Module {
 		if (!isEnabled()) return;
 		if (e.getEntity().getShooter() instanceof Player) {
 			OfflinePlayer shooter = (OfflinePlayer)e.getEntity().getShooter();
-			if (e.getEntity() instanceof Arrow && hasArrowsEnabled(shooter) && MiscUtils.perm((Player) shooter, "carbonkit.goldensmite.use.arrows"))
+			if (e.getEntity() instanceof Arrow && hasArrowsEnabled(shooter) && perm((Player) shooter, "use.arrows"))
 				launchedProj.add(e.getEntity());
-			if (e.getEntity() instanceof Snowball && hasSnowballsEnabled(shooter) && MiscUtils.perm((Player) shooter, "carbonkit.goldensmite.use.snowballs"))
+			if (e.getEntity() instanceof Snowball && hasSnowballsEnabled(shooter) && perm((Player) shooter, "use.snowballs"))
 				launchedProj.add(e.getEntity());
 		}
 	}
@@ -121,7 +121,7 @@ public class CarbonSmiteModule extends Module {
 	public void interact(PlayerInteractEvent e) {
 		if (!isEnabled()) return;
 		if (isEnabled()){
-			if (!MiscUtils.perm(e.getPlayer(), "carbonkit.goldensmite.use.axe"))
+			if (!perm(e.getPlayer(), "use.axe"))
 				return;
 			if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR){
 				if (e.getPlayer().getItemInHand().getType() == GOLD_AXE){

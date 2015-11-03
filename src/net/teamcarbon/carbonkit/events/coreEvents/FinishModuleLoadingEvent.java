@@ -21,6 +21,7 @@ public class FinishModuleLoadingEvent extends Event {
 	}
 	public List<Module> getEnabledModules() { return new ArrayList<Module>(enabled); }
 	public List<Module> getDisabledModules() { return new ArrayList<Module>(disabled); }
+
 	private static final HandlerList handlers = new HandlerList();
 	public HandlerList getHandlers() { return handlers; }
 	public static HandlerList getHandlerList() { return handlers; }

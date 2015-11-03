@@ -39,6 +39,7 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 public class CarbonToolsModule extends Module {
+	public static CarbonToolsModule inst;
 
 	public static UUID instId;
 
@@ -48,10 +49,9 @@ public class CarbonToolsModule extends Module {
 	public static HashMap<UUID, Long> tempFreezeList = new HashMap<UUID, Long>();
 	public static HashMap<UUID, String> addressMap = new HashMap<UUID, String>();
 	public static HashMap<UUID, Long> onlineTimeStart = new HashMap<UUID, Long>();
-	public static CarbonToolsModule inst;
 
 	public CarbonToolsModule() throws DuplicateModuleException {
-		super("CarbonTools", "misc", "miscmodule", "mm", "tools", "tool");
+		super("CarbonTools", "misc", "miscmodule", "msc", "ctools", "ctool", "tools", "tool", "ctl");
 	}
 
 	public void initModule() {
@@ -74,9 +74,6 @@ public class CarbonToolsModule extends Module {
 		}
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst, new UpdateOnlineTimeTask(instId), 1L, 6000L);
 		addCmd(new SlapCommand(this));
-		addCmd(new FreezeCommand(this));
-		addCmd(new FakeJoinCommand(this));
-		addCmd(new FakeQuitCommand(this));
 		addCmd(new RideCommand(this));
 		addCmd(new EntCountCommand(this));
 		addCmd(new GamemodeCommand(this));
@@ -95,18 +92,18 @@ public class CarbonToolsModule extends Module {
 							DIR_ITEM = MiscUtils.getMaterial(getConfig().getString("hud-settings.direction-item", "COMPASS")),
 							CLK_ITEM = MiscUtils.getMaterial(getConfig().getString("hud-settings.clock-item", "WATCH")),
 							TPS_ITEM = MiscUtils.getMaterial(getConfig().getString("hud-settings.tps-item", "REDSTONE"));
-					String text, sep = " &r&l\u2022&r ", pr = "carbonkit.misc.hud.", bh = "bypassholding",
+					String text, sep = " &r&l\u2022&r ", pr = "hud.", bh = "bypassholding",
 							prl = "location", prd = "direction", prc = "clock", prt = "tps", pro = ".override";
 					for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-						if (hold) hold = !MiscUtils.perm(p, pr + bh);
+						if (hold) hold = !perm(p, pr + bh);
 						Material i = p.getItemInHand().getType();
 						text = "";
-						boolean mOvr = MiscUtils.perm(p, pr + prl + pro), dOvr = MiscUtils.perm(p, pr + prd + pro),
-								cOvr = MiscUtils.perm(p, pr + prc + pro), tOvr = MiscUtils.perm(p, pr + prt + pro);
-						boolean map = mOvr || ((hold ? i == LOC_ITEM : invHas(p, LOC_ITEM)) && MiscUtils.perm(p, pr + prl)),
-								cmp = dOvr || ((hold ? i == DIR_ITEM : invHas(p, DIR_ITEM)) && MiscUtils.perm(p, pr + prd)),
-								clk = cOvr || ((hold ? i == CLK_ITEM : invHas(p, CLK_ITEM)) && MiscUtils.perm(p, pr + prc)),
-								tps = tOvr || ((hold ? i == TPS_ITEM : invHas(p, TPS_ITEM)) && MiscUtils.perm(p, pr + prt));
+						boolean mOvr = perm(p, pr + prl + pro), dOvr = perm(p, pr + prd + pro),
+								cOvr = perm(p, pr + prc + pro), tOvr = perm(p, pr + prt + pro);
+						boolean map = mOvr || ((hold ? i == LOC_ITEM : invHas(p, LOC_ITEM)) && perm(p, pr + prl)),
+								cmp = dOvr || ((hold ? i == DIR_ITEM : invHas(p, DIR_ITEM)) && perm(p, pr + prd)),
+								clk = cOvr || ((hold ? i == CLK_ITEM : invHas(p, CLK_ITEM)) && perm(p, pr + prc)),
+								tps = tOvr || ((hold ? i == TPS_ITEM : invHas(p, TPS_ITEM)) && perm(p, pr + prt));
 						if (tps) text += (!text.isEmpty() ? sep : "") + "&cTPS: {TPS}";
 						if (clk && plrInOverworld(p)) text += (!text.isEmpty() ? sep : "") + "&b{TIME}";
 						if (map) {
@@ -202,7 +199,7 @@ public class CarbonToolsModule extends Module {
 		Player pl = e.getPlayer();
 		UUID pid = pl.getUniqueId();
 		if (frozenCancellableHandle(e, pl)) return;
-		if (e.getRightClicked().getType().equals(EntityType.PAINTING) && MiscUtils.perm(pl, "carbonkit.misc.artcycle")) {
+		if (e.getRightClicked().getType().equals(EntityType.PAINTING) && perm(pl, "artcycle")) {
 			Painting p = (Painting) e.getRightClicked();
 			boolean allow = true;
 			if (MiscUtils.checkPlugin("GriefPrevention", true)) {
@@ -480,7 +477,7 @@ public class CarbonToolsModule extends Module {
 	private boolean frozenHandle(Player p) {
 		if (!isEnabled()) return false;
 		if (isFrozen(p, false)) {
-			if (MiscUtils.perm(p, "carbonkit.misc.freeze.immune")) unfreezePlayer(p);
+			if (perm(p, "freeze.immune")) unfreezePlayer(p);
 			if (!hasFrozenEffects(p)) freezePlayer(p);
 			return true;
 		}
@@ -491,7 +488,7 @@ public class CarbonToolsModule extends Module {
 		if (join) {
 			if (needsUnfreezing(p)) unfreezePlayer(p);
 			if (isFrozen(p, true)) {
-				if (MiscUtils.perm(p, "carbonkit.misc.freeze.immune")) unfreezePlayer(p);
+				if (perm(p, "freeze.immune")) unfreezePlayer(p);
 				else freezePlayer(p, getUnfreezeTime(p));
 			}
 		} else {
@@ -501,10 +498,10 @@ public class CarbonToolsModule extends Module {
 		String a = join?"join":"quit";
 		Location l = p.getLocation();
 		String statuses = "";
-		boolean silent = MiscUtils.perm(p, "carbonkit.misc.silent"+a);
+		boolean silent = perm(p, "silent"+a);
 		if (silent && join) {
 			p.sendMessage(Clr.DARKAQUA + "[Silent] " + Clr.AQUA + "You have joined silently.");
-			if (MiscUtils.perm(p, "carbonkit.misc.siletjoin.vanish") && MiscUtils.checkPlugin("Essentials", true)) {
+			if (perm(p, "siletjoin.vanish") && MiscUtils.checkPlugin("Essentials", true)) {
 				com.earth2me.essentials.Essentials ep = (com.earth2me.essentials.Essentials) MiscUtils.getPlugin("Essentials", true);
 				com.earth2me.essentials.User user = ep.getUser(p);
 				user.setVanished(true);
@@ -531,11 +528,11 @@ public class CarbonToolsModule extends Module {
 		rep.put("{Y}", l.getBlockY()+"");
 		rep.put("{Z}", l.getBlockZ()+"");
 		rep.put("{WORLD}", l.getWorld().getName());
-		String m = MiscUtils.massReplace(join ? CustomMessage.MISC_JOIN.noPre() : CustomMessage.MISC_QUIT.noPre(), rep);
-		String me = MiscUtils.massReplace(join ? CustomMessage.MISC_JOIN_EXT.noPre() : CustomMessage.MISC_QUIT_EXT.noPre(), rep);
+		String m = join ? CustomMessage.MISC_JOIN.noPre(rep) : CustomMessage.MISC_QUIT.noPre(rep);
+		String me = join ? CustomMessage.MISC_JOIN_EXT.noPre(rep) : CustomMessage.MISC_QUIT_EXT.noPre(rep);
 		for (Player opl : Bukkit.getOnlinePlayers()) {
-			if (!silent || MiscUtils.perm(opl, "carbonkit.misc.silent" + a + ".notify")) {
-				opl.sendMessage(MiscUtils.perm(opl, "carbonkit.misc." + a + "msg.extended") ? me : m);
+			if (!silent || perm(opl, "silent" + a + ".notify")) {
+				opl.sendMessage(perm(opl, a + "msg.extended") ? me : m);
 			}
 		}
 	}

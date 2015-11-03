@@ -28,12 +28,12 @@ public class UpdateHeadCommand extends ModuleCmd {
 			sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 			return;
 		}
-		if (!MiscUtils.perm(sender, "carbonkit.skullshop.update")) {
+		if (!mod.perm(sender, "update")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
-		double price = CarbonKit.getDefConfig().getDouble("CarbonSkulls.update-price", 500.0);
-		if (MiscUtils.perm(sender, "carbonkit.skullshop.skull.free") || price < 0) price = 0;
+		double price = mod.getConfig().getDouble("update-price", 500.0);
+		if (mod.perm(sender, "skull.free") || price < 0) price = 0;
 		if (args.length > 0) {
 			String pName = args[0];
 			OfflinePlayer opl = MiscUtils.getPlayer(args[0], CarbonKit.checkOffline);
@@ -54,21 +54,21 @@ public class UpdateHeadCommand extends ModuleCmd {
 				((Player) sender).getInventory().addItem(skull);
 				HashMap<String, String> rep = new HashMap<String, String>();
 				rep.put("{SKULLOWNER}", pName);
-				if (price <= 0.0 || MiscUtils.perm(sender, "carbonkit.skullshop.skull.free")) {
-					sender.sendMessage(MiscUtils.massReplace(CustomMessage.SS_SKULL_GIVEN_FREE.pre(), rep));
+				if (price <= 0.0 || mod.perm(sender, "skull.free")) {
+					sender.sendMessage(CustomMessage.SS_SKULL_GIVEN_FREE.pre(rep));
 				} else {
 					rep.put("{PRICE}", price + "");
-					sender.sendMessage(MiscUtils.massReplace(CustomMessage.SS_SKULL_GIVEN.pre(), rep));
+					sender.sendMessage(CustomMessage.SS_SKULL_GIVEN.pre(rep));
 				}
 			} else {
 				sender.sendMessage(CustomMessage.SS_NOT_ENOUGH_MONEY.pre());
 			}
 		} else {
-			double p = CarbonKit.getDefConfig().getDouble("CarbonSkulls.update-price", 500.0);
+			double p = mod.getConfig().getDouble("update-price", 500.0);
 			CustomMessage.printHeader(sender, "CarbonSkulls - Update");
-			if (MiscUtils.perm(sender, "carbonkit.skullshop.skull.free") || price <= 0)
+			if (mod.perm(sender, "skull.free") || price <= 0)
 				sender.sendMessage(Clr.AQUA + "/uskull <player>" + Clr.DARKAQUA + " - Set in-hand skull skin");
-			else if (MiscUtils.perm(sender, "carbonkit.skullshop.skull"))
+			else if (mod.perm(sender, "skull"))
 				sender.sendMessage(Clr.AQUA + "/uskull <player>" + Clr.DARKAQUA + " - Set in-hand skull's skin " + ((price > 0)?" for $" + price:""));
 			sender.sendMessage(Clr.GRAY + "Right click a skull to check who it is and save it.");
 		}
