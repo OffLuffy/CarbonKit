@@ -6,7 +6,7 @@ import net.teamcarbon.carbonkit.commands.CarbonEssentials.FreezeCommand;
 import net.teamcarbon.carbonkit.commands.CarbonTools.FakeJoinCommand;
 import net.teamcarbon.carbonkit.commands.CarbonTools.FakeQuitCommand;
 import net.teamcarbon.carbonkit.events.essentialsEvents.EssentialsTeleportEvent;
-import net.teamcarbon.carbonkit.utils.CarbonPlayer;
+import net.teamcarbon.carbonkit.utils.CarbonEssentials.CarbonPlayer;
 import net.teamcarbon.carbonkit.utils.CarbonEssentials.TeleportHelper;
 import net.teamcarbon.carbonkit.utils.CarbonEssentials.TeleportHelper.TeleportCheckResult;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;

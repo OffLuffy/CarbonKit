@@ -1,6 +1,6 @@
 package net.teamcarbon.carbonkit.events.essentialsEvents;
 
-import net.teamcarbon.carbonkit.utils.CarbonPlayer;
+import net.teamcarbon.carbonkit.utils.CarbonEssentials.CarbonPlayer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;

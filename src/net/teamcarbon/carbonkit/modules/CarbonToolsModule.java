@@ -420,7 +420,7 @@ public class CarbonToolsModule extends Module {
 			Damageable de = (Damageable) ent;
 			pl.sendMessage(Clr.AQUA + "Health: " + de.getHealth() + " / " + de.getMaxHealth());
 		}
-		if (ent instanceof Horse) {
+		if (ent instanceof org.bukkit.entity. Horse) {
 			Horse horse = (Horse) ent;
 			pl.sendMessage(Clr.AQUA + "Horse Variant: " + prep(horse.getVariant().name()));
 			pl.sendMessage(Clr.AQUA + "Horse Style: " + prep(horse.getStyle().name()));

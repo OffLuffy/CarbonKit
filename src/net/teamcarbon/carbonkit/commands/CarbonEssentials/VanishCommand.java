@@ -1,6 +1,6 @@
 package net.teamcarbon.carbonkit.commands.CarbonEssentials;
 
-import net.teamcarbon.carbonkit.utils.CarbonPlayer;
+import net.teamcarbon.carbonkit.utils.CarbonEssentials.CarbonPlayer;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;

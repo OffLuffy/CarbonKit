@@ -1,9 +1,7 @@
-package net.teamcarbon.carbonkit.utils;
+package net.teamcarbon.carbonkit.utils.CarbonEssentials;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.modules.disabled.CarbonEssentialsModule;
-import net.teamcarbon.carbonkit.modules.CarbonPerksModule.TrailEffect;
-import net.teamcarbon.carbonkit.utils.CarbonEssentials.TeleportRequest;
 import net.teamcarbon.carbonlib.Misc.ConfigAccessor;
 import net.teamcarbon.carbonlib.Misc.LocUtils;
 import org.bukkit.Bukkit;
@@ -43,7 +41,6 @@ public class CarbonPlayer {
 
 	// CarbonPerks Data
 	private boolean effectsEnabled;
-	private List<TrailEffect> effects = new ArrayList<>();
 
 	// CarbonSmite Data
 	private boolean arrow, snowball;
@@ -86,22 +83,13 @@ public class CarbonPlayer {
 				}
 			}
 
-			// Load CarbonPerks Data
-			effectsEnabled = config.config().getBoolean("CarbonPerks.effects-enabled", false);
-			if (config.config().contains("CarbonPerks.effects") && config.config().isList("CarbonPerks.effects")) {
-				for (String s : config.config().getStringList("CarbonPerks.effects")) {
-					TrailEffect te = TrailEffect.valueOf(s);
-					if (te != null) effects.add(te);
-				}
-			}
-
 			// Load CarbonSmite Data
 			arrow = config.config().getBoolean("CarbonSmite.arrow-enabled", false);
 			snowball = config.config().getBoolean("CarbonSmite.snowball-enabled", false);
 			if (config.config().contains("CarbonSmite.kill-types") && config.config().isList("CarbonSmite.kill-types")) {
 				for (String s : config.config().getStringList("CarbonSmite.kill-types")) {
 					EntityType et = EntityType.valueOf(s);
-					if (et != null) killTypes.add(et);
+					killTypes.add(et);
 				}
 			}
 
@@ -141,7 +129,6 @@ public class CarbonPlayer {
 
 	// CarbonPerks Getters
 	public boolean isEffectsEnabled() { return effectsEnabled; }
-	public List<TrailEffect> getEffects() { return new ArrayList<>(effects); }
 
 	// CarbonSmite Getters
 	private boolean isArrowSmiteEnabled() { return arrow; }
@@ -213,7 +200,6 @@ public class CarbonPlayer {
 	private void flush() {
 		homes.clear();
 		tpIgnore.clear();
-		effects.clear();
 		// TODO Clear data from lists/maps
 	}
 

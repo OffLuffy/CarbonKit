@@ -1,6 +1,5 @@
 package net.teamcarbon.carbonkit.utils.CarbonEssentials;
 
-import net.teamcarbon.carbonkit.utils.CarbonPlayer;
 import net.teamcarbon.carbonlib.Misc.LocUtils;
 import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.bukkit.GameMode;
