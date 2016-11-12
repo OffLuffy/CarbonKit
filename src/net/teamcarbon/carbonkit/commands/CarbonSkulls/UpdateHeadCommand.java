@@ -28,6 +28,7 @@ public class UpdateHeadCommand extends ModuleCmd {
 			sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 			return;
 		}
+		Player pl = (Player) sender;
 		if (!mod.perm(sender, "update")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
@@ -38,30 +39,44 @@ public class UpdateHeadCommand extends ModuleCmd {
 			String pName = args[0];
 			OfflinePlayer opl = MiscUtils.getPlayer(args[0], CarbonKit.checkOffline);
 			if (opl != null) pName = opl.getName();
-			if (price != 0.0 && CarbonKit.econ.has((OfflinePlayer)sender, price)) {
-				if (price > 0.0) {
-					EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer) sender, price);
+			
+			if (pl.getInventory().getItemInMainHand().getType() != Material.SKULL_ITEM || pl.getInventory().getItemInMainHand().getDurability() != (short) 3) {
+				sender.sendMessage(CustomMessage.CS_MUST_HOLD_SKULL.pre());
+				return;
+			}
+			
+			if (price > 0.0) {
+				if (CarbonKit.econ.has(pl, price)) {
+					EconomyResponse er = CarbonKit.econ.withdrawPlayer(pl, price);
 					if (!er.transactionSuccess()) {
-						sender.sendMessage(CustomMessage.SS_TRANSACTION_FAILED.pre());
+						sender.sendMessage(CustomMessage.CS_TRANSACTION_FAILED.pre());
 						return;
 					}
-				}
-				ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
-				skull.setDurability((short) 3);
-				SkullMeta sm = (SkullMeta) skull.getItemMeta();
-				sm.setOwner(pName);
-				skull.setItemMeta(sm);
-				((Player) sender).getInventory().addItem(skull);
-				HashMap<String, String> rep = new HashMap<String, String>();
-				rep.put("{SKULLOWNER}", pName);
-				if (price <= 0.0 || mod.perm(sender, "skull.free")) {
-					sender.sendMessage(CustomMessage.SS_SKULL_GIVEN_FREE.pre(rep));
 				} else {
-					rep.put("{PRICE}", price + "");
-					sender.sendMessage(CustomMessage.SS_SKULL_GIVEN.pre(rep));
+					sender.sendMessage(CustomMessage.CS_NOT_ENOUGH_MONEY.pre());
+					return;
 				}
+			}
+
+			ItemStack skull = pl.getInventory().getItemInMainHand();
+			SkullMeta sm = (SkullMeta) skull.getItemMeta();
+			sm.setOwner(pName);
+			skull.setItemMeta(sm);
+			
+			/*ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
+			skull.setDurability((short) 3);
+			SkullMeta sm = (SkullMeta) skull.getItemMeta();
+			sm.setOwner(pName);
+			skull.setItemMeta(sm);
+			(pl).getInventory().addItem(skull);*/
+			
+			HashMap<String, String> rep = new HashMap<>();
+			rep.put("{SKULLOWNER}", pName);
+			rep.put("{PRICE}", price + "");
+			if (price <= 0.0 || mod.perm(sender, "skull.free")) {
+				sender.sendMessage(CustomMessage.CS_UPDATED_GIVEN_FREE.pre(rep));
 			} else {
-				sender.sendMessage(CustomMessage.SS_NOT_ENOUGH_MONEY.pre());
+				sender.sendMessage(CustomMessage.CS_UPDATED_GIVEN.pre(rep));
 			}
 		} else {
 			double p = mod.getConfig().getDouble("update-price", 500.0);
@@ -73,5 +88,4 @@ public class UpdateHeadCommand extends ModuleCmd {
 			sender.sendMessage(Clr.GRAY + "Right click a skull to check who it is and save it.");
 		}
 	}
-
 }

@@ -41,19 +41,19 @@ public class TimeVote extends Vote {
 	public World getWorld() { return world; }
 	protected void votePass() {
 		world.setTime(time);
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{TIME}", CarbonVoteModule.stringifyTime(time));
 		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_TIME_VOTE_PASSED.pre(rep));
 	}
 	protected void voteFail() {
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{YESPERCENT}", String.format(Locale.ENGLISH, "%.2f", getAgreePercentage(true)));
 		rep.put("{NOPERCENT}", String.format(Locale.ENGLISH, "%.2f", (100 - getAgreePercentage(true))));
 		rep.put("{VOTETYPE}", "Time");
 		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_FAILED.pre(rep));
 	}
 	protected void broadcastStart() {
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{VOTETYPE}", "time");
 		rep.put("{VOTEREASON}", "for " + CarbonVoteModule.stringifyTime(time));
 		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_STARTED.pre(rep));

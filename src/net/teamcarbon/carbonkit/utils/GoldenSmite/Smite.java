@@ -6,13 +6,10 @@ import net.teamcarbon.carbonkit.modules.CarbonSmiteModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.EntHelper;
 import net.teamcarbon.carbonkit.utils.EntHelper.EntityGroup;
-import net.teamcarbon.carbonkit.utils.Firework.FireworkUtils;
+//import net.teamcarbon.carbonkit.utils.Firework.FireworkUtils;
 import net.teamcarbon.carbonlib.Misc.LocUtils;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import org.bukkit.*;
-import org.bukkit.FireworkEffect.Builder;
-import org.bukkit.FireworkEffect.Type;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import net.teamcarbon.carbonkit.CarbonKit;
@@ -28,11 +25,12 @@ public class Smite {
 	}
 	private static final int OVER_NINE_THOUSAND = 9001;
 	public static void createSmite(Player pl, Location l, SmiteType smiteMethod) {
+		CarbonKit.log.debug(pl.getName() + " smote " + l.getX() + ", " + l.getY() + ", " + l.getZ() + ", " + l.getWorld().getName() + " (" + smiteMethod.lname() + ")");
 		Location effectLocation = l.clone();
 		if (!smiteMethod.equals(SmiteType.PROJECTILE)) {
 			effectLocation.setX(effectLocation.getBlockX() + 0.5);
-			effectLocation.setY(effectLocation.getBlockY()+1.5);
-			effectLocation.setZ(effectLocation.getBlockZ()+0.5);
+			effectLocation.setY(effectLocation.getBlockY() + 1.5);
+			effectLocation.setZ(effectLocation.getBlockZ() + 0.5);
 		}
 		CarbonSmiteModule.killed = getTargets(pl, l, smiteMethod);
 		createEffects(effectLocation);
@@ -73,7 +71,7 @@ public class Smite {
 	}
 	
 	private static ArrayList<Entity> getTargets(Player pl, Location l, SmiteType smiteMethod) {
-		ArrayList<Entity> entList = new ArrayList<Entity>();
+		ArrayList<Entity> entList = new ArrayList<>();
 		boolean host = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.HOSTILE), neut = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.NEUTRAL),
 				pass = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.PASSIVE), tame = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.TAMED),
 				play = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.PLAYER), drop = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.DROP);
@@ -81,7 +79,7 @@ public class Smite {
 			if (modInst == null) CarbonKit.log.warn("Module is null");
 			if (modInst.getConfig() == null) CarbonKit.log.warn("Module config is null");
 			int rad = modInst.getConfig().getInt("radius", 6), rng = modInst.getConfig().getInt("range", 100) + rad;
-			ArrayList<Entity> ents = new ArrayList<Entity>();
+			ArrayList<Entity> ents = new ArrayList<>();
 			for (Entity e : pl.getNearbyEntities(rng, rng, rng)) {
 				if ((EntHelper.isHostile(e.getType()) && host) || (EntHelper.isNeutral(e.getType()) && neut) ||(EntHelper.isPassive(e.getType()) && pass))
 					ents.add(e);
@@ -108,12 +106,12 @@ public class Smite {
 		CarbonSmiteModule mod = CarbonSmiteModule.inst;
 		if (mod.getConfig().getBoolean("explosionEffect", false)) l.getWorld().createExplosion(l, 0);
 		if (mod.getConfig().getBoolean("lightningEffect", false)) l.getWorld().strikeLightningEffect(l);
-		if (mod.getConfig().getBoolean("fireworkEffect", true)) {
+		/*if (mod.getConfig().getBoolean("fireworkEffect", true)) {
 			Builder feb = FireworkEffect.builder();
 			FireworkUtils.playFirework(l, feb.with(Type.BALL)
 					.withColor(FireworkUtils.colorsFromHex("FFD700", "FF8C00", "FFDF00", "FFA500"))
 					.withFade(FireworkUtils.colorsFromHex("8B4513", "A0522D", "996515", "DAA520"))
 					.build());
-		}
+		}*/
 	}
 }

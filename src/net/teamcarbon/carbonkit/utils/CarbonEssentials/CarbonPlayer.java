@@ -1,7 +1,7 @@
 package net.teamcarbon.carbonkit.utils;
 
 import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonkit.modules.CarbonEssentialsModule;
+import net.teamcarbon.carbonkit.modules.disabled.CarbonEssentialsModule;
 import net.teamcarbon.carbonkit.modules.CarbonPerksModule.TrailEffect;
 import net.teamcarbon.carbonkit.utils.CarbonEssentials.TeleportRequest;
 import net.teamcarbon.carbonlib.Misc.ConfigAccessor;
@@ -24,7 +24,7 @@ public class CarbonPlayer {
 
 	CarbonEssentialsModule modInst = CarbonEssentialsModule.inst;
 
-	private static HashMap<OfflinePlayer, CarbonPlayer> loaded = new HashMap<OfflinePlayer, CarbonPlayer>();
+	private static HashMap<OfflinePlayer, CarbonPlayer> loaded = new HashMap<>();
 
 	private OfflinePlayer player;
 	private ConfigAccessor config;
@@ -38,16 +38,16 @@ public class CarbonPlayer {
 	private TeleportRequest tpr;
 	private boolean vanish, interact, god, fly, mute, jail, notp, frozen;
 	private Location preJailLoc;
-	private HashMap<String, Location> homes = new HashMap<String, Location>();
-	private List<UUID> tpIgnore = new ArrayList<UUID>();
+	private HashMap<String, Location> homes = new HashMap<>();
+	private List<UUID> tpIgnore = new ArrayList<>();
 
 	// CarbonPerks Data
 	private boolean effectsEnabled;
-	private List<TrailEffect> effects = new ArrayList<TrailEffect>();
+	private List<TrailEffect> effects = new ArrayList<>();
 
 	// CarbonSmite Data
 	private boolean arrow, snowball;
-	private List<EntityType> killTypes = new ArrayList<EntityType>();
+	private List<EntityType> killTypes = new ArrayList<>();
 
 	// CarbonWatcher Data
 	private boolean watching;
@@ -132,22 +132,22 @@ public class CarbonPlayer {
 	public boolean isJailed() { return jail; }
 	public boolean ignoreTeleportRequests() { return notp; }
 	public boolean isFrozen() { return frozen; }
-	public HashMap<String, Location> getHomes() { return new HashMap<String, Location>(homes); }
+	public HashMap<String, Location> getHomes() { return new HashMap<>(homes); }
 	public Location getHomeLocation(String name) { return homes.containsKey(name) ? homes.get(name) : null; }
-	public List<UUID> getTeleportIgnored() { return new ArrayList<UUID>(tpIgnore); }
+	public List<UUID> getTeleportIgnored() { return new ArrayList<>(tpIgnore); }
 	public boolean isTeleportIgnored(UUID uuid) { return tpIgnore.contains(uuid); }
 	public boolean isTeleportIgnored(Player pl) { return tpIgnore.contains(pl.getUniqueId()); }
 	public Location getPreJailLocation() { return preJailLoc; }
 
 	// CarbonPerks Getters
 	public boolean isEffectsEnabled() { return effectsEnabled; }
-	public List<TrailEffect> getEffects() { return new ArrayList<TrailEffect>(effects); }
+	public List<TrailEffect> getEffects() { return new ArrayList<>(effects); }
 
 	// CarbonSmite Getters
 	private boolean isArrowSmiteEnabled() { return arrow; }
 	private boolean isSnowballSmiteEnabled() { return snowball; }
 	private boolean isKillingType(EntityType type) { return killTypes.contains(type); }
-	private List<EntityType> getKillTypes() { return new ArrayList<EntityType>(killTypes); }
+	private List<EntityType> getKillTypes() { return new ArrayList<>(killTypes); }
 
 	// CarbonWatcher Getters
 	private boolean isCommandWatching() { return watching; }

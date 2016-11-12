@@ -165,7 +165,7 @@ public class CarbonVoteModule extends Module {
 		else if (vt.equals(TargetedVoteType.MUTE))
 			num = inst.getConfig().getInt("min-players.mute", 5);
 		else if (vt.equals(TargetedVoteType.JAIL))
-			num = inst.getConfig().getInt("min-players.JAIL", 5);
+			num = inst.getConfig().getInt("min-players.jail", 5);
 		return Bukkit.getOnlinePlayers().size() >= num;
 	}
 	/**
@@ -211,7 +211,7 @@ public class CarbonVoteModule extends Module {
 		time = Math.abs(time%24000);
 		for (TimeTerm tt : TimeTerm.values())
 			if (time == tt.getTicks())
-				return MiscUtils.capFirst(tt.name());
+				return MiscUtils.capFirst(tt.name(), true);
 		int hours = (int)((time/1000L) + 6L), mins = (int)Math.floor(((double)(time%1000))/(1000.0/60.0));
 		if (hours > 24) hours -= 24;
 		boolean pm = hours >= 12;

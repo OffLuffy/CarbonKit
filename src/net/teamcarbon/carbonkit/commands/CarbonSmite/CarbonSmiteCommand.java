@@ -32,7 +32,7 @@ public class CarbonSmiteCommand extends ModuleCmd {
 			sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 			return;
 		}
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		if (args.length > 0) {
 			if (EntityGroup.getGroup(args[0]) != null) {
 				EntityGroup eg = EntityGroup.getGroup(args[0]);

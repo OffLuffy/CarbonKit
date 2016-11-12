@@ -8,6 +8,7 @@ import java.util.UUID;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException.DupeType;
+import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -27,7 +28,7 @@ import net.teamcarbon.carbonkit.modules.CarbonCoreModule;
  */
 @SuppressWarnings("UnusedDeclaration")
 public abstract class Module implements Listener {
-	public static List<Module> modules = new ArrayList<Module>();
+	public static List<Module> modules = new ArrayList<>();
 	private UUID id;
 	private String name;
 	private List<String> aliases;
@@ -49,11 +50,10 @@ public abstract class Module implements Listener {
 			if (getModule(a) != null)
 				throw new DuplicateModuleException(DupeType.DUPE_ALIAS);
 		setName(name);
-		this.aliases = new ArrayList<String>();
-		this.requires = new ArrayList<String>();
-		this.modCmds = new ArrayList<ModuleCmd>();
-		for (String a : aliases)
-			this.aliases.add(a.toLowerCase());
+		this.aliases = new ArrayList<>();
+		this.requires = new ArrayList<>();
+		this.modCmds = new ArrayList<>();
+		for (String a : aliases) this.aliases.add(a.toLowerCase());
 		id = UUID.randomUUID();
 		setEnabled(this instanceof CarbonCoreModule || (isConfigEnabled() && hasAllDependencies()));
 		if (isConfigEnabled() && !hasAllDependencies()) {
@@ -71,7 +71,8 @@ public abstract class Module implements Listener {
 
 	private String[] prefixPerms(String[] perms) {
 		String[] prePerms = new String[perms.length];
-		for (int i = 0; i < perms.length; i++) prePerms[i] = "carbonkit." + getName().toLowerCase() + "." + perms[i];
+		String mid = getName().equals("CarbonKit") ? "" : getName().toLowerCase() + ".";
+		for (int i = 0; i < perms.length; i++) prePerms[i] = "carbonkit." + mid + perms[i];
 		return prePerms;
 	}
 
@@ -186,6 +187,48 @@ public abstract class Module implements Listener {
 		if (dataSect == null) dataSect = new MemoryConfiguration();
 		return dataSect;
 	}
+
+	/**
+	 * Fetches a message from this module's message set
+	 * @param msgKey The key of the message to find
+	 * @param prefix Whether or not to append the prefix to the message
+	 * @return Returns a message from this module's message set or null if not found
+	 */
+	public String getMsg(String msgKey, boolean prefix) {
+		ConfigurationSection msgSect = CarbonKit.getConfig(ConfType.MESSAGES).getConfigurationSection(getName().toLowerCase());
+		if (msgSect == null) msgSect = new MemoryConfiguration();
+		msgKey = msgKey.toLowerCase();
+		if (msgSect.contains(msgKey) && msgSect.isString(msgKey)) {
+			String msg = msgSect.getString(msgKey);
+			if (prefix && msgSect.contains("prefix") && msgSect.isString("prefix")) {
+				msg = msgSect.getString("prefix") + msg;
+			}
+			msg = Clr.trans(msg);
+			return msg;
+		}
+		return null;
+	}
+
+	/**
+	 * Fetches a message from the core message set
+	 * @param msgKey The key of the message to find
+	 * @param prefix Whether or not to append the prefix to the message
+	 * @return Returns a message from this module's message set or null if not found
+	 */
+	public String getCoreMsg(String msgKey, boolean prefix) {
+		ConfigurationSection msgSect = CarbonKit.getConfig(ConfType.MESSAGES).getConfigurationSection("carbonkit");
+		if (msgSect == null) msgSect = new MemoryConfiguration();
+		msgKey = msgKey.toLowerCase();
+		if (msgSect.contains(msgKey) && msgSect.isString(msgKey)) {
+			String msg = msgSect.getString(msgKey);
+			if (prefix && msgSect.contains("prefix") && msgSect.isString("prefix")) {
+				msg = msgSect.getString("prefix") + msg;
+			}
+			msg = Clr.trans(msg);
+			return msg;
+		}
+		return null;
+	}
 	/**
 	 * Prefixes all permissions with 'carbonkit.[modulename].' before checking.
 	 * @see MiscUtils#perm(World, OfflinePlayer, String...)
@@ -260,13 +303,13 @@ public abstract class Module implements Listener {
 	/**
 	 * @return Returns a copy of the list of Modules
 	 */
-	public static List<Module> getAllModules() { return new ArrayList<Module>(modules); }
+	public static List<Module> getAllModules() { return new ArrayList<>(modules); }
 
 	/**
 	 * Empties static data in this class (the list of loaded modules)
 	 */
 	public static void flushData() {
-		if (modules != null && !modules.isEmpty()) modules.clear(); else modules = new ArrayList<Module>();
+		if (modules != null && !modules.isEmpty()) modules.clear(); else modules = new ArrayList<>();
 	}
 
 	/*=======================[ OVERRIDES ]=======================*/

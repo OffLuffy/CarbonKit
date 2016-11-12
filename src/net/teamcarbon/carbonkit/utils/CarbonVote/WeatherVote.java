@@ -36,7 +36,7 @@ public class WeatherVote extends Vote {
 	 */
 	public World getWorld() { return world; }
 	protected void votePass() {
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{WORLD}", world.getName());
 		if (wtype.equals(WeatherType.SUN)) {
 			world.setStorm(false);
@@ -54,14 +54,14 @@ public class WeatherVote extends Vote {
 		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_WEATHER_VOTE_PASSED.pre(rep));
 	}
 	protected void voteFail() {
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{YESPERCENT}", String.format(Locale.ENGLISH, "%.2f", getAgreePercentage(true)));
 		rep.put("{NOPERCENT}", String.format(Locale.ENGLISH, "%.2f", (100-getAgreePercentage(true))));
 		rep.put("{VOTETYPE}", "Weather");
 		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_FAILED.pre(rep));
 	}
 	protected void broadcastStart() {
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{VOTETYPE}", "weather");
 		rep.put("{VOTEREASON}", "for " + wtype.lname());
 		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_STARTED.pre(rep));

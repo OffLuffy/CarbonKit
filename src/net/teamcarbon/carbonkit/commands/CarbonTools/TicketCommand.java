@@ -2,8 +2,8 @@ package net.teamcarbon.carbonkit.commands.CarbonTools;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
-import net.teamcarbon.carbonkit.utils.CarbonNews.FormattedMessage;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
+import net.teamcarbon.carbonlib.FormatUtils.FormattedMessage;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import net.teamcarbon.carbonlib.Misc.NumUtils;
@@ -26,8 +26,8 @@ public class TicketCommand extends ModuleCmd {
 	private CommandSender s;
 	private boolean isConsole;
 	private static final String p = "ticket.";
-	private static HashMap<UUID, Integer> delConfirm = new HashMap<UUID, Integer>();
-	private static HashMap<UUID, String> lastSearch = new HashMap<UUID, String>();
+	private static HashMap<UUID, Integer> delConfirm = new HashMap<>();
+	private static HashMap<UUID, String> lastSearch = new HashMap<>();
 	private static String lastConsoleSearch;
 
 	public TicketCommand(Module module) { super(module, "ticket"); }
@@ -172,7 +172,7 @@ public class TicketCommand extends ModuleCmd {
 				}
 				int page = 1;
 				if (args.length > 1 && TypeUtils.isInteger(args[1])) page = Integer.parseInt(args[1]);
-				List<Ticket> tickets = new ArrayList<Ticket>();
+				List<Ticket> tickets = new ArrayList<>();
 				for (int tid : getAllTicketIds()) try { tickets.add(new Ticket(tid)); } catch(Exception ignore) {}
 				if (tickets.size() < 1) { sender.sendMessage(Clr.DARKAQUA + "No tickets to view"); return; }
 				int pages = tickets.size() % PER_PAGE > 0 ? tickets.size() / PER_PAGE + 1 : tickets.size() / PER_PAGE;
@@ -191,7 +191,7 @@ public class TicketCommand extends ModuleCmd {
 				}
 				int page = 1;
 				if (args.length > 1 && TypeUtils.isInteger(args[1])) page = Integer.parseInt(args[1]);
-				List<Ticket> tickets = new ArrayList<Ticket>();
+				List<Ticket> tickets = new ArrayList<>();
 				for (int tid : getAllTicketIds()) try {
 					Ticket t = new Ticket(tid);
 					if (t.consoleAuthor && isConsole || isAuthor(((Player)s).getUniqueId(), tid))
@@ -294,7 +294,7 @@ public class TicketCommand extends ModuleCmd {
 
 	private List<Ticket> searchTickets(String query, UUID ownerFilter) {
 		query = query.toLowerCase();
-		List<Ticket> tickets = new ArrayList<Ticket>();
+		List<Ticket> tickets = new ArrayList<>();
 		for (int tid : getAllTicketIds()) {
 			try {
 				Ticket t = new Ticket(tid);
@@ -306,7 +306,7 @@ public class TicketCommand extends ModuleCmd {
 		return tickets;
 	}
 	private List<Integer> getAllTicketIds() {
-		List<Integer> tids = new ArrayList<Integer>();
+		List<Integer> tids = new ArrayList<>();
 		for (String key : mod.getData().getConfigurationSection("ticket-data.tickets").getKeys(false))
 			if (TypeUtils.isInteger(key)) tids.add(Integer.parseInt(key));
 		return tids;
@@ -335,7 +335,7 @@ public class TicketCommand extends ModuleCmd {
 		mod.getData().set(path + "message", msg);
 		mod.getData().set(path + "time", System.currentTimeMillis());
 		if (Bukkit.getOnlinePlayers().size() > 0) {
-			List<String> witnesses = new ArrayList<String>();
+			List<String> witnesses = new ArrayList<>();
 			for (Player p : Bukkit.getOnlinePlayers()) if (!p.equals(author)) witnesses.add(p.getName());
 			mod.getData().set(path + "witnesses", witnesses);
 		}

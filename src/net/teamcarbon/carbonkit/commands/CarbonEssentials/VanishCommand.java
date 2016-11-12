@@ -35,7 +35,7 @@ public class VanishCommand extends ModuleCmd {
 					if (args.length > 1) {
 						if (TypeUtils.isBoolean(args[1])) { tcp.setVanish(TypeUtils.toBoolean(args[1])); }
 					} else { tcp.toggleVanish(); }
-					HashMap<String, String> rep = new HashMap<String, String>();
+					HashMap<String, String> rep = new HashMap<>();
 					rep.put("{TARGET}", target.getName());
 					sender.sendMessage(tcp.isVanished() ? CustomMessage.CE_VANISH_OTHER.pre(rep)
 							: CustomMessage.CE_UNVANISH_OTHER.pre(rep));

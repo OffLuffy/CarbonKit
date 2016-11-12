@@ -6,9 +6,7 @@ import net.teamcarbon.carbonkit.modules.CarbonNewsModule;
 import net.teamcarbon.carbonlib.Misc.CarbonException;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -16,12 +14,12 @@ import java.util.*;
 @SuppressWarnings("unused")
 public class BroadcastTask extends BukkitRunnable {
 
-	private static List<BroadcastTask> tasks = new ArrayList<BroadcastTask>();
+	private static List<BroadcastTask> tasks = new ArrayList<>();
 
 	private List<String> normalMsgList, randomMsgList;
 	private String setName, pre, pst;
 	private int position = 0;
-	private boolean enabled, random, perm, console, players, consoleClr;
+	private boolean enabled, random, perm, consoleClr;
 
 	public BroadcastTask(String set) {
 		this.setName = set;
@@ -36,18 +34,11 @@ public class BroadcastTask extends BukkitRunnable {
 				setEnabled(false);
 				stopBroadcasts();
 			} else {
-				if (position >= randomMsgList.size() || position < 0)
-					position = 0;
-				if (position == 0 && random)
-					Collections.shuffle(randomMsgList, new Random(System.nanoTime()));
+				if (position == 0 && random) Collections.shuffle(randomMsgList, new Random(System.nanoTime()));
 				String msg = randomMsgList.get(position);
-				msg = pre + msg + pst;
-				Collection<? extends Player> plArray = Bukkit.getOnlinePlayers();
-				int i = 0;
-				CarbonNewsModule.broadcastFormatted(msg, plArray, isSentToPlayers(), isSentToConole(), isConsoleColorized(), perm, getPerm());
-				position++;
-				if (position >= randomMsgList.size())
-					position = 0;
+				msg = CarbonNewsModule.toFormatArray(pre, msg, pst);
+				CarbonNewsModule.broadcastFormatted(msg, perm, getPerm());
+				position = (position < 0 || position + 1 >= randomMsgList.size()) ? 0 : position + 1;
 			}
 		} else {
 			stopBroadcasts();
@@ -64,7 +55,7 @@ public class BroadcastTask extends BukkitRunnable {
 		}
 	}
 	public void stopBroadcasts() {
-		try { cancel(); } catch (Exception e) {}
+		try { cancel(); } catch (Exception ignored) {}
 		enabled = false;
 		CarbonKit.log.debug("Stopped broadcast task for set: " + getSetName());
 	}
@@ -93,7 +84,7 @@ public class BroadcastTask extends BukkitRunnable {
 			this.random = random;
 			position = 0;
 			randomMsgList.clear();
-			randomMsgList = new ArrayList<String>(normalMsgList);
+			randomMsgList = new ArrayList<>(normalMsgList);
 			if (random) Collections.shuffle(randomMsgList);
 			CarbonKit.getConfig(ConfType.NEWS).set(path("randomOrder"), random);
 			CarbonKit.saveConfig(ConfType.NEWS);
@@ -125,31 +116,13 @@ public class BroadcastTask extends BukkitRunnable {
 		CarbonKit.saveConfig(ConfType.NEWS);
 		CarbonKit.log.debug("Set broadcast task postfix to " + postfix + " for set: " + getSetName());
 	}
-	public void setSendToConsole(boolean stc) {
-		console = stc;
-		CarbonKit.getConfig(ConfType.NEWS).set(path("sendToConsole"), stc);
-		CarbonKit.saveConfig(ConfType.NEWS);
-		CarbonKit.log.debug("Set broadcast task send console " + (console ? "enabled" : "disabled") + " for set: " + getSetName());
-	}
-	public void setColorConsole(boolean cc) {
-		consoleClr = cc;
-		CarbonKit.getConfig(ConfType.NEWS).set(path("colorConsoleMessages"), cc);
-		CarbonKit.saveConfig(ConfType.NEWS);
-		CarbonKit.log.debug("Set broadcast task color console " + (consoleClr ? "enabled" : "disabled") + " for set: " + getSetName());
-	}
-	public void setSendToPlayer(boolean stp) {
-		players = stp;
-		CarbonKit.getConfig(ConfType.NEWS).set(path("sendToPlayers"), stp);
-		CarbonKit.saveConfig(ConfType.NEWS);
-		CarbonKit.log.debug("Set broadcast task send player " + (players ? "enabled" : "disabled") + " for set: " + getSetName());
-	}
 	public void setMessages(List<String> messages) {
 		normalMsgList.clear();
-		normalMsgList = new ArrayList<String>(messages);
+		normalMsgList = new ArrayList<>(messages);
 		position = 0;
 		if (random) {
 			randomMsgList.clear();
-			randomMsgList = new ArrayList<String>(normalMsgList);
+			randomMsgList = new ArrayList<>(normalMsgList);
 			Collections.shuffle(randomMsgList);
 		}
 		CarbonKit.getConfig(ConfType.NEWS).set(path("messages"), normalMsgList);
@@ -177,8 +150,8 @@ public class BroadcastTask extends BukkitRunnable {
 	public String getPerm() { return "carbonkit.news.receive." + setName; }
 	public List<String> getMessages() {
 		if (normalMsgList == null)
-			return new ArrayList<String>();
-		return new ArrayList<String>(normalMsgList);
+			return new ArrayList<>();
+		return new ArrayList<>(normalMsgList);
 	}
 	public String getMessage(int msgId) {
 		if (msgId > size())
@@ -187,10 +160,7 @@ public class BroadcastTask extends BukkitRunnable {
 	}
 	public boolean isEnabled() { return enabled; }
 	public boolean isRandom() { return random; }
-	public boolean isConsoleColorized() { return consoleClr; }
 	public boolean requirePerms() { return perm; }
-	public boolean isSentToConole() { return console; }
-	public boolean isSentToPlayers() { return players; }
 	public boolean isEmpty() { return normalMsgList.isEmpty(); }
 	public int size() { return normalMsgList.size(); }
 	public long getDelay() {
@@ -209,21 +179,21 @@ public class BroadcastTask extends BukkitRunnable {
 			ConfigurationSection setConf = CarbonKit.getConfig(ConfType.NEWS).getConfigurationSection(path());
 			ConfigurationSection setDefaults = CarbonKit.getConfig(ConfType.NEWS).getConfigurationSection("setDefaults");
 			enabled = setConf.getBoolean("setEnabled", false);
-			normalMsgList = new ArrayList<String>(setConf.getStringList("messages"));
+			normalMsgList = new ArrayList<>(setConf.getStringList("messages"));
 			random = setConf.getBoolean(("randomOrder"), setDefaults.getBoolean("randomOrder", false));
 			perm = setConf.getBoolean(("requirePermission"), setDefaults.getBoolean("requirePermission", false));
-			console = setConf.getBoolean(("sendToConsole"), setDefaults.getBoolean("sendToConsole", true));
-			players = setConf.getBoolean(("sendToPlayers"), setDefaults.getBoolean("sendToPlayers", true));
-			consoleClr = setConf.getBoolean(("colorConsoleMessages"), setDefaults.getBoolean("colorConsoleMessages", true));
-			pre = setConf.getString(("prefix"), setDefaults.getString("prefix", "{TTP:News!|TXT:&b&l[!]} &f"));
+			pre = setConf.getString(("prefix"), setDefaults.getString("prefix", "[{\"text\":\"\",\"hoverEvent\":"
+					+ "{\"action\":\"show_text\",\"value\":{\"text\":\"News\"}},\"extra\":[{\"text\":\"[\",\"color\":"
+					+ "\"dark_aqua\",\"bold\":true},{\"text\":\"!\",\"color\":\"aqua\",\"bold\":true},{\"text\":\"]"
+					+ "    \",\"color\":\"dark_aqua\",\"bold\":true}]}]"));
 			pst = setConf.getString(("postfix"), setDefaults.getString("postfix", ""));
 			if (normalMsgList == null)
-				normalMsgList = new ArrayList<String>();
+				normalMsgList = new ArrayList<>();
 			if (size() < 1) {
 				enabled = false;
 				CarbonKit.log.warn("Message list for set " + setName + " is empty, disabling it");
 			}
-			randomMsgList = new ArrayList<String>(normalMsgList);
+			randomMsgList = new ArrayList<>(normalMsgList);
 		} else if (allowCreate) {
 			CarbonKit.log.warn("Failed to find settings for message set '" + setName + "', creating it...");
 			CarbonKit.getConfig(ConfType.NEWS).set("MessageSets." + setName, CarbonKit.getConfig(ConfType.NEWS).getConfigurationSection("setDefaults"));
@@ -246,7 +216,7 @@ public class BroadcastTask extends BukkitRunnable {
 
 	public static boolean isTask(String setName) { return getTask(setName) != null; }
 
-	public static List<BroadcastTask> getTasks() { return new ArrayList<BroadcastTask>(tasks); }
+	public static List<BroadcastTask> getTasks() { return new ArrayList<>(tasks); }
 
 	public static void removeTask(BroadcastTask task) {
 		task.stopBroadcasts();

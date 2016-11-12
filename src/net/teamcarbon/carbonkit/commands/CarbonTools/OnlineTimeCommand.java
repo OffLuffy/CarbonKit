@@ -5,6 +5,7 @@ import net.teamcarbon.carbonkit.modules.CarbonToolsModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
+import net.teamcarbon.carbonkit.utils.UserStore;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.bukkit.OfflinePlayer;
@@ -65,16 +66,17 @@ public class OnlineTimeCommand extends ModuleCmd {
 
 	public void displayOnlineTime(CommandSender sender, OfflinePlayer p) {
 		UUID id = p.getUniqueId();
-		CarbonToolsModule.inst.updateOnlineTime(id, true, false);
+		CarbonToolsModule.updateOnlineTime(id, false);
+		UserStore us = CarbonKit.getPlayerData(id);
 		String pre = "online-time." + id + ".";
 		CustomMessage.printHeader(sender, "Online Time for " + p.getName());
-		sender.sendMessage(Clr.AQUA + "First seen: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "first-seen", -1L), true));
-		sender.sendMessage(Clr.AQUA + "Last online: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "last-online", -1L), true));
-		sender.sendMessage(Clr.AQUA + "Overall online time: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "overall-time", -1), false));
-		sender.sendMessage(Clr.AQUA + "Time this month: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "this-month", -1), false));
-		sender.sendMessage(Clr.AQUA + "Time last month: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "last-month", -1), false));
-		sender.sendMessage(Clr.AQUA + "Average monthly time: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "monthly-avg", -1), false));
-		sender.sendMessage(Clr.AQUA + "Average session time: " + Clr.DARKAQUA + parseMillis(getMod().getData().getLong(pre + "average-session", -1), false));
+		sender.sendMessage(Clr.AQUA + "First seen: " + Clr.DARKAQUA + parseMillis(p.getFirstPlayed(), true));
+		sender.sendMessage(Clr.AQUA + "Last seen: " + Clr.DARKAQUA + parseMillis(p.isOnline() ? System.currentTimeMillis() : p.getLastPlayed(), true));
+		sender.sendMessage(Clr.AQUA + "Overall online time: " + Clr.DARKAQUA + parseMillis(us.getLong(getMod().getName() + ".online-time.overall-time", -1), false));
+		sender.sendMessage(Clr.AQUA + "Time this month: " + Clr.DARKAQUA + parseMillis(us.getLong(getMod().getName() + ".online-time.this-month", -1), false));
+		sender.sendMessage(Clr.AQUA + "Time last month: " + Clr.DARKAQUA + parseMillis(us.getLong(getMod().getName() + ".online-time.last-month", -1), false));
+		sender.sendMessage(Clr.AQUA + "Average monthly time: " + Clr.DARKAQUA + parseMillis(us.getLong(getMod().getName() + ".online-time.monthly-avg", -1), false));
+		sender.sendMessage(Clr.AQUA + "Average session time: " + Clr.DARKAQUA + parseMillis(us.getLong(getMod().getName() + ".online-time.average-session", -1), false));
 		CustomMessage.printFooter(sender);
 	}
 
@@ -139,5 +141,4 @@ public class OnlineTimeCommand extends ModuleCmd {
 			return time;
 		}
 	}
-
 }

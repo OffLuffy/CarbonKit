@@ -42,9 +42,10 @@ public class SlapCommand extends ModuleCmd {
 				if (CarbonKit.getDefConfig().getBoolean("CarbonTools.knockback"))
 					pl.setVelocity(pl.getVelocity().setY(pl.getVelocity().getY()+.5));
 				pl.sendMessage(Clr.GOLD + msg);
-				for (Player player : CarbonKit.inst.getServer().getOnlinePlayers())
+				sender.sendMessage(Clr.GOLD + "Slapped " + pl.getName());
+				/*for (Player player : CarbonKit.inst.getServer().getOnlinePlayers())
 					if (!pl.equals(player))
-						player.sendMessage(Clr.GOLD + pl.getName() + " was slapped by " + sender.getName());
+						player.sendMessage(Clr.GOLD + pl.getName() + " was slapped by " + sender.getName());*/
 			}
 		}
 	}

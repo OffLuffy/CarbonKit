@@ -38,7 +38,7 @@ public class CarbonToggleCommand extends ModuleCmd {
 				boolean state = !m.isEnabled();
 				if (args.length > 1 && TypeUtils.isBoolean(args[1]))
 					state = TypeUtils.toBoolean(args[1]);
-				HashMap<String, String> rep = new HashMap<String, String>();
+				HashMap<String, String> rep = new HashMap<>();
 				rep.put("{MODULENAME}", m.getName());
 				if (state) {
 					if (!m.isEnabled()) {

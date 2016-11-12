@@ -3,7 +3,6 @@ package net.teamcarbon.carbonkit.commands.CarbonTools;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import net.teamcarbon.carbonlib.Misc.NumUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -24,7 +23,7 @@ public class FakeJoinCommand extends ModuleCmd {
 			return;
 		}
 		String user, m, me, addr = NumUtils.rand(16, 255) + "." + NumUtils.rand(16,255) + "." + NumUtils.rand(16,255) + "." + NumUtils.rand(16,255);
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		if (args.length > 0) {
 			if (!mod.perm(sender, "fakejoin.others")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());

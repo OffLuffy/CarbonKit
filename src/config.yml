@@ -1,29 +1,19 @@
 core:
-  enable-debug-messages: true
+  enable-debug-messages: false
   match-offline-players: false
 modules:
-  AntiPortal: true
   CarbonCrafting: true
+  CarbonEssentials: true
   CarbonNews: true
-  CarbonPerks: true
+  CarbonSkulls: true
+  CarbonSmite: true
+  CarbonTools: true
   CarbonTrivia: true
   CarbonVote: true
   CarbonWatcher: true
-  CarbonEssentials: true
-  GoldenSmite: true
-  CarbonTools: true
-  CarbonSkulls: true
-CarbonCombat:
-  pvp-enabled:
-  - world
-  - world_nether
-  player-toggle-enabled:
-  - world
-  prevent-block-shooters:
-  - world
-  - world_the_end
-  disable-cooldown-seconds: 20
+  EssentialsAssist: true
 CarbonCrafting:
+  allow-uncrafting: true
   shaped-recipes:
     SADDLE:
       recipe:
@@ -63,25 +53,44 @@ CarbonCrafting:
   furnace-recipes:
     LEATHER:
       source: ROTTEN_FLESH
-CarbonNews:
-  welcomeMessage:
-    enabled: true
-    delaySeconds: 2
-    requirePermission: false
-    messageLines:
-    - '[{"text":"Welcome to ","color":"dark_aqua","bold":true},{"text":"Team-Carbon","color":"green","clickEvent":{"action":"open_url","value":"http://team-carbon.org/"},"hoverEvent":{"action":"show_text","value":{"text":"","extra":[{"text":"Click to visit our website @ ","color":"aqua"},{"text":"team-carbon.org","color":"green"}]}},"bold":false},{"text":"! Know the ","color":"dark_aqua"},{"text":"rules","color":"aqua","clickEvent":{"action":"run_command","value":"/rules"},"hoverEvent":{"action":"show_text","value":{"text":"","extra":[{"text":"Click to view the rules","color":"aqua"}]}}},{"text":" and enjoy your stay!","color":"dark_aqua"}]'
-CarbonPerks:
-  max-trails: 3
-  firework-bow-damage-percent:
-    mobs: 120.0
-    players: 100.0
-    disabled-worlds:
-    - pvp_world
-  fireworks-snowball-damage:
-    mobs: 4.0
-    players: 0.0
-    disabled-worlds:
-    - pvp_world
+CarbonSmite:
+  range: 100
+  radius: 8
+  removeMobDrops: true
+  removePlayerDrops: false
+  removeExp: true
+  explosionEffect: false
+  lightningEffect: false
+  fireworkEffect: true
+CarbonSkulls:
+  buy-price: 5000
+  update-price: 500
+CarbonTools:
+  ban-message-settings:
+    enable-replace: false
+    replace-msg: ''
+    enable-prefix: false
+    prefix: ''
+    enable-suffix: false
+    suffix: '\n&aYou may appeal bans at &6team-carbon.org/unban'
+  slap-damage: 0.0
+  knockback: true
+  entity-group-count: true
+  entity-type-count: false
+  entity-total-count: true
+  online-time:
+    show-years: true
+    show-months: true
+    show-days: true
+    show-hours: true
+    show-minutes: true
+    show-seconds: false
+  hud-settings:
+    must-have-in-hand: false
+    time-item: WATCH
+    location-item: MAP
+    direction-item: COMPASS
+    tps-item: REDSTONE
 CarbonVote:
   vote-timeout-seconds: 30
   broadcast-votes: true
@@ -151,41 +160,3 @@ EssentialsAssist:
     prevent-pressure: true
     prevent-mob-targeting: true
     prevent-damage: true
-CarbonSmite:
-  range: 100
-  radius: 8
-  removeMobDrops: true
-  removePlayerDrops: false
-  removeExp: true
-  explosionEffect: false
-  lightningEffect: false
-  fireworkEffect: true
-CarbonTools:
-  ban-message-settings:
-    enable-replace: false
-    replace-msg: ''
-    enable-prefix: false
-    prefix: ''
-    enable-suffix: false
-    suffix: '\n&aYou may appeal bans at &6team-carbon.org/unban'
-  slap-damage: 0.0
-  knockback: true
-  entity-group-count: true
-  entity-type-count: false
-  entity-total-count: true
-  online-time:
-    show-years: true
-    show-months: true
-    show-days: true
-    show-hours: true
-    show-minutes: true
-    show-seconds: false
-  hud-settings:
-    must-have-in-hand: false
-    time-item: WATCH
-    location-item: MAP
-    direction-item: COMPASS
-    tps-item: REDSTONE
-CarbonSkulls:
-  buy-price: 5000
-  update-price: 500

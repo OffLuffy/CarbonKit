@@ -1,28 +1,29 @@
 package net.teamcarbon.carbonkit.modules;
 
+import com.google.gson.Gson;
+import net.minecraft.server.v1_10_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_10_R1.PacketPlayOutChat;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.commands.CarbonNews.CarbonNewsCommand;
-import net.teamcarbon.carbonkit.utils.CarbonNews.FormattedMessage;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import net.teamcarbon.carbonkit.tasks.BroadcastTask;
+import net.teamcarbon.carbonlib.Misc.CarbonException;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonNewsModule extends Module {
 	public static CarbonNewsModule inst;
+	public static final Gson gson = new Gson();
 
 	public static final String NAME = "CarbonNews";
 
@@ -63,81 +64,39 @@ public class CarbonNewsModule extends Module {
 	@EventHandler
 	public void loginEvent(final PlayerJoinEvent e) {
 		if (!isEnabled()) return;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(CarbonKit.inst, new Runnable() {
-			@Override
-			public void run() {
-				boolean perm =  getConfig().getBoolean("welcomeMessage.requirePermission", false);
-				for (String message : getConfig().getStringList("welcomeMessage.messageLines")) {
-					ArrayList<Player> pls = new ArrayList<Player>();
-					pls.add(e.getPlayer());
-					CarbonNewsModule.broadcastFormatted(message, pls, true, false, false, perm, "carbonnews.welcome");
+		boolean np = !e.getPlayer().hasPlayedBefore();
+		ConfigurationSection cs = CarbonKit.getConfig(ConfType.NEWS).getConfigurationSection("welcomeMessage." + (np ? "newPlayer" : "returnPlayer"));
+		if (cs.getBoolean("enabled", false)) {
+			final boolean rp = cs.getBoolean("requirePermission", false);
+			final List<String> msgs = cs.getStringList("messageLines");
+			Bukkit.getScheduler().scheduleSyncDelayedTask(CarbonKit.inst, new Runnable() {
+				public void run() {
+					for (String msg : msgs) { CarbonNewsModule.sendFormatted(e.getPlayer(), msg, rp, "welcome"); }
 				}
-			}
-		}, getConfig().getLong("welcomeMessage.delaySeconds", 2L) * 20L);
+			}, cs.getLong("delaySeconds", 2L) * 20L);
+		}
 	}
 	
 	/*=============================================================*/
 	/*===[                      METHODS                        ]===*/
 	/*=============================================================*/
 
-	public static void broadcastNormal(String msg, Collection<? extends Player> pls, boolean toPlayers, boolean toConsole, boolean colorConsole, boolean needsPerm, String... perms) {
-		if (!toPlayers && !toConsole) return;
-		if (toPlayers)
-			for (Player pl : pls) { if (pl.isOnline() && (!needsPerm || MiscUtils.perm(pl, perms))) pl.sendMessage(msg); }
-		if (toConsole)
-			Bukkit.getServer().getConsoleSender().sendMessage(colorConsole ? msg : ChatColor.stripColor(msg));
+	public static void broadcastFormatted(String msg, boolean needsPerm, String ... perms) {
+		for (Player pl : Bukkit.getOnlinePlayers()) { sendFormatted(pl, msg, needsPerm, perms); }
 	}
 
-	public static void broadcastFormatted(String msg, Collection<? extends Player> pls, boolean toPlayers, boolean toConsole, boolean colorConsole, boolean needsPerm, String ... perms) {
-		if (!toPlayers && !toConsole) return;
-		FormattedMessage fm = new FormattedMessage("");
-		msg = Clr.trans(msg);
-		Pattern pattern = Pattern.compile("\\{((?:(?:LNK|TTP|CMD|STY|CLR)~[^~|]+?\\|)*TXT~[^~|]+?(?:(?:\\||})(?:(?:LNK|TTP|CMD|STY|CLR)~[^~|]+?))*)}");
-		Matcher matcher = pattern.matcher(msg);
-		if (!matcher.find()) {
-			broadcastNormal(msg, pls, toPlayers, toConsole, colorConsole, needsPerm, perms);
-		} else {
-			int pos1 = 0, pos2;
-			matcher.reset();
-			while (matcher.find()) {
-				// Insert text between matches
-				pos2 = msg.indexOf("{" + matcher.group(1) + "}");
-				fm.then(msg.substring(pos1, pos2));
-				pos1 = msg.indexOf("{" + matcher.group(1) + "}")+matcher.group(1).length()+2;
-
-				String region = matcher.group(1);
-				String txt = "", lnk = "", ttp = "", cmd = "";
-				boolean flnk = false, fttp = false, fcmd = false;
-				for (String s : region.split("\\|")) {
-					String[] sa = s.split("~");
-					String key = sa[0], value = Clr.trans(sa[1]);
-					if (key.equals("TXT")) {
-						txt = value;
-					} else if (key.equals("LNK")) {
-						lnk = value;
-						if (!lnk.contains("http://") && !lnk.contains("https://"))
-							lnk = "http://" + lnk;
-						flnk = true;
-					} else if (key.equals("TTP")) {
-						ttp = value;
-						fttp = true;
-					} else if (key.equals("CMD")) {
-						cmd = value;
-						fcmd = true;
-					}
-				}
-				fm.then(txt);
-				if (fttp) fm.tooltip(ttp);
-				if (fcmd) fm.command(cmd);
-				if (flnk) fm.link(lnk);
-			}
-			if (!(pos1 > msg.length()-1)) fm.then(msg.substring(pos1)); // Add the rest of message
+	public static void sendFormatted(CommandSender cs, String msg, boolean needsPerm, String ... perms) {
+		PacketPlayOutChat cp = null;
+		try {
+			cp = new PacketPlayOutChat(ChatSerializer.a(msg));
+		} catch (Exception e) {
+			(new CarbonException(CarbonKit.inst, "Failed to parse JSON: " + msg)).printStackTrace();
 		}
-		if (toPlayers)
-			for (Player pl : pls)
-				if (pl.isOnline() && (!needsPerm || MiscUtils.perm(pl, perms)))
-					fm.send(pl);
-		if (toConsole) Bukkit.getServer().getConsoleSender().sendMessage(colorConsole ? fm.toString() : ChatColor.stripColor(fm.toString()));
+		if (!needsPerm || inst.perm(cs, perms)) {
+			if (cp != null) {
+				((CraftPlayer) cs).getHandle().playerConnection.sendPacket(cp);
+			} else { cs.sendMessage(msg); }
+		}
 	}
 
 	public static void deleteSet(String setName) {
@@ -145,5 +104,23 @@ public class CarbonNewsModule extends Module {
 			CarbonKit.getConfig(ConfType.NEWS).set("MessageSets." + setName, null);
 		CarbonKit.saveConfig(ConfType.NEWS);
 		BroadcastTask.removeTask(setName);
+	}
+
+	/**
+	 * Converts the array of JSON formatted text objects to a JSON formatted text array
+	 * @param jsonObjects A String JSON text format object
+	 * @return Returns a JSON array with all JSON objects as array entries
+	 */
+	public static String toFormatArray(String ... jsonObjects) {
+		if (jsonObjects.length < 1) return "{\"text\":\"\"}";
+		String array = "[{\"text\":\"\",\"extra\":" + jsonObjects[0] + "}";
+		for (int i = 1; i < jsonObjects.length; i++) {
+			String jo = jsonObjects[i];
+			if (jo != null && !jo.isEmpty()) {
+				array += ",{\"text\":\"\",\"extra\":" + jo + "}";
+			}
+		}
+		array += "]";
+		return array;
 	}
 }

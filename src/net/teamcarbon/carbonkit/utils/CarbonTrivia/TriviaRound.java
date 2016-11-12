@@ -51,8 +51,8 @@ public class TriviaRound {
 	private Question curQuestion = null;
 	private int cur = 0;
 	private boolean answered = false;
-	private HashMap<UUID, Integer> points = new HashMap<UUID, Integer>();
-	private List<UUID> blacklist = new ArrayList<UUID>();
+	private HashMap<UUID, Integer> points = new HashMap<>();
+	private List<UUID> blacklist = new ArrayList<>();
 	private List<Question> questions;
 
 	private final CarbonTriviaModule ctm = CarbonTriviaModule.inst;
@@ -88,7 +88,7 @@ public class TriviaRound {
 		if (!(o instanceof String) && !(o instanceof CommandSender) && !(o instanceof Player)) return;
 		mbc(CustomMessage.CT_START.noPre());
 		if (o != null && (o instanceof Player || o instanceof String)) {
-			HashMap<String, String> rep = new HashMap<String, String>();
+			HashMap<String, String> rep = new HashMap<>();
 			rep.put("{STARTER}", o instanceof Player?((Player)o).getName():(String)o);
 			mbc(CustomMessage.CT_PROVIDED_BY.noPre(rep));
 		}
@@ -272,7 +272,7 @@ public class TriviaRound {
 			TriviaEndEvent tee = new TriviaEndEvent(this);
 			CarbonKit.pm.callEvent(tee);
 			int top = 0;
-			List<UUID> winners = new ArrayList<UUID>();
+			List<UUID> winners = new ArrayList<>();
 			for (UUID id : points.keySet()) {
 				if (points.get(id) > top) {
 					winners.clear();
@@ -286,7 +286,7 @@ public class TriviaRound {
 					if (winners.contains(id))
 						winners.remove(id);
 			}
-			HashMap<String, String> rep = new HashMap<String, String>();
+			HashMap<String, String> rep = new HashMap<>();
 			if (winners.size() == 0) {
 				mbc(CustomMessage.CT_NO_WINS.noPre());
 			} else if (winners.size() == 1) {
@@ -354,7 +354,7 @@ public class TriviaRound {
 	 */
 	public void answerQuestion(Player p, String ans) {
 		answered = true;
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{PLAYER}", p.getName());
 		rep.put("{ANSWER}", ans);
 		mbc(CustomMessage.CT_ANSWERED.noPre(rep));

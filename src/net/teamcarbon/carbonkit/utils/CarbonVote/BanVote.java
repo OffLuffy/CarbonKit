@@ -17,7 +17,7 @@ import java.util.Locale;
 public class BanVote extends TargetedVote {
 	public BanVote(OfflinePlayer player, OfflinePlayer target) { super(player, target, TargetedVoteType.BAN); }
 	protected void votePass() {
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		long ts = 0L;
 		if (CarbonKit.getDefConfig().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) > 0L) {
 			long dura = CarbonKit.getDefConfig().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) * 1000L;
@@ -36,14 +36,14 @@ public class BanVote extends TargetedVote {
 		if (target.isOnline()) ((Player)target).kickPlayer(CustomMessage.CV_BAN_MESSAGE.noPre(rep));
 	}
 	protected void voteFail() {
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{YESPERCENT}", String.format(Locale.ENGLISH, "%.2f", getAgreePercentage(true)));
 		rep.put("{NOPERCENT}", String.format(Locale.ENGLISH, "%.2f", (100 - getAgreePercentage(true))));
 		rep.put("{VOTETYPE}", "Ban");
 		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList((Player)target), CustomMessage.CV_VOTE_FAILED.pre(rep));
 	}
 	protected void broadcastStart() {
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{VOTETYPE}", getTargetedVoteType().lname());
 		rep.put("{VOTEREASON}", "to " + getTargetedVoteType().lname() + " " + target.getName());
 		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_STARTED.pre(rep));

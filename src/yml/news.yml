@@ -1,0 +1,56 @@
+welcomeMessage:
+  newPlayer:
+    enabled: true
+    delaySeconds: 2
+    requirePermission: false
+    messageLines:
+    - '[{"text":"---","color":"aqua","bold":true,"strikethrough":true},{"text":"[-","color":"gray","bold":true,"strikethrough":true},{"text":"
+      Welcome to Team-Carbon ","color":"blue","bold":true,"strikethrough":false},{"text":"-]","color":"gray","bold":true,"strikethrough":true},{"text":"---","color":"aqua","bold":true,"strikethrough":true}]'
+    - '[{"text":"Know the ","color":"dark_aqua"},{"text":"rules","color":"aqua","clickEvent":{"action":"run_command","value":"/rules"},"hoverEvent":{"action":"show_text","value":{"text":"","extra":[{"text":"Click
+      to view the rules","color":"aqua"}]}}},{"text":" and enjoy your stay!","color":"dark_aqua"}]'
+    - '[{"text":"[","color":"aqua","bold":true},{"text":"*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*","color":"aqua","bold":true,"strikethrough":true},{"text":"]","color":"aqua","bold":true}]'
+  returnPlayer:
+    enabled: true
+    delaySeconds: 2
+    requirePermission: false
+    messageLines:
+    - '[{"text":"---","color":"aqua","bold":true,"strikethrough":true},{"text":"[-","color":"gray","bold":true,"strikethrough":true},{"text":"
+      Team-Carbon ","color":"blue","bold":true,"strikethrough":false},{"text":"-]","color":"gray","bold":true,"strikethrough":true},{"text":"---","color":"aqua","bold":true,"strikethrough":true}]'
+    - '[{"text":"Welcome back! Know the ","color":"dark_aqua"},{"text":"rules","color":"aqua","clickEvent":{"action":"run_command","value":"/rules"},"hoverEvent":{"action":"show_text","value":{"text":"","extra":[{"text":"Click
+      to view the rules","color":"aqua"}]}}},{"text":" and enjoy your stay!","color":"dark_aqua"}]'
+    - '["",{"text":"[Website]","color":"blue","clickEvent":{"action":"open_url","value":"http://team-carbon.org/"},"hoverEvent":{"action":"show_text","value":{"text":"Visit
+      Team-Carbon''s website","color":"blue"}}},{"text":" "},{"text":"[Voting]","color":"aqua","clickEvent":{"action":"run_command","value":"/vote"},"hoverEvent":{"action":"show_text","value":{"text":"Vote
+      for the server and earn some rewards!","color":"aqua"}}},{"text":" "},{"text":"[Help]","color":"yellow","clickEvent":{"action":"run_command","value":"/help"},"hoverEvent":{"action":"show_text","value":[{"text":"View
+      the ","color":"yellow"},{"text":"/help","bold":true,"color":"gold"},{"text":"
+      command","color":"yellow"}]}},{"text":" "},{"text":"[Rules]","color":"gold","clickEvent":{"action":"run_command","value":"/rules"},"hoverEvent":{"action":"show_text","value":[{"text":"View
+      the ","color":"gold"},{"text":"/rules","bold":true,"color":"yellow"},{"text":"
+      command.","color":"gold"}]}}]'
+    - '[{"text":"[","color":"aqua","bold":true},{"text":"*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*","color":"aqua","bold":true,"strikethrough":true},{"text":"]","color":"aqua","bold":true}]'
+setDefaults:
+  delaySeconds: 60
+  randomOrder: false
+  requirePermission: false
+  prefix: '[{"text":"","hoverEvent":{"action":"show_text","value":{"text":"News"}},"extra":[{"text":"[","color":"dark_aqua","bold":true},{"text":"!","color":"aqua","bold":true},{"text":"]
+    ","color":"dark_aqua","bold":true}]}]'
+  postfix: ''
+  setEnabled: false
+  messages: []
+MessageSets:
+  tutorial:
+    setEnabled: false
+    delaySeconds: 60
+    randomOrder: true
+    requirePermission: false
+    prefix: '[{"text":"","hoverEvent":{"action":"show_text","value":{"text":"News
+      Example","color":"aqua"}},"extra":[{"text":"[","color":"dark_aqua","bold":true},{"text":"!","color":"aqua","bold":true},{"text":"]
+      ","color":"dark_aqua","bold":true}]}]'
+    postfix: ''
+    messages:
+    - '[{"text":"","extra":[{"text":"Broadcasts ","color":"dark_aqua"},{"text":"JSON","color":"aqua","bold":true},{"text":"
+      formatted messages!","color":"dark_aqua","bold":false}]}]'
+    - '[{"text":"Messages can have ","color":"dark_aqua"},{"text":"click","color":"aqua","bold":true,"clickEvent":{"action":"open_url","value":"http://team-carbon.org/"},"hoverEvent":{"action":"show_text","value":{"text":"","extra":[{"text":"Clicking
+      opens Team-Carbon''s website"}]}}},{"text":" and ","color":"dark_aqua","bold":false},{"text":"hover","color":"aqua","bold":true,"hoverEvent":{"action":"show_text","value":{"text":"","extra":[{"text":"---","color":"aqua"},{"text":"[-","color":"dark_gray"},{"text":"
+      Hover ","color":"blue"},{"text":"-]","color":"dark_gray"},{"text":"---","color":"aqua"}]}}},{"text":"
+      events!","color":"dark_aqua","bold":false}]'
+    - '[{"text":"minecraft.tools","color":"aqua","clickEvent":{"action":"open_url","value":"http://minecraft.tools/en/tellraw.php"}},{"text":"
+      is an excellent place to design these messages.","color":"dark_aqua"}]'

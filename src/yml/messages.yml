@@ -1,9 +1,20 @@
 carbonkit:
   prefix: '&6&l[CarbonKit] &r'
   reloaded: '&bReloaded'
-antiporta:
-  prefix: '&6&l[AntiPorta] &r'
-  item-reserved: '&cThat item is reservered for {PLAYER}. It will be released in {TIME}'
+  no-perm: '&cYou don''t have permission to do that'
+  not-online: '&cYou must be in-game to use that'
+  needs-group: '&cYou must specify a group!'
+  generic-error: '&cAn error occurred. Please report this to an admin!'
+  player-not-found: '&cThat player couldn''t be found'
+carboncrafting:
+  prefix: '&6&l[Crafting] &a'
+  uncraft-success: 'You broke {ITEM} back into it''s components'
+  uncraft-fail-no-recipe: '&cThis item cannot be uncrafted'
+  uncraft-fail-furnace-recipe: '&cCannot uncraft baked items'
+  uncraft-fail-durability: '&cCannot uncraft worn items'
+  uncraft-fail-no-item: '&cYou must hold an item to uncraft'
+  uncraft-fail-full-inv: '&cYou don''t have enough space in your inventory'
+  uncraft-fail-disabled: '&cUncrafting is not enabled'
 carbonvote:
   prefix: '&6&l[CVote] &a'
   weather-vote-passed: Weather vote passed! Weather changed to &b{WEATHER}
@@ -37,9 +48,6 @@ carbonvote:
   ban-message: '&cYou''ve been banned {DURATION}'
   kick-message: '&cYou''ve been kicked'
   jail-error: '&cThere was an error jailing that user'
-cmdblocktools:
-  prefix: '&6&l[CmdBlockTools] &r'
-  not-command-block: '&cThis command must be executed from a command block!'
 essentialsassist:
   prefix: '&6&l[EssAssist] &r'
   anti-interact-enabled-self: '&bEnabled anti-interact'
@@ -47,33 +55,12 @@ essentialsassist:
   anti-interact-enabled-others: '&b{PLAYER}''s anti-interact has been enabled'
   anti-interact-disabled-others: '&b{PLAYER}''s anti-interact has been disabled'
   anti-interact-auto-disable: '&bYou''re not vanished, anti-interact disabled!'
-fireworks:
-  prefix: '&6&l[Fireworks] &r'
-  preset-not-found: '&cThat firework preset couldn''t be found!'
-  deleted-preset: '&bThe firework preset was deleted successfully'
-  error-deleting-preset: '&cAn error occurred while trying to delete the firework
-    preset'
-  invlid-effects: '&cCould not parse the arguments into firework effects'
-  combined-effects: '&aSuccessfully added new effects to firework preset'
-  modified-effects: '&aSuccessfully modified firework preset effects'
-  created-preset: '&aSuccessfully created firework preset'
-  not-firework: '&cYou must be holding a firework in hand to do that'
-  enabled-arrow: '&bFirework arrows are now enabled'
-  disabled-arrow: '&bFirework arrows are now disabled'
-  enabled-arrow-others: '&bFirework arrows have been anbled for {PLAYER}'
-  disabled-arrow-others: '&bFirework arrows have been disabled for {PLAYER}'
-  enabled-snowball: '&bFirework snowballs are now enabled'
-  disabled-snowball: '&bFirework snowballs are now disabled'
-  enabled-snowball-others: '&bFirework snowballs have been anbled for {PLAYER}'
-  disabled-snowball-others: '&bFirework snowballs have been disabled for {PLAYER}'
-  effect-set-others: '&bFirework effect has been set'
-  inventory-full: '&cYou''re inventory is full! You need one empty slot for that'
-  inventory-full-others: '&c{PLAYER}''s inventory is full! They need one empty slot
-    for that'
-goldensmiteprefix: '&6&l[GSmite] &r'
-goldensmitetoggled-group: '&bYou''ve {STATUS} the {GROUP} group'
-goldensmitetoggled-arrow: '&bYou''ve {STATUS} GSmite arrows'
-misc:
+carbonsmite:
+  prefix: '&6&l[GSmite] &r'
+  toggled-group: '&bYou''ve {STATUS} the {GROUP} group'
+  toggled-arrow: '&bYou''ve {STATUS} GSmite arrows'
+  toggled-snowball: '&bYou''ve {STATUS} GSmite arrows'
+carbontools:
   prefix: '&6&l[CarbonKit] &r'
   freeze-message: '&bFreeze!'
   unfreeze-message: '&6You''re free to go!'
@@ -83,7 +70,7 @@ misc:
   quit-message: '&6&l[&r&c-&r&6&l] &e{PLAYER}&r&6 logged out!'
   join-message-extedned: '&7{STATUS}&6&l[&r&a+&r&6&l] &e{PLAYER} &r&7&o{IP}'
   quit-message-extended: '&7{STATUS}&6&l[&r&c-&r&6&l] &e{PLAYER}'
-skullshop:
+carbonskulls:
   prefix: '&6&l[SkullShop] &r'
   inventory-full: '&cYour inventory is full! Try again when you have at least one
     slot open'
@@ -94,10 +81,3 @@ skullshop:
   no-skull-saved: '&cThere is no skull saved. Right click one to save it.'
   not-enough-money: '&cYou can''t afford to buy a player head right now'
   transaction-failed: '&cFor some reason, we could not withdraw money from your balance!'
-generic:
-  prefix: '&6&l[CarbonKit] &r'
-  no-perm: '&cYou don''t have permission to do that'
-  not-online: '&cYou must be in-game to use that'
-  needs-group: '&cYou must specify a group!'
-  generic-error: '&cAn error occurred. Please report this to an admin!'
-  player-not-found: '&cThat player couldn''t be found'

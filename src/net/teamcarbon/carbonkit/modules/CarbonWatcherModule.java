@@ -1,6 +1,7 @@
 package net.teamcarbon.carbonkit.modules;
 
 import net.teamcarbon.carbonkit.commands.CarbonWatcher.WatcherCommand;
+import net.teamcarbon.carbonkit.utils.UserStore;
 import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -15,26 +16,16 @@ import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonWatcherModule extends Module {
 	public static CarbonWatcherModule inst;
 	public CarbonWatcherModule() throws DuplicateModuleException { super("CarbonWatcher", "commandwatcher", "cwatcher", "ckw", "cw"); }
-	private static List<UUID> watchers = new ArrayList<UUID>();
 	public void initModule() {
 		inst = this;
-		if (!watchers.isEmpty()) watchers.clear();
-		for (Player p : Bukkit.getOnlinePlayers())
-			if (getData().getStringList("watchers").contains(p.getUniqueId().toString()))
-				setWatching(p, true);
 		addCmd(new WatcherCommand(this));
 		registerListeners();
 	}
 	public void disableModule() {
-		if (!watchers.isEmpty()) watchers.clear();
 		unregisterListeners();
 	}
 	public void reloadModule() {
@@ -63,7 +54,7 @@ public class CarbonWatcherModule extends Module {
 		String label = e.getMessage().split(" ")[0].replace("/", "");
 		if (getConfig().getStringList("exempt").contains(sender.getUniqueId().toString()) || isBlacklisted(label)) return;
 		for (Player opl : Bukkit.getOnlinePlayers()) {
-			if (watchers.contains(opl.getUniqueId()) && !sender.equals(opl)) {
+			if (isWatching(opl) && !sender.equals(opl)) {
 				if (!perm(opl, "watchplayers", "watchconsole")) {
 					setWatching(opl, false);
 					return;
@@ -73,24 +64,22 @@ public class CarbonWatcherModule extends Module {
 			}
 		}
 	}
+
 	@EventHandler
 	public void serverCmd(ServerCommandEvent e) {
 		if (!isEnabled()) return;
 		boolean show = true;
 		String label = e.getCommand().split(" ")[0].replace("/", "");
 		if (isBlacklisted(label)) return;
-		for (UUID id : watchers) {
-			Player cwp = Bukkit.getPlayer(id);
-			if (cwp == null || !cwp.isOnline()) {
-				watchers.remove(id);
-				return;
+		for (Player opl : Bukkit.getOnlinePlayers()) {
+			if (isWatching(opl)) {
+				if (!perm(opl, "watchplayers", "watchconsole")) {
+					setWatching(opl, false);
+					return;
+				}
+				if (!perm(opl, "watchconsole")) return;
+				opl.sendMessage(Clr.GRAY + "[CW] " + Clr.GOLD + "CONSOLE: " + Clr.DARKAQUA + e.getCommand());
 			}
-			if (!perm(cwp, "watchplayers", "watchconsole")) {
-				setWatching(cwp, false);
-				return;
-			}
-			if (!perm(cwp, "watchconsole")) return;
-			cwp.sendMessage(Clr.GRAY + "[CW] " + Clr.GOLD + "CONSOLE: " + Clr.DARKAQUA + e.getCommand());
 		}
 	}
 	
@@ -107,22 +96,14 @@ public class CarbonWatcherModule extends Module {
 		}
 		return false;
 	}
-	public static boolean isWatching(OfflinePlayer pl) { return watchers.contains(pl.getUniqueId()); }
+	public static boolean isWatching(OfflinePlayer pl) {
+		UserStore us = CarbonKit.getPlayerData(pl.getUniqueId());
+		return us.getBoolean(inst.getName() + ".watching", false);
+	}
 	public static void toggleWatching(OfflinePlayer pl) { setWatching(pl, !isWatching(pl)); }
 	public static void setWatching(OfflinePlayer pl, boolean b) {
-		List<String> list = inst.getData().getStringList("watchers");
-		if (b) {
-			if (!watchers.contains(pl.getUniqueId()))
-				watchers.add(pl.getUniqueId());
-			if (!list.contains(pl.getUniqueId().toString()))
-				list.add(pl.getUniqueId().toString());
-		} else {
-			if (watchers.contains(pl.getUniqueId()))
-				watchers.remove(pl.getUniqueId());
-			if (list.contains(pl.getUniqueId().toString()))
-				list.remove(pl.getUniqueId().toString());
-		}
-		CarbonKit.getConfig(ConfType.DATA).set("CarbonWatcher.watchers", list);
-		CarbonKit.saveConfig(ConfType.DATA);
+		UserStore us = CarbonKit.getPlayerData(pl.getUniqueId());
+		us.set(inst.getName() + ".watching", b);
+		us.save();
 	}
 }

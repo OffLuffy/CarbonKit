@@ -19,6 +19,10 @@ commands:
     description: Lists modules or toggle a module on or off
     usage: /ckt [module]
     aliases: [cktoggle, ckt, carbonkitt]
+  carbonuncraft:
+    description: Allows a player to revert an item to it's pre-crafted items
+    usage: /uncraft
+    aliases: [uncraft, ucraft, uc, cuncraft, cucraft, cuc]
   carbonvote:
     description: CarbonKit Vote command
     usage: /cvote [ban|kick|mute|weather|time] <player>
@@ -43,10 +47,6 @@ commands:
     description: Broadcasts a fake quit message for you or a specified user
     usage: /fakequit <user>
     aliases: [fquit, fakeq, falsequit, falseq, ckfakequit]
-  firework:
-    description: CarbonKit Fireworks command
-    usage: /firework [help|list|preset|launch|spawn|arrow|snowball]
-    aliases: [fw, ckfw, ckfirework]
   freeze:
     description: Freezes the specified user until restart or release
     usage: /freeze [user]
@@ -55,10 +55,10 @@ commands:
     description: Gamemode switching command and per-mode permissions
     usage: /gamemode [mode] <user>
     aliases: [gm, mode, gmode, ckgm, ckgamemode, ckmode, ckgmode]
-  goldensmite:
+  carbonsmite:
     description: GoldenSmite an area, toggle affected entities, or toggle gsmite arrows
     usage: /gs <here|hmob|pmob|nmob|tame|player|drop|arrow>
-    aliases: [gsmite, gs, ckgoldensmite, ckgsmite, ckgs]
+    aliases: [gsmite, gs, ckgoldensmite, ckgsmite, ckgs, csmite, cksmite, cs]
   help:
     description: Custom help command to override Essential's or vanilla provided help command
     usage: /help [category]
@@ -91,10 +91,6 @@ commands:
     description: Toggle interacting with pressure plates, tripwire, mobs, and drops when vanished
     usage: /ti
     aliases: [tinteract, tint, ti, cktinteract, cktint, ckti]
-  trail:
-    description: Sets a particle trail for yourself
-    usage: /trail
-    aliases: [trails, ctrail, ctrails, cktrails, cktrail]
   carbonnews:
     description: CarbonNews command
     usage: /carbonnews
@@ -111,16 +107,396 @@ commands:
     description: View info about an animal
     usage: /animalinfo
     aliases: [ckanimalinfo, ckainfo, ckai, ai]
-  warp:
-    description: Teleports to pre-set locations
-    usage: /warp [warp]
-  vanish:
-    description: Hides a player from others with permission to see vanished players
-    usage: /vanish
-    aliases: [v]
-  carboncombat:
-    description: Toggles PvP enabled
-    usage: /carboncombat [on|off] [player]
-    aliases: [pvp, combat]
+  #warp:
+  #  description: Teleports to pre-set locations
+  #  usage: /warp [warp]
+  #vanish:
+  #  description: Hides a player from others with permission to see vanished players
+  #  usage: /vanish
+  #  aliases: [v]
+  #carboncombat:
+  #  description: Toggles PvP enabled
+  #  usage: /carboncombat [on|off] [player]
+  #  aliases: [pvp, combat]
+  calc:
+    description: Calculates equations
+    usage: /calc [equation]
+    aliases: [calculate, cal]
   disabledcmd:
     description: Command to register disabled module commands to
+permissions:
+  carbonkit.reload:
+    description: Reloads CarbonKit (all modules and configs)
+    default: op
+  carbonkit.toggle:
+    description: Toggles a module on or off.
+    default: op
+  carbonkit.list:
+    description: Lists modules and whether or not they're enabled
+    default: op
+  carbonkit.carboncrafting.uncraft:
+    description: Allows a user to use the uncraft command
+    default: op
+  carbonkit.carboncrafting.uncraft.free:
+    description: Allows a user to use the uncraft command without consuming experience
+    default: op
+  carbonkit.carbonnews.listsets:
+    description: Lists news message sets
+    default: op
+  carbonkit.carbonnews.set.enabled:
+    description: Sets a message set enabled or disabled
+    default: op
+  carbonkit.carbonnews.set.delay:
+    description: Sets the message set's delay
+    default: op
+  carbonkit.carbonnews.set.requireperms:
+    description: Sets whether the message set requires permission to receieve
+    default: op
+  carbonkit.carbonnews.set.prefix:
+    description: Sets the prefix for the message set
+    default: op
+  carbonkit.carbonnews.set.random:
+    description: Sets whether or not the messages from this set are broadcasted in random order
+    default: op
+  carbonkit.carbonnews.listmessages:
+    description: Lists the messages in this set
+    default: op
+  carbonkit.carbonnews.info:
+    description: Shows CarbonNews info
+    default: op
+  carbonkit.carbonnews.setinfo:
+    description: Shows information for a message set
+    default: op
+  carbonkit.carbonnews.reload:
+    description: Reloads CarbonNews
+    default: op
+  carbonkit.carbonnews.addmessage:
+    description: Adds a message to a message set
+    default: op
+  carbonkit.carbonnews.removemessage:
+    description: Removes a message from a message set
+    default: op
+  carbonkit.carbonnews.setmessage:
+    description: Sets a message in a message set
+    default: op
+  carbonkit.carbonnews.addset:
+    description: Creates a new message set
+    default: op
+  carbonkit.carbonnews.removeset:
+    description: Removes a message set
+    default: op
+  carbonkit.carbonnews.broadcast:
+    description: Broadcasts a message
+    default: op
+  carbonkit.carbonskulls.check:
+    description: Allows a player to right click a player head to check the owner
+    default: op
+  carbonkit.carbonskulls.getskull:
+    description: Allows a user to buy or spawn a saved player head
+    default: op
+  carbonkit.carbonskulls.skull.free:
+    description: Allows a user to spawn a player head for free
+    default: op
+  carbonkit.carbonskulls.updateskull:
+    description: Allows a player to change the owner of a player head
+    default: op
+  carbonkit.carbonskulls.skull:
+    description: Allows a player to spawn a player head via command
+    default: op
+  carbonkit.carbonsmite.use.axe:
+    description: Smite via axe
+    default: op
+  carbonkit.carbonsmite.use.arrows:
+    description: Smite via arrow
+    default: op
+  carbonkit.carbonsmite.use.snowballs:
+    description: Smite via snowball
+    default: op
+  carbonkit.carbonsmite.toggle.hostile:
+    description: Toggle smiting hostiles
+    default: op
+  carbonkit.carbonsmite.toggle.neutral:
+    description: Toggle smiting neutrals
+    default: op
+  carbonkit.carbonsmite.toggle.passive:
+    description: Toggle smiting passives
+    default: op
+  carbonkit.carbonsmite.toggle.tamed:
+    description: Toggle smiting pets
+    default: op
+  carbonkit.carbonsmite.toggle.player:
+    description: Toggle smiting players
+    default: op
+  carbonkit.carbonsmite.toggle.drop:
+    description: Toggle smiting drops
+    default: op
+  carbonkit.carbonsmite.here:
+    description: Smites at the players location
+    default: op
+  carbonkit.carbontools.animalinfo:
+    description: Shows info on an animal
+    default: op
+  carbonkit.carbontools.entcount.radius:
+    description: Counts entities in a radius
+    default: op
+  carbonkit.carbontools.entcount.world:
+    description: Counts entities in the world
+    default: op
+  carbonkit.carbontools.entcount.selection:
+    description: Counts entities in a WorldEdit selection
+    default: op
+  carbonkit.carbontools.joinmsg.extended:
+    description: Shows an extended join message
+    default: op
+  carbonkit.carbontools.quitmsg.extended:
+    description: Shows an extended quit message
+    default: op
+  carbonkit.carbontools.artcycle:
+    description: Allow a player to right click to change a painting
+    default: op
+  carbonkit.carbontools.silentjoin:
+    description: Allow a player to join silently
+    default: op
+  carbonkit.carbontools.silentquit:
+    description: Allow a player to quit silently
+    default: op
+  carbonkit.carbontools.silentjoin.vanish:
+    description: Allow a player to join vanished
+    default: op
+  carbonkit.carbontools.silentjoin.notify:
+    description: Allow a player to see silent joins
+    default: op
+  carbonkit.carbontools.silentquit.notify:
+    description: Allow a player to see silent quits
+    default: op
+  carbonkit.carbontools.freeze.immune:
+    description: Immune to being frozen
+    default: op
+  carbonkit.carbontools.hud.bypassholding:
+    description: Bypass requirements to hold HUD items
+    default: op
+  carbonkit.carbontools.hud.location:
+    description: Access to the coordinates HUD
+    default: op
+  carbonkit.carbontools.hud.location.override:
+    description: Access to the coordinates HUD without holding the item
+    default: op
+  carbonkit.carbontools.hud.direction:
+    description: Access to the compass HUD
+    default: op
+  carbonkit.carbontools.hud.direction.override:
+    description: Access to the compass HUD without holding the item
+    default: op
+  carbonkit.carbontools.hud.clock:
+    description: Access to the clock HUD
+    default: op
+  carbonkit.carbontools.hud.clock.override:
+    description: Access to the clock HUD without holding the item
+    default: op
+  carbonkit.carbontools.hud.tps:
+    description: Access to the TPS HUD
+    default: op
+  carbonkit.carbontools.hud.tps.override:
+    description: Access to the TPS HUD without holding the item
+    default: op
+  carbonkit.carbontools.calc:
+    description: Access to the calc command
+    default: op
+  carbonkit.carbontools.dice:
+    description: Access to the dice command
+    default: op
+  carbonkit.carbontools.fakejoin:
+    description: Trigger a fake join message for yourself
+    default: op
+  carbonkit.carbontools.fakejoin.others:
+    description: Trigger a fake join message for anyone
+    default: op
+  carbonkit.carbontools.fakequit:
+    description: Trigger a fake quite message for yourself
+    default: op
+  carbonkit.carbontools.fakequit.others:
+    description: Trigger a fake quit message for anyone
+    default: op
+  carbonkit.carbontools.gamemode.others.survival:
+    description: Access to set other users' gamemode to survival
+    default: op
+  carbonkit.carbontools.gamemode.others.creative:
+    description: Access to set other users' gamemode to create
+    default: op
+  carbonkit.carbontools.gamemode.others.adventure:
+    description: Access to set other users' gamemode to adventure
+    default: op
+  carbonkit.carbontools.gamemode.others.spectator:
+    description: Access to set other users' gamemode to spectator
+    default: op
+  carbonkit.carbontools.gamemode.self.survival:
+    description: Access to set your own gamemode to survival
+    default: op
+  carbonkit.carbontools.gamemode.self.creative:
+    description: Access to set your own gamemode to creative
+    default: op
+  carbonkit.carbontools.gamemode.self.adventure:
+    description: Access to set your own gamemode to adventure
+    default: op
+  carbonkit.carbontools.gamemode.self.spectator:
+    description: Access to set your own gamemode to spectator
+    default: op
+  carbonkit.carbontools.onlinetime.self:
+    description: View your own online time stats
+    default: op
+  carbonkit.carbontools.onlinetime.others:
+    description: View another user's online time stats
+    default: op
+  carbonkit.carbontools.ride:
+    description: Ride and entity
+    default: op
+  carbonkit.carbontools.ride.players:
+    description: Ride another player
+    default: op
+  carbonkit.carbontools.slap:
+    description: Slap a player
+    default: op
+  carbonkit.carbontools.ticket.create:
+    description: Create a ticket
+    default: op
+  carbonkit.carbontools.ticket.append.others:
+    description: Append text to another user's ticket
+    default: op
+  carbonkit.carbontools.ticket.append.self:
+    description: Append text to your own ticket
+    default: op
+  carbonkit.carbontools.ticket.delete.others:
+    description: Delete another user's ticket
+    default: op
+  carbonkit.carbontools.ticket.delete.self:
+    description: Delete your own ticket
+    default: op
+  carbonkit.carbontools.ticket.info.others:
+    description: View info on another user's ticket
+    default: op
+  carbonkit.carbontools.ticket.info.self:
+    description: View info on your own ticket
+    default: op
+  carbonkit.carbontools.ticket.search.others:
+    description: Search other users' tickets
+    default: op
+  carbonkit.carbontools.ticket.search.self:
+    description: Search your own tickets
+    default: op
+  carbonkit.carbontools.ticket.view.all:
+    description: Access to view all tickets
+    default: op
+  carbonkit.carbontrivia.answer:
+    description: Ability to answer trivia questions
+    default: op
+  carbonkit.carbontrivia.start:
+    description: Ability to start a new trivia round
+    default: op
+  carbonkit.carbontrivia.end:
+    description: Ability to end a trivia round early
+    default: op
+  carbonkit.carbontrivia.cancel:
+    description: Ability to cancel a trivia round without rewards
+    default: op
+  carbonkit.carbontrivia.help:
+    description: Access to trivia help
+    default: op
+  carbonkit.carbonvote.exempt.ban-vote:
+    description: Exempt from ban votes
+    default: op
+  carbonkit.carbonvote.exempt.kick-vote:
+    description: Exempt from kick votes
+    default: op
+  carbonkit.carbonvote.exempt.mute-vote:
+    description: Exempt from mute votes
+    default: op
+  carbonkit.carbonvote.help:
+    description: Access to vote help
+    default: op
+  carbonkit.carbonvote.startvote.weather:
+    description: Start a weather vote
+    default: op
+  carbonkit.carbonvote.startvote.time:
+    description: Start a time vote
+    default: op
+  carbonkit.carbonvote.startvote.ban:
+    description: Start a ban vote
+    default: op
+  carbonkit.carbonvote.startvote.kick:
+    description: Start a kick vote
+    default: op
+  carbonkit.carbonvote.startvote.mute:
+    description: Start a mute vote
+    default: op
+  carbonkit.carbonvote.startvote.trivia:
+    description: Start a trivia vote
+    default: op
+  carbonkit.carbonvote.vote.weather:
+    description: Vote on a weather vote
+    default: op
+  carbonkit.carbonvote.vote.time:
+    description: Vote on a time vote
+    default: op
+  carbonkit.carbonvote.vote.ban:
+    description: Vote on a ban vote
+    default: op
+  carbonkit.carbonvote.vote.kick:
+    description: Vote on a kick vote
+    default: op
+  carbonkit.carbonvote.vote.mute:
+    description: Vote on a mute vote
+    default: op
+  carbonkit.carbonvote.vote.trivia:
+    description: Vote on a trivia vote
+    default: op
+  carbonkit.carbonvote.bypassprice.weather:
+    description: Bypass the cost of starting a weather vote
+    default: op
+  carbonkit.carbonvote.bypassprice.time:
+    description: Bypass the cost of starting a time vote
+    default: op
+  carbonkit.carbonvote.bypassprice.trivia:
+    description: Bypass the cost of starting a trivia vote
+    default: op
+  carbonkit.carbonvote.bypassprice.ban:
+    description: Bypass the cost of starting a ban vote
+    default: op
+  carbonkit.carbonvote.bypassprice.kick:
+    description: Bypass the cost of starting a kick vote
+    default: op
+  carbonkit.carbonvote.bypassprice.mute:
+    description: Bypass the cost of starting a mute vote
+    default: op
+  carbonkit.carbonvote.bypasscooldown.weather:
+    description: Bypass cooldown on starting weather votes
+    default: op
+  carbonkit.carbonvote.bypasscooldown.time:
+    description: Bypass cooldown on starting time votes
+    default: op
+  carbonkit.carbonvote.bypasscooldown.ban:
+    description: Bypass cooldown on starting ban votes
+    default: op
+  carbonkit.carbonvote.bypasscooldown.kick:
+    description: Bypass cooldown on starting kick votes
+    default: op
+  carbonkit.carbonvote.bypasscooldown.mute:
+    description: Bypass cooldown on starting mute votes
+    default: op
+  carbonkit.carbonvote.bypasscooldown.trivia:
+    description: Bypass cooldown on starting trivia votes
+    default: op
+  carbonkit.carbonwatcher.watchplayers:
+    description: Ability to watch player commands
+    default: op
+  carbonkit.carbonwatcher.watchconsole:
+    description: Ability to watch console commands
+    default: op
+  carbonkit.carbonwatcher.toggle:
+    description: Ability to toggle command watching
+    default: op
+  carbonkit.carbonwatcher.toggle.others:
+    description: Ability to toggle other users' command watching
+    default: op
+  carbonkit.essentialsassist.auto-anti-interact:
+    description: Automatically enable anti-interact when vanished
+    default: op

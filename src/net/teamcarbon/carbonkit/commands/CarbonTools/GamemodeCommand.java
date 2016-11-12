@@ -30,7 +30,7 @@ public class GamemodeCommand extends ModuleCmd {
 		SPECTATOR(GameMode.SPECTATOR, "spectate", "sp");
 
 		GameMode mode;
-		List<String> aliases = new ArrayList<String>();
+		List<String> aliases = new ArrayList<>();
 		Mode(GameMode mode, String ... aliases) {
 			this.mode = mode;
 			Collections.addAll(this.aliases, aliases);
@@ -41,7 +41,7 @@ public class GamemodeCommand extends ModuleCmd {
 				return Mode.values()[NumUtils.normalizeInt(Integer.parseInt(query), 0, 3)];
 			} else {
 				for (Mode m : Mode.values()) {
-					List<String> aliases = new ArrayList<String>();
+					List<String> aliases = new ArrayList<>();
 					aliases.add(m.name().toLowerCase());
 					aliases.addAll(m.getAliases());
 					if (MiscUtils.eq(query, aliases)) { return m; }
@@ -62,7 +62,7 @@ public class GamemodeCommand extends ModuleCmd {
 			if (m == null) {
 				sender.sendMessage(CustomMessage.MISC_INVALID_MODE.pre());
 			} else {
-				HashMap<String, String> rep = new HashMap<String, String>();
+				HashMap<String, String> rep = new HashMap<>();
 				rep.put("{MODE}", m.lname());
 				if (args.length > 1) {
 					if (mod.perm(sender, "gamemode.others." + m.lname())) {
@@ -121,5 +121,4 @@ public class GamemodeCommand extends ModuleCmd {
 			}
 		}
 	}
-
 }

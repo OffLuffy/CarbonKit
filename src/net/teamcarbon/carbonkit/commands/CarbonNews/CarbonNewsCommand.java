@@ -8,17 +8,12 @@ import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import net.teamcarbon.carbonlib.Misc.TypeUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import org.bukkit.entity.Player;
 
-import java.util.Collection;
 import java.util.HashMap;
-
-// TODO Parse raw JSON
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonNewsCommand extends ModuleCmd {
@@ -46,7 +41,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 			}
 			if (args.length > 1) {
 				if (!BroadcastTask.isTask(args[1])) {
-					HashMap<String, String> rep = new HashMap<String, String>();
+					HashMap<String, String> rep = new HashMap<>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
 					if (mod.perm(sender, "listsets"))
@@ -85,20 +80,19 @@ public class CarbonNewsCommand extends ModuleCmd {
 				return;
 			}
 			if (!BroadcastTask.isTask(args[1])){
-				HashMap<String, String> rep = new HashMap<String, String>();
+				HashMap<String, String> rep = new HashMap<>();
 				rep.put("{SETNAME}", args[1]);
 				sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
 				if (mod.perm(sender, "listsets")) listAvailbleGroups(sender);
 				return;
 			}
 			BroadcastTask bt = BroadcastTask.getTask(args[1]);
-			//List<String> messages = bt.getMessages();
 			final int LENGTH = 50;
 			if (!bt.isEmpty()) {
-				for (int i = 0; i <bt.size(); i++) {
+				for (int i = 0; i < bt.getMessages().size(); i++) {
 					String msg = bt.getMessage(i);
-					boolean tooLong = msg.length() > LENGTH;
-					sender.sendMessage(Clr.AQUA + "" + i + ": " + Clr.GRAY + (tooLong?msg.substring(0,LENGTH):msg) + (tooLong?"...":""));
+					String num = "[{\"text\":\"" + i + ": \",\"color\":\"aqua\",\"bold\":true}]";
+					CarbonNewsModule.sendFormatted(sender, CarbonNewsModule.toFormatArray(num, msg), false, "");
 				}
 			} else {
 				sender.sendMessage(Clr.GRAY + "This set has no messages! Add some with /cn addm " + bt.getSetName() + " <msg>");
@@ -115,7 +109,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 				return;
 			}
 			if (!BroadcastTask.isTask(args[1])){
-				HashMap<String, String> rep = new HashMap<String, String>();
+				HashMap<String, String> rep = new HashMap<>();
 				rep.put("{SETNAME}", args[1]);
 				sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
 				if (mod.perm(sender, "listsets"))
@@ -129,9 +123,6 @@ public class CarbonNewsCommand extends ModuleCmd {
 			sender.sendMessage(Clr.AQUA + "Interval Delay (seconds) : " + Clr.GRAY + CarbonKit.getConfig(ConfType.NEWS).getLong("MessageSets." + bt.getSetName() + ".delaySeconds", 60));
 			sender.sendMessage(Clr.AQUA + "Random: " + Clr.GRAY + bt.isRandom());
 			sender.sendMessage(Clr.AQUA + "Requires Permission: " + Clr.GRAY + bt.requirePerms() + Clr.NOTE + " (carbonkit.news.receive." + bt.getSetName() + ")");
-			sender.sendMessage(Clr.AQUA + "Sending to Console: " + Clr.GRAY + bt.isSentToConole());
-			sender.sendMessage(Clr.AQUA + "Sending to Players: " + Clr.GRAY + bt.isSentToPlayers());
-			sender.sendMessage(Clr.AQUA + "Color Console: " + Clr.GRAY + bt.isConsoleColorized());
 			sender.sendMessage(Clr.AQUA + "Prefix: " + Clr.GRAY + bt.getPrefix());
 			sender.sendMessage(Clr.AQUA + "Postfix: " + Clr.GRAY + bt.getPostfix());
 		} else if (MiscUtils.eq(args[0], "reload", "rl", "r")) { // '/cn reload'
@@ -140,7 +131,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 				return;
 			}
 			Module.getModule(CarbonNewsModule.NAME).reloadModule();
-			HashMap<String, String> rep = new HashMap<String, String>();
+			HashMap<String, String> rep = new HashMap<>();
 			rep.put("{MODULE}", CarbonNewsModule.NAME);
 			sender.sendMessage(CustomMessage.CORE_RELOADED.pre(rep));
 		} else if (MiscUtils.eq(args[0], "set")) { // '/cn set <set> <setting> <value>'
@@ -254,54 +245,6 @@ public class CarbonNewsCommand extends ModuleCmd {
 								bt.setRandom(!bt.isRandom());
 							}
 							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + " will " + (bt.isRandom()?"now":"no longer") + " be randomized.");
-						} else if (MiscUtils.eq(opt, "sendtoconsole", "sendconsole")) {
-							if (!mod.perm(sender, "set.sendtoconsole")) {
-								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
-								return;
-							}
-							if (args.length > 3) {
-								if (TypeUtils.isBoolean(args[3])) {
-									bt.setSendToConsole(TypeUtils.toBoolean(args[3]));
-								} else {
-									sender.sendMessage(Clr.RED + "'" + opt + "' must be set to true, false, or nothing to toggle current value");
-									return;
-								}
-							} else {
-								bt.setSendToConsole(!bt.isSentToConole());
-							}
-							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + " will " + (bt.isSentToConole()?"now":"no longer") + " send to the console.");
-						} else if (MiscUtils.eq(opt, "colorconsolemessages", "colorconsole", "consolecolor", "colorconsole")) {
-							if (!mod.perm(sender, "set.colorconsole")) {
-								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
-								return;
-							}
-							if (args.length > 3) {
-								if (TypeUtils.isBoolean(args[3])) {
-									bt.setColorConsole(TypeUtils.toBoolean(args[3]));
-								} else {
-									sender.sendMessage(Clr.RED + "'" + opt + "' must be set to true, false, or nothing to toggle current value");
-									return;
-								}
-							} else {
-								bt.setColorConsole(!bt.isEnabled());
-							}
-							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + " will " + (bt.isConsoleColorized()?"now":"no longer") + " color console messages.");
-						} else if (MiscUtils.eq(opt, "sendtoplayers", "sendplayers")) {
-							if (!mod.perm(sender, "set.sendtoplayers")) {
-								sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
-								return;
-							}
-							if (args.length > 3) {
-								if (TypeUtils.isBoolean(args[3])) {
-									bt.setSendToPlayer(TypeUtils.toBoolean(args[3]));
-								} else {
-									sender.sendMessage(Clr.RED + "'" + opt + "' must be set to true, false, or nothing to toggle current value");
-									return;
-								}
-							} else {
-								bt.setSendToPlayer(!bt.isEnabled());
-							}
-							sender.sendMessage(Clr.AQUA + "Message set " + bt.getSetName() + " will " + (bt.isSentToPlayers()?"now":"no longer") + " send to players.");
 						} else {
 							if (mod.perm(sender, allSetPerms)) {
 								String opts = "";
@@ -317,12 +260,6 @@ public class CarbonNewsCommand extends ModuleCmd {
 									opts += (opts.equals("")?"postfix":", postfix");
 								if (mod.perm(sender, "set.random"))
 									opts += (opts.equals("")?"random":", random");
-								if (mod.perm(sender, "set.sendtoconsole"))
-									opts += (opts.equals("")?"sendtoconsole":", sendtoconsole");
-								if (mod.perm(sender, "set.colorconsole"))
-									opts += (opts.equals("")?"colorconsole":", colorconsole");
-								if (mod.perm(sender, "set.sendtoplayer"))
-									opts += (opts.equals("")?"sendtoplayer":", sendtoplayer");
 								sender.sendMessage(Clr.AQUA + "Available set options: " + opts);
 							}
 						}
@@ -341,17 +278,11 @@ public class CarbonNewsCommand extends ModuleCmd {
 								opts += (opts.equals("")?"postfix":", postfix");
 							if (mod.perm(sender, "set.random"))
 								opts += (opts.equals("")?"random":", random");
-							if (mod.perm(sender, "set.sendtoconsole"))
-								opts += (opts.equals("")?"sendtoconsole":", sendtoconsole");
-							if (mod.perm(sender, "set.colorconsole"))
-								opts += (opts.equals("")?"colorconsole":", colorconsole");
-							if (mod.perm(sender, "set.sendtoplayer"))
-								opts += (opts.equals("")?"sendtoplayer":", sendtoplayer");
 							sender.sendMessage(Clr.AQUA + "Available set options: " + opts);
 						}
 					}
 				} else {
-					HashMap<String, String> rep = new HashMap<String, String>();
+					HashMap<String, String> rep = new HashMap<>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
 					if (mod.perm(sender, "listsets")) listAvailbleGroups(sender);
@@ -382,7 +313,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 					boolean pl = bt.size() > 1;
 					sender.sendMessage(Clr.GRAY + "Message added. '" + bt.getSetName() + "' set now has " + bt.size() + " message" + (pl?"s":"") + ".");
 				} else {
-					HashMap<String, String> rep = new HashMap<String, String>();
+					HashMap<String, String> rep = new HashMap<>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
 					if (mod.perm(sender, "listsets"))
@@ -426,7 +357,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 						sender.sendMessage(Clr.RED + "Message ID must be positive number or 0");
 					}
 				} else {
-					HashMap<String, String> rep = new HashMap<String, String>();
+					HashMap<String, String> rep = new HashMap<>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
 					if (mod.perm(sender, "listsets"))
@@ -468,7 +399,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 						sender.sendMessage(Clr.RED + "Message ID must be positive number or 0");
 					}
 				} else {
-					HashMap<String, String> rep = new HashMap<String, String>();
+					HashMap<String, String> rep = new HashMap<>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
 					if (mod.perm(sender, "listsets"))
@@ -530,10 +461,8 @@ public class CarbonNewsCommand extends ModuleCmd {
 					if (TypeUtils.isInteger(args[2]) && Integer.parseInt(args[2]) >= 0) {
 						if (Integer.parseInt(args[2]) < bt.size()) {
 							sender.sendMessage(Clr.GRAY + "Broadcasting message ID: " + args[2] + " from set: " + bt.getSetName());
-							String msg = bt.getPrefix() + bt.getMessage(Integer.parseInt(args[2])) + bt.getPostfix();
-							int i = 0;
-							Collection<? extends Player> plArray = Bukkit.getOnlinePlayers();
-							CarbonNewsModule.broadcastFormatted(msg, plArray, bt.isSentToPlayers(), bt.isSentToConole(), bt.isConsoleColorized(), bt.requirePerms(), bt.getPerm());
+							String msg = CarbonNewsModule.toFormatArray(bt.getPrefix(), bt.getMessage(Integer.parseInt(args[2])), bt.getPostfix());
+							CarbonNewsModule.broadcastFormatted(msg, bt.requirePerms(), bt.getPerm());
 						} else {
 							sender.sendMessage(Clr.RED + "Message ID can't be found! Use /cn listm <set> to see messages");
 						}
@@ -541,7 +470,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 						sender.sendMessage(Clr.RED + "Message ID must be positive number or 0");
 					}
 				} else {
-					HashMap<String, String> rep = new HashMap<String, String>();
+					HashMap<String, String> rep = new HashMap<>();
 					rep.put("{SETNAME}", args[1]);
 					sender.sendMessage(CustomMessage.CN_NOT_SET.pre(rep));
 					if (mod.perm(sender, "listsets"))
@@ -561,16 +490,9 @@ public class CarbonNewsCommand extends ModuleCmd {
 		}
 		CustomMessage.printHeader(sender, "CarbonNews");
 		if (mod.perm(sender, "info")) {
-			int ts = BroadcastTask.taskListSize(), enabled = 0, toPlayers = 0, toConsole = 0;
+			int ts = BroadcastTask.taskListSize(), enabled = 0;
 			sender.sendMessage(Clr.DARKAQUA + "" + ts + " sets currently loaded");
-			for (BroadcastTask bt : BroadcastTask.getTasks()) {
-				enabled += (bt.isEnabled())?1:0;
-				toPlayers += (bt.isSentToPlayers())?1:0;
-				toConsole += (bt.isSentToConole())?1:0;
-			}
 			sender.sendMessage(Clr.DARKAQUA + "" + enabled + "/" + ts + " sets enabled");
-			sender.sendMessage(Clr.DARKAQUA + "" + toPlayers + "/" + ts + " sets shown to players");
-			sender.sendMessage(Clr.DARKAQUA + "" + toConsole + "/" + ts + " sets shown to console");
 		}
 		if (mod.perm(sender, allPerms)) {
 			CustomMessage.printDivider(sender);

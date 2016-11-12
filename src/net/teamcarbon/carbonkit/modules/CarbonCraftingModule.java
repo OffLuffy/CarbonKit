@@ -2,12 +2,18 @@ package net.teamcarbon.carbonkit.modules;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
+import net.teamcarbon.carbonkit.commands.CarbonCrafting.UncraftCommand;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import net.teamcarbon.carbonlib.Misc.TypeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
@@ -20,10 +26,14 @@ import java.util.List;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonCraftingModule extends Module {
+
+	public enum UncraftResult { SUCCESS, FAIL_NO_RECIPE, FAIL_FURNACE_RECIPE, FAIL_DURABILITY, FAIL_NO_ITEM, FAIL_FULL_INV, FAIL_DISABLED }
+
 	public CarbonCraftingModule() throws DuplicateModuleException { super("CarbonCrafting", "ccrafting", "carboncraft", "ccraft", "cc"); }
 	public static CarbonCraftingModule inst;
 	public void initModule() {
 		inst = this;
+		addCmd(new UncraftCommand(this));
 		loadRecipes();
 		registerListeners();
 	}
@@ -36,15 +46,79 @@ public class CarbonCraftingModule extends Module {
 		CarbonKit.reloadConfig(ConfType.DATA);
 		initModule();
 	}
-	protected boolean needsListeners() { return false; }
+	protected boolean needsListeners() { return true; }
 	
 	/*=============================================================*/
 	/*===[                     LISTENERS                       ]===*/
 	/*=============================================================*/
+
+	@EventHandler
+	public void interact(PlayerInteractEvent e) {
+		if (!isEnabled()) return;
+		Player pl = e.getPlayer();
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			Block b = e.getClickedBlock();
+			if (b.getType() == Material.WORKBENCH) {
+				if (pl.isSneaking()) {
+					UncraftResult ur = uncraft(pl);
+					switch (ur) {
+						case SUCCESS:
+							pl.sendMessage(getMsg("uncraft-success", true));
+							break;
+						case FAIL_NO_RECIPE:
+							pl.sendMessage(getMsg("uncraft-fail-no-recipe", true));
+							break;
+						case FAIL_FURNACE_RECIPE:
+							pl.sendMessage(getMsg("uncraft-fail-furnace-recipe", true));
+							break;
+						case FAIL_DURABILITY:
+							pl.sendMessage(getMsg("uncraft-fail-durability", true));
+							break;
+						case FAIL_NO_ITEM:
+							pl.sendMessage(getMsg("uncraft-fail-no-item", true));
+							break;
+						case FAIL_FULL_INV:
+							pl.sendMessage(getMsg("uncraft-fail-full-inv", true));
+							break;
+						case FAIL_DISABLED:
+							pl.sendMessage(getMsg("uncraft-fail-disabled", true));
+							break;
+					}
+				}
+			}
+		}
+	}
 	
 	/*=============================================================*/
 	/*===[                      METHODS                        ]===*/
 	/*=============================================================*/
+
+	public static UncraftResult uncraft(Player pl) {
+		if (!inst.getConfig().getBoolean("allow-uncrafting", true)) return UncraftResult.FAIL_DISABLED;
+		if (pl == null || pl.getInventory().getItemInMainHand() == null || pl.getInventory().getItemInMainHand().getType() == Material.AIR) return UncraftResult.FAIL_NO_ITEM;
+		ItemStack is = pl.getInventory().getItemInMainHand();
+		if (is.getDurability() < is.getType().getMaxDurability()) return UncraftResult.FAIL_DURABILITY;
+		List<Recipe> recipes = Bukkit.getRecipesFor(is);
+		if (recipes == null || recipes.isEmpty()) return UncraftResult.FAIL_NO_RECIPE;
+		for (Recipe r : new ArrayList<>(recipes)) { if (r instanceof FurnaceRecipe) recipes.remove(r); }
+		if (recipes.isEmpty()) return UncraftResult.FAIL_FURNACE_RECIPE;
+		Recipe r = recipes.get(0);
+		int req = r.getResult().getAmount();
+		List<ItemStack> ing = new ArrayList<>();
+		if (r instanceof ShapelessRecipe) { ing = new ArrayList<>(((ShapelessRecipe) r).getIngredientList()); }
+		else if (r instanceof ShapedRecipe) {
+			for (ItemStack ris : ((ShapedRecipe) r).getIngredientMap().values()) { ing.add(ris); }
+		} else { CarbonKit.log.warn("Uncraft recipe is not shaped or shapeless"); }
+		int emptySlots = 0;
+		for (int i = 0; i < pl.getInventory().getSize(); i++) {
+			ItemStack item = pl.getInventory().getItem(i);
+			if (item == null || item.getType() == Material.AIR) emptySlots++;
+		}
+		if (ing == null || ing.size() > emptySlots) return UncraftResult.FAIL_FULL_INV;
+		pl.getInventory().setItem(pl.getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));
+		for (ItemStack item : ing) { if (item != null) pl.getInventory().addItem(new ItemStack(item.getType())); }
+		return UncraftResult.SUCCESS;
+	}
 
 	private static ItemStack applyData(String path, ItemStack is) {
 		ItemStack item = is.clone();
@@ -58,14 +132,14 @@ public class CarbonCraftingModule extends Module {
 			if (sect.contains("lore") && !sect.getStringList("lore").isEmpty()) {
 				List<String> lore = sect.getStringList("lore");
 				if (!lore.isEmpty()) {
-					List<String> cLore = new ArrayList<String>();
+					List<String> cLore = new ArrayList<>();
 					for (String s : lore) if (!s.isEmpty()) cLore.add(Clr.trans(s));
 					im.setLore(cLore);
 				}
 			}
 			if (sect.contains("enchants")) {
 				if (!sect.getConfigurationSection("enchants").getKeys(false).isEmpty()){
-					HashMap<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
+					HashMap<Enchantment, Integer> enchants = new HashMap<>();
 					for (String e : sect.getConfigurationSection("enchants").getKeys(false)) {
 						int lvl = sect.getInt("enchants." + e, 1);
 						if (MiscUtils.getEnchant(e) != null)

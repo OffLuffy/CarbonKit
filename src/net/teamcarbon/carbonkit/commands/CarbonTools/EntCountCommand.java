@@ -39,17 +39,16 @@ public class EntCountCommand extends ModuleCmd {
 		}
 		Player p = (Player)sender;
 
-		if (CarbonKit.pm.isPluginEnabled("WorldEdit")) {
 			if (args.length > 0) {
 				if (TypeUtils.isDouble(args[0])) {
 					if (!modInst.perm(p, "entcount.radius")) {
-						sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
+						sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 						return;
 					}
 					double r = Double.parseDouble(args[0]);
 					double mr = CarbonKit.getDefConfig().getDouble(mod.getName() + ".entity-count-max-radius", 500);
 					if (r > mr || r <= 0) r = NumUtils.normalizeDouble(r, 0, mr);
-					List<Entity> ents = (p).getNearbyEntities(r,r,r);
+					List<Entity> ents = p.getNearbyEntities(r,r,r);
 					p.sendMessage(Clr.GRAY + "Entity count in radius: " + r);
 					printResults(p, ents);
 				} else if (Bukkit.getWorld(args[0]) != null) {
@@ -58,52 +57,49 @@ public class EntCountCommand extends ModuleCmd {
 						return;
 					}
 					World w = Bukkit.getWorld(args[0]);
-					List<Entity> ents = w.getEntities();
 					p.sendMessage(Clr.GRAY + "Entity count in world: " + w.getName());
-					printResults(p, ents);
+					printResults(p, w.getEntities());
 				} else {
 					p.sendMessage(Clr.RED + "Usage: /ecount [radius|world]");
 				}
 			} else {
-				WorldEditPlugin we = (WorldEditPlugin)CarbonKit.pm.getPlugin("WorldEdit");
-				Selection sel = we.getSelection(p);
-				if (sel != null) {
-					if (!modInst.perm(p, "entcount.selection")) {
-						sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
-						return;
-					}
-					List<Entity> selEnts = sel.getWorld().getEntities();
-					List<Entity> ents = new ArrayList<Entity>();
-					for (Entity ent : selEnts) {
-						int x = ent.getLocation().getBlockX(), y = ent.getLocation().getBlockY(), z = ent.getLocation().getBlockZ(),
-								mx = sel.getMinimumPoint().getBlockX(), my = sel.getMinimumPoint().getBlockY(), mz = sel.getMinimumPoint().getBlockZ(),
-								xx = sel.getMaximumPoint().getBlockX(), xy = sel.getMaximumPoint().getBlockY(), xz = sel.getMaximumPoint().getBlockZ();
-						if (mx > xx || my > xy || mz > xz) {
-							p.sendMessage(Clr.RED + "Vars backwards");
+				if (CarbonKit.pm.isPluginEnabled("WorldEdit")) {
+					WorldEditPlugin we = (WorldEditPlugin) CarbonKit.pm.getPlugin("WorldEdit");
+					Selection sel = we.getSelection(p);
+					if (sel != null) {
+						if (!modInst.perm(p, "entcount.selection")) {
+							sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
 							return;
 						}
-						if (x > mx && x <= xx && y > my && y <= xy && z > mz && z <= xz)
-							ents.add(ent);
+						List<Entity> selEnts = sel.getWorld().getEntities();
+						List<Entity> ents = new ArrayList<>();
+						for (Entity ent : selEnts) {
+							int x = ent.getLocation().getBlockX(), y = ent.getLocation().getBlockY(), z = ent.getLocation().getBlockZ(),
+									mx = sel.getMinimumPoint().getBlockX(), my = sel.getMinimumPoint().getBlockY(), mz = sel.getMinimumPoint().getBlockZ(),
+									xx = sel.getMaximumPoint().getBlockX(), xy = sel.getMaximumPoint().getBlockY(), xz = sel.getMaximumPoint().getBlockZ();
+							if (mx > xx || my > xy || mz > xz) {
+								p.sendMessage(Clr.RED + "Vars backwards");
+								return;
+							}
+							if (x > mx && x <= xx && y > my && y <= xy && z > mz && z <= xz)
+								ents.add(ent);
+						}
+						p.sendMessage(Clr.GRAY + "Entity count in selection");
+						printResults(p, ents);
 					}
-					p.sendMessage(Clr.GRAY + "Entity count in selection");
-					printResults(p, ents);
-				} else {
-					if (!modInst.perm(p, "entcount.world")) {
-						sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
-						return;
-					}
-					List<Entity> ents = p.getWorld().getEntities();
-					p.sendMessage(Clr.GRAY + "Entity count in world: " + p.getWorld().getName());
-					printResults(p, ents);
 				}
+				if (!modInst.perm(p, "entcount.world")) {
+					sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
+					return;
+				}
+				p.sendMessage(Clr.GRAY + "Entity count in world: " + p.getWorld().getName());
+				printResults(p, p.getWorld().getEntities());
 			}
-		} else {
-		}
 	}
 
 	private void printResults(Player p, List<Entity> ents) {
-		HashMap<EntityType, Integer> counts = new HashMap<EntityType, Integer>();
-		HashMap<String, Integer> gCounts = new HashMap<String, Integer>();
+		HashMap<EntityType, Integer> counts = new HashMap<>();
+		HashMap<String, Integer> gCounts = new HashMap<>();
 		for (Entity ent : ents) {
 			counts.put(ent.getType(), (counts.containsKey(ent.getType())?counts.get(ent.getType())+1:1));
 			if (CarbonKit.getDefConfig().getBoolean(mod.getName() + ".entity-group-count", true)) {

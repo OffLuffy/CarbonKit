@@ -33,7 +33,6 @@ public class HelpCommand extends ModuleCmd {
 		} else { send(sender, h.getConfigurationSection("root-menu"), PRE + "rootmenu"); }
 	}
 
-
 	private void send(CommandSender sender, ConfigurationSection sect, String perm) {
 		try {
 			if (!sect.getBoolean("require-permission", true) || MiscUtils.perm(sender, perm)) {
@@ -58,5 +57,4 @@ public class HelpCommand extends ModuleCmd {
 			}
 		} catch (Exception e) { (new CarbonException(CarbonKit.inst, e)).printStackTrace(); }
 	}
-
 }

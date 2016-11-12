@@ -16,7 +16,7 @@ import org.bukkit.command.CommandSender;
 
 @SuppressWarnings("UnusedDeclaration")
 public abstract class ModuleCmd implements CommandExecutor {
-	public static List<ModuleCmd> commands = new ArrayList<ModuleCmd>();
+	public static List<ModuleCmd> commands = new ArrayList<>();
 	private List<String>labels;
 	protected Module mod;
 	/**
@@ -25,7 +25,7 @@ public abstract class ModuleCmd implements CommandExecutor {
 	 * @param names List of command labels to register with this command executor
 	 */
 	public ModuleCmd(Module module, String ... names) {
-		labels = new ArrayList<String>();
+		labels = new ArrayList<>();
 		Collections.addAll(labels, names);
 		this.mod = module;
 		commands.add(this);
@@ -68,7 +68,7 @@ public abstract class ModuleCmd implements CommandExecutor {
 	 * @return Returns a List&lt;String&gt; of String permission nodes
 	 */
 	protected List<String> toList(String ... perms) {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		for (String p : perms)
 			if (!list.contains(p.toLowerCase()))
 				list.add(p.toLowerCase());

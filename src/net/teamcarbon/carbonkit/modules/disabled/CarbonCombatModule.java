@@ -1,4 +1,4 @@
-package net.teamcarbon.carbonkit.modules;
+package net.teamcarbon.carbonkit.modules.disabled;
 
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonCombatModule extends Module {
 	public CarbonCombatModule() throws DuplicateModuleException { super("CarbonCombat", "ccombat", "combat", "carbonpvp", "cpvp", "pvp"); }
-	private static HashMap<Player, Long> pvpEnabled = new HashMap<Player, Long>();
+	private static HashMap<Player, Long> pvpEnabled = new HashMap<>();
 	public void initModule() {
 		if (!pvpEnabled.isEmpty()) pvpEnabled.clear();
 		registerListeners();

@@ -1,4 +1,4 @@
-package net.teamcarbon.carbonkit.modules;
+package net.teamcarbon.carbonkit.modules.disabled;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
@@ -13,7 +13,6 @@ import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -39,7 +38,7 @@ import java.util.HashMap;
 public class CarbonEssentialsModule extends Module {
 	public CarbonEssentialsModule() throws DuplicateModuleException { super("CarbonEssentials", "essentials", "ess"); }
 
-	private static HashMap<String, Location> warps = new HashMap<String, Location>();
+	private static HashMap<String, Location> warps = new HashMap<>();
 	private final static String VT = "vanish-toggles.prevent-";
 	public static CarbonEssentialsModule inst;
 

@@ -21,7 +21,7 @@ public class FreezeCommand extends ModuleCmd {
 
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!MiscUtils.perm(sender, "carbonkit.misc.freeze")) {
+		if (!mod.perm(sender, "freeze")) {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
@@ -37,22 +37,21 @@ public class FreezeCommand extends ModuleCmd {
 			long duration = -1;
 			if (args.length > 1 && TypeUtils.isBoolean(args[1]))
 				release = TypeUtils.toBoolean(args[1]);
-			if (!MiscUtils.perm(Bukkit.getWorlds().get(0), pl, "carbonkit.misc.freeze.immune")) {
+			if (!mod.perm(pl, "freeze.immune")) {
 				if (release) {
 					CarbonToolsModule.unfreezePlayer(pl);
 					sender.sendMessage(Clr.AQUA + "Player " + Clr.GOLD + pl.getName() + Clr.AQUA + " has been released.");
-					if (pl.isOnline() && !CustomMessage.MISC_FREEZE.noPre().equals(""))
-						((Player) pl).sendMessage(CustomMessage.MISC_UNFREEZE.noPre());
+					if (pl.isOnline() && !CustomMessage.CE_FREEZE.noPre().equals(""))
+						((Player) pl).sendMessage(CustomMessage.CE_FREEZE.noPre());
 				} else {
 					CarbonToolsModule.freezePlayer(pl, duration);
 					sender.sendMessage(Clr.AQUA + "Player " + Clr.GOLD + pl.getName() + Clr.AQUA + " has been frozen.");
-					if (pl.isOnline() && !CustomMessage.MISC_FREEZE.noPre().equals(""))
-						((Player) pl).sendMessage(CustomMessage.MISC_FREEZE.noPre());
+					if (pl.isOnline() && !CustomMessage.CE_FREEZE.noPre().equals(""))
+						((Player) pl).sendMessage(CustomMessage.CE_FREEZE.noPre());
 				}
 			} else {
 				sender.sendMessage(Clr.RED + "This player cannot be frozen");
 			}
 		}
 	}
-
 }

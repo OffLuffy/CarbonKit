@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 import java.util.HashMap;
 
@@ -21,7 +20,7 @@ public class CarbonReloadCommand extends ModuleCmd {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		CarbonKit.reloadAllConfigs();
 		if (args.length > 0) {
 			Module m = Module.getModule(args[0]);

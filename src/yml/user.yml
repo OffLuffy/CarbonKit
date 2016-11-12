@@ -1,0 +1,5 @@
+global:
+  last-name: ''
+  last-address: ''
+  last-online: 0
+  name-history: []

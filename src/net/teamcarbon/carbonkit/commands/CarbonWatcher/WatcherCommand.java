@@ -47,7 +47,7 @@ public class WatcherCommand extends ModuleCmd {
 					return;
 				}
 				Player target = Bukkit.getPlayer(args[0]);
-				HashMap<String, String> rep = new HashMap<String, String>();
+				HashMap<String, String> rep = new HashMap<>();
 				rep.put("{PLAYER}", target.getName());
 				if (args.length > 1 && TypeUtils.isBoolean(args[1]))
 					CarbonWatcherModule.setWatching(target, TypeUtils.toBoolean(args[1]));

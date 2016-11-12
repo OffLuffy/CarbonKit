@@ -7,16 +7,16 @@ import net.teamcarbon.carbonkit.tasks.UpdateOnlineTimeTask;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
+import net.teamcarbon.carbonkit.utils.UserStore;
 import net.teamcarbon.carbonlib.Misc.LocUtils;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import net.teamcarbon.carbonlib.Misc.MiscUtils;
-import net.teamcarbon.carbonlib.TitleUtils.TitleHelper;
+import net.teamcarbon.carbonlib.Misc.MiscUtils.TrustLevel;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -27,12 +27,6 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
-import org.bukkit.event.vehicle.VehicleMoveEvent;
-import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapView;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.net.InetAddress;
 import java.util.*;
@@ -43,12 +37,8 @@ public class CarbonToolsModule extends Module {
 
 	public static UUID instId;
 
-	private static List<Chunk> lockedChunks;
-	public static List<UUID> freezeList = new ArrayList<UUID>();
-	public static List<UUID> pendingAniInfo = new ArrayList<UUID>();
-	public static HashMap<UUID, Long> tempFreezeList = new HashMap<UUID, Long>();
-	public static HashMap<UUID, String> addressMap = new HashMap<UUID, String>();
-	public static HashMap<UUID, Long> onlineTimeStart = new HashMap<UUID, Long>();
+	public static List<Player> pendingAniInfo = new ArrayList<>();
+	public static HashMap<UUID, String> addressMap = new HashMap<>();
 
 	public CarbonToolsModule() throws DuplicateModuleException {
 		super("CarbonTools", "misc", "miscmodule", "msc", "ctools", "ctool", "tools", "tool", "ctl");
@@ -56,12 +46,8 @@ public class CarbonToolsModule extends Module {
 
 	public void initModule() {
 		inst = this;
-		lockedChunks = new ArrayList<Chunk>();
 		instId = UUID.randomUUID();
-		freezeList = new ArrayList<UUID>();
-		if (addressMap == null) addressMap = new HashMap<UUID, String>();
-		if (onlineTimeStart == null) onlineTimeStart = new HashMap<UUID, Long>();
-		else onlineTimeStart.clear();
+		if (addressMap == null) addressMap = new HashMap<>();
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (needsUnfreezing(p)) unfreezePlayer(p);
 			if (isFrozen(p, true)) freezePlayer(p, getUnfreezeTime(p));
@@ -70,10 +56,11 @@ public class CarbonToolsModule extends Module {
 				addr = addr.substring(0, addr.indexOf(":"));
 				addressMap.put(p.getUniqueId(), addr);
 			} else { addressMap.put(p.getUniqueId(), "X.X.X.X"); }
-			onlineTimeStart.put(p.getUniqueId(), System.currentTimeMillis());
 		}
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst, new UpdateOnlineTimeTask(instId), 1L, 6000L);
 		addCmd(new SlapCommand(this));
+		addCmd(new FakeJoinCommand(this));
+		addCmd(new FakeQuitCommand(this));
 		addCmd(new RideCommand(this));
 		addCmd(new EntCountCommand(this));
 		addCmd(new GamemodeCommand(this));
@@ -82,8 +69,9 @@ public class CarbonToolsModule extends Module {
 		addCmd(new TicketCommand(this));
 		addCmd(new DiceCommand(this));
 		addCmd(new AnimalInfoCommand(this));
+		addCmd(new CalcCommand(this));
 		registerListeners();
-		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst, new Runnable() {
+		/*Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst, new Runnable() {
 			@SuppressWarnings("deprecation")
 			public void run() {
 				if (isEnabled()) {
@@ -92,10 +80,10 @@ public class CarbonToolsModule extends Module {
 							DIR_ITEM = MiscUtils.getMaterial(getConfig().getString("hud-settings.direction-item", "COMPASS")),
 							CLK_ITEM = MiscUtils.getMaterial(getConfig().getString("hud-settings.clock-item", "WATCH")),
 							TPS_ITEM = MiscUtils.getMaterial(getConfig().getString("hud-settings.tps-item", "REDSTONE"));
-					String text, sep = " &r&l\u2022&r ", pr = "hud.", bh = "bypassholding",
+					String text, sep = " &r&l\u2022&r ", pr = "hud.",
 							prl = "location", prd = "direction", prc = "clock", prt = "tps", pro = ".override";
 					for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-						if (hold) hold = !perm(p, pr + bh);
+						if (hold) hold = !perm(p, pr + "bypassholding");
 						Material i = p.getItemInHand().getType();
 						text = "";
 						boolean mOvr = perm(p, pr + prl + pro), dOvr = perm(p, pr + prd + pro),
@@ -121,8 +109,7 @@ public class CarbonToolsModule extends Module {
 										}
 								}
 							}
-							// TODO Remove world name later?
-							if (mOvr || map) text += (!text.isEmpty() ? sep : "") + "&6{WORLD} {X} {Y} {Z}";
+							if (mOvr || map) text += (!text.isEmpty() ? sep : "") + "&6{X} {Y} {Z}";
 						}
 						if (cmp) text += (!text.isEmpty() ? sep : "") + "&7{COMPASS_SHORT}";
 						if (!text.isEmpty()) TitleHelper.sendActionBar(p, text);
@@ -130,15 +117,12 @@ public class CarbonToolsModule extends Module {
 					}
 				}
 			}
-		}, 20L, 5L);
+		}, 20L, 5L);*/
 	}
 
 	public void disableModule() {
 		updateAllOnlineTimes();
-		freezeList.clear();
-		onlineTimeStart.clear();
 		unregisterListeners();
-		for (Player p : Bukkit.getServer().getOnlinePlayers()) TitleHelper.sendActionBar(p, " ");
 	}
 
 	public void reloadModule() {
@@ -172,51 +156,35 @@ public class CarbonToolsModule extends Module {
 	public void joinEvent(PlayerJoinEvent e) {
 		if (!isEnabled()) return;
 		storeAddress(e.getPlayer().getUniqueId(), e.getPlayer().getAddress().getAddress());
-		onlineTimeStart.put(e.getPlayer().getUniqueId(), System.currentTimeMillis());
-		FileConfiguration data = CarbonKit.getConfig(ConfType.DATA);
-		String midPath = getName() + "." + "online-time." + e.getPlayer().getUniqueId().toString() + ".";
-		long firstSeen = data.getLong(midPath + "first-seen", -1L);
-		data.set(midPath + "first-seen", firstSeen == -1L ? System.currentTimeMillis() : firstSeen);
-		CarbonKit.saveConfig(ConfType.DATA);
 		joinQuitHandle(true, e.getPlayer());
 		e.setJoinMessage(null);
 	}
 
 	@EventHandler
 	public void quitEvent(PlayerQuitEvent e) {
+		if (pendingAniInfo.contains(e.getPlayer())) pendingAniInfo.remove(e.getPlayer());
 		if (!isEnabled()) return;
 		joinQuitHandle(false, e.getPlayer());
 		if (addressMap.containsKey(e.getPlayer().getUniqueId()))
 			addressMap.remove(e.getPlayer().getUniqueId());
-		updateOnlineTime(e.getPlayer().getUniqueId(), true, true);
-		onlineTimeStart.remove(e.getPlayer().getUniqueId());
+
+		updateOnlineTime(e.getPlayer().getUniqueId(), true);
+
 		e.setQuitMessage(null);
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void entityInteract(PlayerInteractEntityEvent e) {
 		if (!isEnabled()) return;
+		if (isFrozen(e.getPlayer(), false)) { e.setCancelled(true); return; }
 		Player pl = e.getPlayer();
 		UUID pid = pl.getUniqueId();
-		if (frozenCancellableHandle(e, pl)) return;
+
+		// Art cycle
 		if (e.getRightClicked().getType().equals(EntityType.PAINTING) && perm(pl, "artcycle")) {
 			Painting p = (Painting) e.getRightClicked();
 			boolean allow = true;
-			if (MiscUtils.checkPlugin("GriefPrevention", true)) {
-				me.ryanhamshire.GriefPrevention.DataStore ds = me.ryanhamshire.GriefPrevention.GriefPrevention.instance.dataStore;
-				me.ryanhamshire.GriefPrevention.Claim claim = ds.getClaimAt(p.getLocation(), false, null);
-				me.ryanhamshire.GriefPrevention.PlayerData pd = ds.getPlayerData(pid);
-				allow = claim == null || claim.ownerID.equals(pid) || (pd != null && pd.ignoreClaims);
-				if (!allow) {
-					String msg = claim.allowBuild(e.getPlayer(), Material.PAINTING);
-					if (msg == null) {
-						allow = true;
-					} else {
-						e.getPlayer().sendMessage(msg);
-						return;
-					}
-				}
-			}
+			if (!MiscUtils.accessCheck(e.getRightClicked().getLocation(), pl, TrustLevel.BUILD)) allow = false;
 			if (allow) {
 				boolean s = false;
 				Art last = p.getArt();
@@ -226,11 +194,13 @@ public class CarbonToolsModule extends Module {
 				}
 			}
 		}
-		if (pendingAniInfo.contains(pid)) {
+
+		// Animal Info
+		if (pendingAniInfo.contains(pl)) {
 			Entity ent = e.getRightClicked();
 			if (ent instanceof Damageable || ent instanceof Ageable || ent instanceof Tameable) {
-				AnimalInfoCommand.showInfo(pl, ent);
-				pendingAniInfo.remove(pid);
+				showInfo(pl, ent);
+				pendingAniInfo.remove(pl);
 			} else {
 				pl.sendMessage(Clr.RED + "This is not an animal you can inspect!");
 			}
@@ -240,62 +210,65 @@ public class CarbonToolsModule extends Module {
 
 	@EventHandler(ignoreCancelled = true)
 	public void moveEvent(PlayerMoveEvent e) {
-		if (!LocUtils.isSameBlockLoc(e.getFrom(), e.getTo()) && frozenHandle(e.getPlayer()))
-			MiscUtils.teleport(e.getPlayer(), e.getFrom());
-	}
-
-	@EventHandler(ignoreCancelled = true)
-	public void vehicleMoveEvent(VehicleMoveEvent e) {
-		for (Entity v = e.getVehicle(); v.getPassenger() != null; v = v.getPassenger()) {
-			if (v instanceof Player && isFrozen((Player) v, false)) {
-				if (!LocUtils.isSameLoc(e.getFrom(), e.getTo()) && frozenHandle((Player) v)) {
-					MiscUtils.teleport(v, e.getFrom());
-					return;
-				}
+		if (!isEnabled()) return;
+		if (isFrozen(e.getPlayer(), false)) {
+			// TODO Allow looking but not moving? Place on ground to prevent kicking for flight?
+			UserStore us = CarbonKit.getPlayerData(e.getPlayer().getUniqueId());
+			Location loc = LocUtils.fromStr(us.getString(inst.getName() + ".freeze-location", ""));
+			if (!LocUtils.isSameLoc(e.getTo(), loc)) {
+				e.getPlayer().teleport(loc);
+				e.setCancelled(true);
 			}
 		}
 	}
 
 	@EventHandler(ignoreCancelled = true)
-	public void teleport(PlayerTeleportEvent e) { frozenCancellableHandle(e, e.getPlayer()); }
+	public void itemDrop(PlayerDropItemEvent e) {
+		if (!isEnabled()) return;
+		if (isFrozen(e.getPlayer(), false)) e.setCancelled(true);
+	}
 
 	@EventHandler(ignoreCancelled = true)
-	public void itemDrop(PlayerDropItemEvent e) { frozenCancellableHandle(e, e.getPlayer()); }
+	public void breakEvent(BlockBreakEvent e) {
+		if (!isEnabled()) return;
+		if (isFrozen(e.getPlayer(), false)) e.setCancelled(true);
+	}
 
 	@EventHandler(ignoreCancelled = true)
-	public void breakEvent(BlockBreakEvent e) { frozenCancellableHandle(e, e.getPlayer()); }
+	public void placeEvent(BlockPlaceEvent e) {
+		if (!isEnabled()) return;
+		if (isFrozen(e.getPlayer(), false)) e.setCancelled(true);
+	}
 
 	@EventHandler(ignoreCancelled = true)
-	public void placeEvent(BlockPlaceEvent e) { frozenCancellableHandle(e, e.getPlayer()); }
+	public void damageEvent(BlockDamageEvent e) {
+		if (!isEnabled()) return;
+		if (isFrozen(e.getPlayer(), false)) e.setCancelled(true);
+	}
 
 	@EventHandler(ignoreCancelled = true)
-	public void damageEvent(BlockDamageEvent e) { frozenCancellableHandle(e, e.getPlayer()); }
-
-	@EventHandler(ignoreCancelled = true)
-	public void hangingPlace(HangingPlaceEvent e) { frozenCancellableHandle(e, e.getPlayer()); }
+	public void hangingPlace(HangingPlaceEvent e) {
+		if (!isEnabled()) return;
+		if (isFrozen(e.getPlayer(), false)) e.setCancelled(true);
+	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void hangingBreak(HangingBreakByEntityEvent e) {
 		Entity r = e.getRemover();
-		Player p = null;
-		if (r instanceof Player) p = (Player) e.getRemover();
-		if (r instanceof Projectile && ((Projectile) r).getShooter() instanceof Player) p = (Player) ((Projectile) r).getShooter();
-		if (e.getRemover() instanceof Player) frozenCancellableHandle(e, p);
+		Player p;
+		if (e.getRemover() instanceof Player) {
+			p = (Player) e.getRemover();
+		} else if (e.getRemover() instanceof Projectile && ((Projectile) e.getRemover()).getShooter() instanceof Player) {
+			p = (Player) ((Projectile) e.getRemover()).getShooter();
+		} else return;
+		if (isFrozen(p, false)) e.setCancelled(true);
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void explosion(EntityExplodeEvent e) {
 		if (!isEnabled()) return;
-		for (Block b : new ArrayList<Block>(e.blockList())) {
+		for (Block b : new ArrayList<>(e.blockList())) {
 			if (b.getType() == Material.DIAMOND_ORE) { e.blockList().remove(b); }
-		}
-	}
-
-	@EventHandler
-	public void chunkUnload(ChunkUnloadEvent e) {
-		if (getLockedChunks() != null && isLockedChunk(e.getChunk())) {
-			e.setCancelled(true);
-			while (!e.getChunk().load(true));
 		}
 	}
 
@@ -328,93 +301,78 @@ public class CarbonToolsModule extends Module {
 		return msg;
 	}
 
-	public void updateAllOnlineTimes() {
-		for (UUID id : onlineTimeStart.keySet()) { updateOnlineTime(id, false, false); }
-		CarbonKit.saveConfig(ConfType.DATA);
+	public static void updateAllOnlineTimes() {
+		for (Player pl : Bukkit.getOnlinePlayers()) { updateOnlineTime(pl.getUniqueId(), false); }
 	}
 
-	public void updateOnlineTime(UUID id, boolean save, boolean quitting) {
-		FileConfiguration data = CarbonKit.getConfig(ConfType.DATA);
-		String idPath = "online-time." + id.toString() + ".", midPath = getName() + "." + idPath;
-		long lastOnline = getData().getLong(idPath + "last-online", -1);
-		long tmonthTime = getData().getLong(idPath + "this-month", -1);
-		long lmonthTime = getData().getLong(idPath + "last-month", -1);
-		long oldOverall = getData().getLong(idPath + "overall-time", -1);
-		long monthlyAvg = getData().getLong(idPath + "monthly-avg", -1);
-		long avgSession = getData().getLong(idPath + "average-session", -1);
-		long curSession = 0L;
+	public static void updateOnlineTime(UUID id, boolean quitting) {
 		Player pl = Bukkit.getPlayer(id);
-		boolean plOnline = pl != null && pl.isOnline();
-		if (plOnline) curSession = System.currentTimeMillis() - onlineTimeStart.get(id);
+		UserStore us = CarbonKit.getPlayerData(id);
+
+		long lastOnline = pl.getLastPlayed();// us.getLong(inst.getName() + ".online-time.last-online",		-1L);
+		if (pl.isOnline()) lastOnline = System.currentTimeMillis();
+		if (lastOnline == 0L) lastOnline = -1L;
+		long oldOverall = us.getLong(inst.getName() + ".online-time.overall-time",		-1L);
+		long tmonthTime = us.getLong(inst.getName() + ".online-time.this-month",		-1L);
+		long monthlyCnt = us.getLong(inst.getName() + ".online-time.month-count",		-1L);
+		long monthlyAvg = us.getLong(inst.getName() + ".online-time.monthly-avg",		-1L);
+		long sessionCnt = us.getLong(inst.getName() + ".online-time.session-count",		-1L);
+		long avgSession = us.getLong(inst.getName() + ".online-time.average-session",	-1L);
+
 		Date lst = new Date(lastOnline), cur = new Date();
 		Calendar lstCal = Calendar.getInstance(), curCal = Calendar.getInstance();
 		lstCal.setTime(lst);
 		curCal.setTime(cur);
-		boolean newMonth = lastOnline != -1 && lstCal.get(Calendar.MONTH) != curCal.get(Calendar.MONTH);
-		if (newMonth) monthlyAvg = ((monthlyAvg == -1) ? (tmonthTime + curSession) : ((lmonthTime + (tmonthTime + curSession))/2));
-		if (quitting) avgSession = ((avgSession == -1) ? curSession : (avgSession + curSession) / 2);
-		long newMonthTime = newMonth ? curSession : (tmonthTime + curSession);
-		long lastMonthTime = newMonth ? (tmonthTime + curSession) : lmonthTime;
-		data.set(midPath + "overall-time", (oldOverall + curSession));
-		data.set(midPath + "this-month", newMonthTime);
-		data.set(midPath + "last-month", lastMonthTime);
-		data.set(midPath + "last-online", (pl != null && pl.isOnline())?System.currentTimeMillis():lastOnline);
-		data.set(midPath + "monthly-avg", monthlyAvg);
-		data.set(midPath + "average-session", avgSession);
-		onlineTimeStart.put(id, System.currentTimeMillis());
-		if (save) { CarbonKit.saveConfig(ConfType.DATA); }
-	}
 
-	public static boolean hasFrozenEffects(Player p) {
-		return p.hasPotionEffect(PotionEffectType.JUMP) && p.getWalkSpeed() == 0.0f && p.getFlySpeed() == 0.0f;
+		boolean plOnline = pl != null && pl.isOnline();
+		long curSession = 0L;
+		if (plOnline) curSession = System.currentTimeMillis() - us.getLong(inst.getName() + ".online-time.last-online", System.currentTimeMillis());
+		boolean newMonth = lastOnline != -1L && lstCal.get(Calendar.MONTH) != curCal.get(Calendar.MONTH);
+		tmonthTime = newMonth ? curSession : tmonthTime + curSession;
+
+		if (newMonth) {
+			monthlyAvg = monthlyAvg == -1L ? tmonthTime : (monthlyAvg * monthlyCnt + tmonthTime) / (monthlyCnt+1);
+			monthlyCnt++;
+		}
+		if (quitting) {
+			avgSession = avgSession == -1L ? curSession : (avgSession * sessionCnt + curSession) / (sessionCnt+1);
+			sessionCnt++;
+		}
+
+		us.set(inst.getName() + ".online-time.overall-time", oldOverall + curSession);
+		us.set(inst.getName() + ".online-time.this-month", tmonthTime);
+		us.set(inst.getName() + ".online-time.month-count", monthlyCnt);
+		us.set(inst.getName() + ".online-time.monthly-avg", monthlyAvg);
+		us.set(inst.getName() + ".online-time.session-count", sessionCnt);
+		us.set(inst.getName() + ".online-time.average-session", avgSession);
+		us.save();
 	}
 
 	public static void freezePlayer(OfflinePlayer p) { freezePlayer(p, -1); }
 
 	public static void freezePlayer(OfflinePlayer p, long duration) {
-		if (p.isOnline()) {
-			((Player) p).setWalkSpeed(0.0f);
-			((Player) p).setFlySpeed(0.0f);
-			((Player) p).addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 128));
-		}
-		FileConfiguration data = CarbonKit.getConfig(ConfType.DATA);
-		if (duration > -1) {
-			CarbonToolsModule.freezeList.add(p.getUniqueId());
-			data.set("CarbonTools.temp-frozen-players." + p.getUniqueId().toString(), System.currentTimeMillis() + duration);
-		} else {
-			CarbonToolsModule.tempFreezeList.put(p.getUniqueId(), System.currentTimeMillis() + duration);
-			MiscUtils.addToStringList(data, "CarbonTools.frozen-players", p.getUniqueId());
-		}
-		CarbonKit.saveConfig(ConfType.DATA);
+		UserStore us = CarbonKit.getPlayerData(p.getUniqueId());
+		us.set(inst.getName() + ".frozen", true);
+		us.set(inst.getName() + ".freeze-expire", duration == -1L ? -1L : System.currentTimeMillis() + duration);
+		us.set(inst.getName() + ".freeze-location", LocUtils.toStr(p.getPlayer().getLocation(), false));
+		us.save();
 	}
 
 	public static void unfreezePlayer(OfflinePlayer p) {
-		FileConfiguration data = CarbonKit.getConfig(ConfType.DATA);
-		if (p.isOnline()) {
-			if (CarbonToolsModule.freezeList.contains(p.getUniqueId())) CarbonToolsModule.freezeList.remove(p.getUniqueId());
-			if (CarbonToolsModule.tempFreezeList.containsKey(p.getUniqueId())) CarbonToolsModule.tempFreezeList.remove(p.getUniqueId());
-			((Player) p).setWalkSpeed(0.2f);
-			((Player) p).setFlySpeed(0.1f);
-			((Player) p).removePotionEffect(PotionEffectType.JUMP);
-			MiscUtils.removeFromStringList(data, "CarbonTools.to-be-unfrozen", p.getUniqueId());
-		} else {
-			MiscUtils.addToStringList(data, "CarbonTools.to-be-unfrozen", p.getUniqueId());
-		}
-		MiscUtils.removeFromStringList(data, "CarbonTools.frozen-players", p.getUniqueId());
-		data.set("CarbonTools.temp-frozen-players." + p.getUniqueId().toString(), null);
-		CarbonKit.saveConfig(ConfType.DATA);
+		UserStore us = CarbonKit.getPlayerData(p.getUniqueId());
+		us.set(inst.getName() + ".frozen", false);
+		us.set(inst.getName() + ".freeze-expire", -1L);
+		us.set(inst.getName() + ".freeze-location", "");
+		us.save();
 	}
 
 	public static boolean isFrozen(OfflinePlayer p, boolean checkIfOffline) {
-		if (p == null) { return false; }
-		FileConfiguration data = CarbonKit.getConfig(ConfType.DATA);
-		String id = p.getUniqueId().toString();
-		String permPath = "CarbonTools.frozen-players", tempPath = "CarbonTools.temp-frozen-players." + id;
-		long cur = System.currentTimeMillis() / 1000L;
-		return p.isOnline() && (freezeList.contains(p.getUniqueId()) || (tempFreezeList.containsKey(p.getUniqueId())
-				&& tempFreezeList.get(p.getUniqueId()) > cur)) || (checkIfOffline
-				&& (data.getStringList(permPath).contains(id) || (data.contains(tempPath)
-				&& data.getLong(tempPath) > cur)));
+		if (p == null || (!checkIfOffline && !p.isOnline())) { return false; }
+		UserStore us = CarbonKit.getPlayerData(p.getUniqueId());
+		if (inst.perm(p, "freeze.immune")) return false;
+		boolean frozen = us.getBoolean(inst.getName() + ".frozen", false);
+		long freezeExpire = us.getLong(inst.getName() + ".freeze-expire", -1L);
+		return frozen && (freezeExpire == -1L || freezeExpire < System.currentTimeMillis());
 	}
 
 	public static boolean needsUnfreezing(OfflinePlayer p) {
@@ -427,8 +385,8 @@ public class CarbonToolsModule extends Module {
 	public static long getUnfreezeTime(OfflinePlayer p) {
 		if (!isFrozen(p, true)) return 0;
 		if (p.isOnline()){
-			if (freezeList.contains(p.getUniqueId())) return -1;
-			if (tempFreezeList.containsKey(p.getUniqueId())) return tempFreezeList.get(p.getUniqueId());
+			//if (freezeList.contains(p.getUniqueId())) return -1;
+			//if (tempFreezeList.containsKey(p.getUniqueId())) return tempFreezeList.get(p.getUniqueId());
 		} else {
 			FileConfiguration data = CarbonKit.getConfig(ConfType.DATA);
 			String permPath = "CarbonTools.frozen-players", tempPath = "CarbonTools.temp-frozen-players." + p.getUniqueId().toString();
@@ -438,51 +396,71 @@ public class CarbonToolsModule extends Module {
 		return 0;
 	}
 
-	public static void toggleLockedChunk(Chunk c) { setLockedChunk(c, !isLockedChunk(c)); }
+	// Ageable: Chicken, Cow, Horse, MushroomCow, Pig, Rabbit, Sheep, Villager, Wolf
+	// Tameable: Horse, Ocelot, Wolf
 
-	public static void setLockedChunk(Chunk c, boolean locked) {
-		if (locked) addLockedChunk(c);
-		else removeLockedChunk(c);
+	public static void showInfo(Player pl, Entity ent) {
+		CustomMessage.printHeader(pl, "Animal Info");
+		pl.sendMessage(Clr.AQUA + "Type: " + prep(ent.getType().name()));
+		if (ent instanceof Tameable) {
+			Tameable te = (Tameable) ent;
+			pl.sendMessage(Clr.AQUA + "Tamed: " + te.isTamed());
+			if (te.isTamed()) {
+				String tamer = te.getOwner().getName(), tamerId = te.getOwner().getUniqueId().toString();
+				pl.sendMessage(Clr.AQUA + "Owner: " + ((tamer != null && !tamer.isEmpty()) ? tamer : "Unknown"));
+				pl.sendMessage(Clr.AQUA + "Owner ID: " + ((tamer != null && !tamerId.isEmpty()) ? tamerId : "Unknown"));
+			}
+		}
+		if (ent instanceof Ageable) {
+			Ageable ae = (Ageable) ent;
+			pl.sendMessage(Clr.AQUA + "Age: " + ae.getAge());
+			pl.sendMessage(Clr.AQUA + "Age Locked: " + ae.getAgeLock());
+		}
+		if (ent instanceof Damageable) {
+			Damageable de = (Damageable) ent;
+			pl.sendMessage(Clr.AQUA + "Health: " + de.getHealth() + " / " + de.getMaxHealth());
+		}
+		if (ent instanceof Horse) {
+			Horse horse = (Horse) ent;
+			pl.sendMessage(Clr.AQUA + "Horse Variant: " + prep(horse.getVariant().name()));
+			pl.sendMessage(Clr.AQUA + "Horse Style: " + prep(horse.getStyle().name()));
+			pl.sendMessage(Clr.AQUA + "Horse Color: " + prep(horse.getColor().name()));
+			pl.sendMessage(Clr.AQUA + "Horse Speed: " + getSpeed(horse));
+			pl.sendMessage(Clr.AQUA + "Horse Jump Strength: " + horse.getJumpStrength());
+		}
+		if (ent instanceof Rabbit) {
+			Rabbit rabbit = (Rabbit) ent;
+			pl.sendMessage(Clr.AQUA + "Rabbit Type: " + prep(rabbit.getRabbitType().name()));
+		}
+		if (ent instanceof Ocelot) {
+			Ocelot ocelot = (Ocelot) ent;
+			pl.sendMessage(Clr.AQUA + "Cat Type: " + prep(ocelot.getCatType().name()));
+		}
+		CustomMessage.printFooter(pl);
 	}
 
-	public static void addLockedChunk(Chunk c) {
-		if (!lockedChunks.contains(c)) lockedChunks.add(c);
-		while (!c.load(true));
-	}
+	private static String prep(String s) { return MiscUtils.capFirst(s, true).replace("_", " "); }
 
-	public static void removeLockedChunk(Chunk c) {
-		if (lockedChunks.contains(c)) lockedChunks.remove(c);
-		boolean unload = true;
-		for (Entity ent : c.getEntities()) if (ent.getType() == EntityType.PLAYER) unload = false;
-		if (unload) c.unload();
-	}
-
-	public static boolean isLockedChunk(Chunk c) { return lockedChunks.contains(c); }
-
-	public static List<Chunk> getLockedChunks() {
-		if (lockedChunks == null) return null;
-		return new ArrayList<Chunk>(lockedChunks);
+	// TODO Update per version change
+	private static double getSpeed(Horse horse) {
+		double speed = -1;
+		org.bukkit.craftbukkit.v1_10_R1.entity.CraftHorse cHorse = (org.bukkit.craftbukkit.v1_10_R1.entity.CraftHorse) horse;
+		net.minecraft.server.v1_10_R1.NBTTagCompound compound = new net.minecraft.server.v1_10_R1.NBTTagCompound();
+		cHorse.getHandle().b(compound);
+		net.minecraft.server.v1_10_R1.NBTTagList list = (net.minecraft.server.v1_10_R1.NBTTagList) compound.get("Attributes");
+		for(int i = 0; i < list.size() ; i++) {
+			net.minecraft.server.v1_10_R1.NBTTagCompound base = list.get(i);
+			if (base.getTypeId() == 10)
+				if (base.toString().contains("generic.movementSpeed"))
+					speed = base.getDouble("Base");
+		}
+		return speed;
 	}
 
 	private static Art getNextArt(Art curArt) { return Art.values()[(curArt.ordinal() + 1) % Art.values().length]; }
 
 	private static boolean invHas(Player p, Material mat) { return p.getInventory().contains(mat); }
 	private static boolean plrInOverworld(Player p) { return p.getWorld().getEnvironment() == Environment.NORMAL; }
-
-	private boolean frozenCancellableHandle(Cancellable e, Player p) {
-		if (frozenHandle(p)) { e.setCancelled(true); return true; }
-		return false;
-	}
-
-	private boolean frozenHandle(Player p) {
-		if (!isEnabled()) return false;
-		if (isFrozen(p, false)) {
-			if (perm(p, "freeze.immune")) unfreezePlayer(p);
-			if (!hasFrozenEffects(p)) freezePlayer(p);
-			return true;
-		}
-		return false;
-	}
 
 	private void joinQuitHandle(boolean join, Player p) {
 		if (join) {
@@ -492,8 +470,8 @@ public class CarbonToolsModule extends Module {
 				else freezePlayer(p, getUnfreezeTime(p));
 			}
 		} else {
-			if (tempFreezeList.containsKey(p.getUniqueId())) tempFreezeList.remove(p.getUniqueId());
-			if (freezeList.contains(p.getUniqueId())) freezeList.remove(p.getUniqueId());
+			//if (tempFreezeList.containsKey(p.getUniqueId())) tempFreezeList.remove(p.getUniqueId());
+			//if (freezeList.contains(p.getUniqueId())) freezeList.remove(p.getUniqueId());
 		}
 		String a = join?"join":"quit";
 		Location l = p.getLocation();
@@ -520,7 +498,7 @@ public class CarbonToolsModule extends Module {
 		}
 		if (statuses.length() > 0)
 			statuses += " ";
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{STATUS}", statuses);
 		rep.put("{PLAYER}", p.getName());
 		rep.put("{IP}", addressMap.get(p.getUniqueId()));

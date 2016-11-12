@@ -1,4 +1,4 @@
-package net.teamcarbon.carbonkit.modules;
+package net.teamcarbon.carbonkit.modules.disabled;
 
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
@@ -28,8 +28,8 @@ import java.util.HashMap;
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonTeleportModule extends Module {
 
-	private static HashMap<String, Location> warps = new HashMap<String, Location>();
-	private static HashMap<Player, HashMap<String, Location>> homes = new HashMap<Player, HashMap<String, Location>>();
+	private static HashMap<String, Location> warps = new HashMap<>();
+	private static HashMap<Player, HashMap<String, Location>> homes = new HashMap<>();
 
 	public CarbonTeleportModule() throws DuplicateModuleException { super("CarbonTeleport", "teleport", "ctp", "tp", "warp", "warps", "home", "homes"); }
 	public void initModule() {
@@ -123,7 +123,7 @@ public class CarbonTeleportModule extends Module {
 	 * @return Returns true if a player can fit in the specified Location, false otherwise
 	 */
 	private boolean hasRoom(Location loc) {
-		return MiscUtils.isHollow(loc.getBlock().getType()) && MiscUtils.isHollow(loc.getBlock().getRelative(BlockFace.UP).getType());
+		return MiscUtils.isPermeable(loc.getBlock().getType()) && MiscUtils.isPermeable(loc.getBlock().getRelative(BlockFace.UP).getType());
 	}
 
 	/**

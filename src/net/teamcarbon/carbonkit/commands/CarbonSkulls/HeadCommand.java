@@ -43,7 +43,7 @@ public class HeadCommand extends ModuleCmd {
 					if (price > 0.0) {
 						EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer) sender, price);
 						if (!er.transactionSuccess()) {
-							sender.sendMessage(CustomMessage.SS_TRANSACTION_FAILED.pre());
+							sender.sendMessage(CustomMessage.CS_TRANSACTION_FAILED.pre());
 							return;
 						}
 					}
@@ -53,19 +53,19 @@ public class HeadCommand extends ModuleCmd {
 					sm.setOwner(pName);
 					skull.setItemMeta(sm);
 					((Player) sender).getInventory().addItem(skull);
-					HashMap<String, String> rep = new HashMap<String, String>();
+					HashMap<String, String> rep = new HashMap<>();
 					rep.put("{SKULLOWNER}", pName);
 					if (price <= 0.0 || mod.perm(sender, "skull.free")) {
-						sender.sendMessage(CustomMessage.SS_SKULL_GIVEN_FREE.pre(rep));
+						sender.sendMessage(CustomMessage.CS_SKULL_GIVEN_FREE.pre(rep));
 					} else {
 						rep.put("{PRICE}", price + "");
-						sender.sendMessage(CustomMessage.SS_SKULL_GIVEN.pre(rep));
+						sender.sendMessage(CustomMessage.CS_SKULL_GIVEN.pre(rep));
 					}
 				} else {
-					sender.sendMessage(CustomMessage.SS_NOT_ENOUGH_MONEY.pre());
+					sender.sendMessage(CustomMessage.CS_NOT_ENOUGH_MONEY.pre());
 				}
 			} else {
-				sender.sendMessage(CustomMessage.SS_INVENTORY_FULL.pre());
+				sender.sendMessage(CustomMessage.CS_INVENTORY_FULL.pre());
 			}
 		} else {
 			double up = mod.getConfig().getDouble("update-price", 2000.0);
@@ -89,5 +89,4 @@ public class HeadCommand extends ModuleCmd {
 			mod.sendFormatted(sender, "%s", "getskull", new String[] {"Right click a skull to check who it is and bookmark it"});
 		}
 	}
-
 }

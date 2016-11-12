@@ -1,6 +1,6 @@
 package net.teamcarbon.carbonkit.utils;
 
-import net.teamcarbon.carbonkit.utils.CarbonNews.FormattedMessage;
+import net.teamcarbon.carbonlib.FormatUtils.FormattedMessage;
 import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import net.teamcarbon.carbonkit.CarbonKit;
@@ -133,10 +133,10 @@ public class CustomMessages {
 		FW_INVENTORY_FULL_SELF(F+"inventory-full", "&cYou're inventory is full! You need one empty slot for that"),
 		FW_INVENTORY_FULL_OTHER(F+"inventory-full-others", "&c{PLAYER}'s inventory is full! They need one empty slot for that"),
 		// GOLDENSMITE MODULE
-		GS_PREFIX(G+"prefix", "&6&l[GSmite] &r"),
+		GS_PREFIX(G+"prefix", "&6&l[CarbonSmite] &r"),
 		GS_TOGGLED_GROUP(G+"toggled-group", "&bYou've {STATUS} the {GROUP} group"),
-		GS_TOGGLED_ARROW(G+"toggled-arrow", "&bYou've {STATUS} GSmite arrows"),
-		GS_TOGGLED_SNOWBALL(G+"toggled-snowball", "&bYou've {STATUS} GSmite snowballs"),
+		GS_TOGGLED_ARROW(G+"toggled-arrow", "&bYou've {STATUS} smite arrows"),
+		GS_TOGGLED_SNOWBALL(G+"toggled-snowball", "&bYou've {STATUS} smite snowballs"),
 		// MISC MODULE
 		MISC_PREFIX(M+"prefix", "&6&l[CarbonKit] &r"),
 		MISC_SLAPPED(M+"slapped", "&6You've been slapped!"),
@@ -150,18 +150,19 @@ public class CustomMessages {
 		MISC_MODE_SET_OTHER(M+"gammoede-set-other", "You've set &b{USER}'s &agamemode to &b{MODE}"),
 		MISC_MODE_CHANGE(M+"gamemode-change", "&aYour gamemode has been set to &b{MODE}"),
 		// SKULLSHOP MODULE
-		SS_PREFIX(S+"prefix", "&6&l[CarbonSkulls] &r"),
-		SS_INVENTORY_FULL(S+"inventory-full", "&cYour inventory is full! Try again when you have at least one slot open"),
-		SS_SKULL_GIVEN(S+"skull-given", "&bYou've been given &a{SKULLOWNER}'s &bhead for ${PRICE}!"),
-		SS_UPDATED_GIVEN(S+"skull-updated", "&bYou've been given &a{SKULLOWNER}'s &bhead for ${PRICE}!"),
-		SS_SKULL_GIVEN_FREE(S+"skull-given-free", "&bYou've been given &a{SKULLOWNER}'s &bhead"),
-		SS_UPDATED_GIVEN_FREE(S+"skull-updated-free", "&bYou've been given &a{SKULLOWNER}'s &bhead"),
-		SS_SKULL_CHECK(S+"skull-check", "&bThis is &a{SKULLOWNER}'s &bhead."),
-		SS_GET_SKULL(S+"get-skull", "&bBookmarked &a{SKULLOWNER}'s &bhead. Type &6/gskull &bto buy it for &a${PRICE}&b!"),
-		SS_GET_SKULL_FREE(S+"get-skull-free", "&bBookmarked &a{SKULLOWNER}'s &bhead. Type &6/gskull &bto get it!"),
-		SS_NO_SKULL_SAVED(S+"no-skull-saved", "&cThere is no skull saved. Right click one to save it."),
-		SS_NOT_ENOUGH_MONEY(S+"not-enough-money", "&cYou can't afford to buy a player head! They cost {SKULLCOST}"),
-		SS_TRANSACTION_FAILED(S+"transaction-failed", "&cThere was an error withdrawing the money required for this head"),
+		CS_PREFIX(S+"prefix", "&6&l[CarbonSkulls] &r"),
+		CS_INVENTORY_FULL(S+"inventory-full", "&cYour inventory is full! Try again when you have at least one slot open"),
+		CS_SKULL_GIVEN(S+"skull-given", "&bYou've been given &a{SKULLOWNER}'s &bhead for ${PRICE}!"),
+		CS_UPDATED_GIVEN(S+"skull-updated", "&bSkull has been updated to &a{SKULLOWNER}'s &bhead for ${PRICE}!"),
+		CS_SKULL_GIVEN_FREE(S+"skull-given-free", "&bYou've been given &a{SKULLOWNER}'s &bhead"),
+		CS_UPDATED_GIVEN_FREE(S+"skull-updated-free", "&bSkull has been updated to &a{SKULLOWNER}'s &bhead"),
+		CS_SKULL_CHECK(S+"skull-check", "&bThis is &a{SKULLOWNER}'s &bhead."),
+		CS_GET_SKULL(S+"get-skull", "&bBookmarked &a{SKULLOWNER}'s &bhead. Type &6/gskull &bto buy it for &a${PRICE}&b!"),
+		CS_GET_SKULL_FREE(S+"get-skull-free", "&bBookmarked &a{SKULLOWNER}'s &bhead. Type &6/gskull &bto get it!"),
+		CS_NO_SKULL_SAVED(S+"no-skull-saved", "&cThere is no skull saved. Right click one to save it."),
+		CS_NOT_ENOUGH_MONEY(S+"not-enough-money", "&cYou can't afford to buy a player head! They cost {SKULLCOST}"),
+		CS_TRANSACTION_FAILED(S+"transaction-failed", "&cThere was an error withdrawing the money required for this head"),
+		CS_MUST_HOLD_SKULL(S+"must-hold-skull", "&cYou must be holding a player head to update it!"),
 		// CKWATCHER MESSAGES
 		CW_PREFIX(W+"prefix", "&6&l[CarbonWatcher] &r"),
 		CW_WATCH_ENABLED(W+"watch-enabled", "&bYou are now watching commands"),

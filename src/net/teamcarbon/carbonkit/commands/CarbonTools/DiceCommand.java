@@ -2,7 +2,6 @@ package net.teamcarbon.carbonkit.commands.CarbonTools;
 
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import net.teamcarbon.carbonlib.Misc.NumUtils;
 import net.teamcarbon.carbonlib.Misc.TypeUtils;
 import org.bukkit.command.Command;
@@ -38,5 +37,4 @@ public class DiceCommand extends ModuleCmd {
 		int roll = NumUtils.rand(min, max);
 		sender.sendMessage(Clr.fromChars("6l") + "[Dice] " + Clr.AQUA + "Between " + min + " and " + max + ", you rolled a " + roll);
 	}
-
 }

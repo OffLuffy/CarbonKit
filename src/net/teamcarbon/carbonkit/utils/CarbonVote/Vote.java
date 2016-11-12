@@ -28,8 +28,8 @@ public abstract class Vote {
 	public Vote(OfflinePlayer player, VoteType type) {
 		this.player = player;
 		this.type = type;
-		agrees = new ArrayList<OfflinePlayer>();
-		disagrees = new ArrayList<OfflinePlayer>();
+		agrees = new ArrayList<>();
+		disagrees = new ArrayList<>();
 		agrees.add(player);
 
 		typeName = getType().lname();

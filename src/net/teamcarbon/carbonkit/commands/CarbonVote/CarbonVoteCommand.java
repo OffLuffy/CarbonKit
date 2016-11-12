@@ -91,7 +91,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 					Vote v = CarbonVoteModule.getActiveVote();
 					if (v instanceof TargetedVote &&((TargetedVote)v).getTarget().equals(sender)) // TODO <--- Make sure this is viable - CommandSender.equals(OfflinePlayer)
 						return;
-					HashMap<String, String> rep = new HashMap<String, String>();
+					HashMap<String, String> rep = new HashMap<>();
 					String vt = v.getTypeName();
 					rep.put("{VOTETYPE}", vt);
 					if (sender.equals(v.getVoteStarter())) { // TODO <--- Make sure this is viable - CommandSender.equals(OfflinePlayer)
@@ -141,9 +141,9 @@ public class CarbonVoteCommand extends ModuleCmd {
 					CarbonKit.pm.callEvent(vce);
 					if (!vce.isCancelled()) {
 						CarbonVoteModule.getActiveVote().addVoter(pl, TypeUtils.toBoolean(args[0]));
-						sender.sendMessage(Clr.LIME + MiscUtils.capFirst(type) + " vote cast");
+						sender.sendMessage(Clr.LIME + MiscUtils.capFirst(type, true) + " vote cast");
 						if (getMod().getConfig().getBoolean("broadcast-votes", true)) {
-							HashMap<String, String> rep = new HashMap<String, String>();
+							HashMap<String, String> rep = new HashMap<>();
 							rep.put("{VOTER}", sender.getName());
 							rep.put("{VOTED}", TypeUtils.toBoolean(args[0]) ? "in favor of" : "against");
 							rep.put("{VOTETYPE}", v.getTypeName());
@@ -158,7 +158,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 				}
 			}
 			// Ready the replacement HashMap
-			HashMap<String, String> rep = new HashMap<String, String>();
+			HashMap<String, String> rep = new HashMap<>();
 			// Check to see if a vote is already active
 			if (CarbonVoteModule.isVoteOngoing()) {
 				rep.put("{VOTETYPE}", CarbonVoteModule.getActiveVote().getTypeName());

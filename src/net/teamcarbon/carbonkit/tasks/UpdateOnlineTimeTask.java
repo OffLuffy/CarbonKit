@@ -12,6 +12,8 @@ public class UpdateOnlineTimeTask implements Runnable {
 
 	@Override
 	public void run() {
-		if (instanceID.equals(CarbonToolsModule.instId)) { if (CarbonToolsModule.inst.isEnabled()) { CarbonToolsModule.inst.updateAllOnlineTimes(); } }
+		if (CarbonToolsModule.inst.isEnabled() && instanceID.equals(CarbonToolsModule.instId)) {
+			CarbonToolsModule.inst.updateAllOnlineTimes();
+		}
 	}
 }

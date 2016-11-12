@@ -16,11 +16,11 @@ import java.util.List;
 public class FinishModuleLoadingEvent extends Event {
 	List<Module> enabled, disabled;
 	public FinishModuleLoadingEvent(List<Module> modulesEnabled, List<Module> modulesDisabled) {
-		enabled = new ArrayList<Module>(modulesEnabled);
-		disabled = new ArrayList<Module>(modulesDisabled);
+		enabled = new ArrayList<>(modulesEnabled);
+		disabled = new ArrayList<>(modulesDisabled);
 	}
-	public List<Module> getEnabledModules() { return new ArrayList<Module>(enabled); }
-	public List<Module> getDisabledModules() { return new ArrayList<Module>(disabled); }
+	public List<Module> getEnabledModules() { return new ArrayList<>(enabled); }
+	public List<Module> getDisabledModules() { return new ArrayList<>(disabled); }
 
 	private static final HandlerList handlers = new HandlerList();
 	public HandlerList getHandlers() { return handlers; }

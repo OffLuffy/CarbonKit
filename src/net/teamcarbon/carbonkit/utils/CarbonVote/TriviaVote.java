@@ -22,7 +22,7 @@ public class TriviaVote extends Vote {
 	}
 	@Override
 	protected void voteFail() {
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{YESPERCENT}", String.format(Locale.ENGLISH, "%.2f", getAgreePercentage(true)));
 		rep.put("{NOPERCENT}", String.format(Locale.ENGLISH, "%.2f", (100-getAgreePercentage(true))));
 		rep.put("{VOTETYPE}", "Trivia");
@@ -30,7 +30,7 @@ public class TriviaVote extends Vote {
 	}
 	@Override
 	protected void broadcastStart() {
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{VOTETYPE}", "trivia");
 		rep.put("{VOTEREASON}", "to start trivia");
 		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_STARTED.pre(rep));

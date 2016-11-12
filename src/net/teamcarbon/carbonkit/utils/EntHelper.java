@@ -34,7 +34,7 @@ public class EntHelper {
 		public String lname() { return name().toLowerCase(); }
 	}
 	public static List<EntityType> getGroups(EntityGroup ... groups) {
-		List<EntityType> eGroups = new ArrayList<EntityType>();
+		List<EntityType> eGroups = new ArrayList<>();
 		for (EntityType t : EntityType.values()) {
 			if (t != null) {
 				for (EntityGroup g : groups) {
@@ -83,8 +83,8 @@ public class EntHelper {
 	private static boolean entEq(EntityType ent, EntityType ... types) { for (EntityType type : types) if (ent.equals(type)) return true; return false; }
 	public static List<LivingEntity> getTargets(Location l, long rad, List<EntityType> types) { return getTargets(l, rad, types.toArray(new EntityType[types.size()])); }
 	public static List<LivingEntity> getTargets(Location l, long rad, EntityType ... types) {
-		List<LivingEntity> entList = new ArrayList<LivingEntity>();
-		List<LivingEntity> le = new ArrayList<LivingEntity>();
+		List<LivingEntity> entList = new ArrayList<>();
+		List<LivingEntity> le = new ArrayList<>();
 		for (Entity e : l.getWorld().getEntities()) {
 			if (e instanceof LivingEntity) {
 				LivingEntity lEnt = (LivingEntity)e;

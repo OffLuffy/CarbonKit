@@ -1,0 +1,75 @@
+root-perm-required-for-category-access: false
+root-menu:
+  require-permission: true
+  lines:
+  - '&aWelcome to Team-Carbon! Choose a category to view more specific help:'
+  - '&b/help claims&3 - For claims and trusting'
+  - '&b/help voting&3 - Info about voting and rewards'
+  - '&b/help tc&3 - About our server'
+  extra-perm-lines:
+    carbonkit_help_donors:
+      lines:
+      - '&b/help donor&3 - Info about your donor rank perks'
+  no-perm-lines:
+  - '&bYou''re in the tutorial! It''s designed to teach you how to protect your items.
+    You''ll be able to access the rest of the help menu after you complete the tutorial
+    quiz!'
+  - '&bWant to know more about the server? Use &3/help tc'
+  - '&cIf you need assistance, notify staff with &6/helpop [msg]'
+  header: '&6&l====[ Team-Carbon Help Menu ]===='
+  footer: '&6&l==========================='
+categories:
+  claims:
+    require-permission: true
+    lines:
+    - '&bIf you don''t have any claims, placing a chest will create a small one.'
+    - '&3To create additional claims, use /createclaim or right click oppsote corners
+      of an area with a gold shovel.'
+    - '&bYou can only claim what you have enough claim blocks to claim (view with
+      /claimlist or hold a shovel)'
+    - '&3To resize a claim, use a gold shovel to right click a corner and right click
+      again to move that corner.'
+    - '&bSwitching from and to the gold shovel while creating/resizing claims will
+      cancel the resize/creation.'
+    no-perm-lines: []
+    header: '&6&l====[ Team-Carbon Claims Help ]===='
+    footer: '&6&l==========================='
+  voting:
+    require-permission: true
+    lines:
+    - '&bThere are three sites at which you can vote for Team-Carbon in order to help
+      us, and for doing so, be rewarded.'
+    - '&3For each vote you will get 1,000 coins (our in-game currency) and an Enjin
+      point which can be used on our store to purchase items that would otherwise
+      cost real money, such as donor ranks or spawner blocks.'
+    - '&bIf you vote on all sites for the day, you''ll also receive an additional
+      2,000 coins and Enjin point'
+    - '&3You can only receive Enjin points if you are registerd on our website and
+      have a verified character!'
+    - '&bTo view a list of links to the vote pages, use &6/vote&b or view the list
+      on the website @ &ahttp://team-carbon.org/'
+    - '&6Due to bugs with vote sites or Enjin, you may not always receive rewards
+      for every vote. Because this can happen frequently, staff are not obliged to
+      compensate you for this instances.'
+    no-perm-lines: []
+    header: '&6&l====[ Voting for Rewards ]===='
+    footer: '&6&l==========================='
+  tc:
+    require-permission: false
+    lines:
+    - '&bTeam-Carbon is an anti-grief, semi-vanilla, survival server hosted in New
+      York, US. Our community was founded in December 2011 by FordRacer2007, now owned
+      and maintained by OffLuffy.'
+    - '&3Our main plugins include GriefPrevention, Essentials, and some custom plugins
+      written by Luffy. We primarily focus on keeping our server friendly and pleasant
+      to play on.'
+    - '&bJoin our Enjin community at &bhttp://team-carbon.org/'
+    no-perm-lines: []
+    header: '&6&l====[ Team-Carbon Help Menu ]===='
+    footer: '&6&l==========================='
+  donor:
+    require-permission: true
+    lines: []
+    no-perm-lines: []
+    header: '&6&l====[ Donor Perks Info ]===='
+    footer: '&6&l==========================='

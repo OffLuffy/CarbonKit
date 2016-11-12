@@ -25,7 +25,7 @@ public class Question {
 		if (tconf.contains("questions") && tconf.getConfigurationSection("questions").getKeys(false).size() > 0) {
 			ConfigurationSection qSect = tconf.getConfigurationSection("questions");
 			if (questions != null && !questions.isEmpty()) questions.clear();
-			else if (questions == null) questions = new ArrayList<Question>();
+			else if (questions == null) questions = new ArrayList<>();
 			for(String s : qSect.getKeys(false)) {
 				if (qSect.isList(s) && qSect.getStringList(s).size() > 0) {
 					Question q = new Question(s, qSect.getStringList(s));
@@ -36,7 +36,7 @@ public class Question {
 	}
 	public String getQuestion() { return question; }
 	public List<String> getAnswers() { return answers; }
-	public static List<Question> getQuestions() { return new ArrayList<Question>(questions); }
+	public static List<Question> getQuestions() { return new ArrayList<>(questions); }
 	public static String getQuestion(int i) { return questions.get(i).getQuestion(); }
 	public static List<String> getAnswers(int i) { return questions.get(i).getAnswers(); }
 	public boolean checkAnswer(String ans) { return getAnswer(ans) != null; }

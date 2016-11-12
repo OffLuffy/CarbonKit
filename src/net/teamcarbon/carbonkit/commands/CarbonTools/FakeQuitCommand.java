@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import net.teamcarbon.carbonkit.modules.CarbonToolsModule;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 import java.util.HashMap;
 
@@ -24,7 +23,7 @@ public class FakeQuitCommand extends ModuleCmd {
 			return ;
 		}
 		String user, m, me, addr = NumUtils.rand(16, 255) + "." + NumUtils.rand(16,255) + "." + NumUtils.rand(16, 255) + "." + NumUtils.rand(16,255);
-		HashMap<String, String> rep = new HashMap<String, String>();
+		HashMap<String, String> rep = new HashMap<>();
 		if (args.length > 0) {
 			if (!mod.perm(sender, "fakequit.others")) {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
