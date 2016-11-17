@@ -1,31 +1,24 @@
 package net.teamcarbon.carbonkit;
 
-import net.milkbowl.vault.chat.Chat;
 import net.teamcarbon.carbonkit.events.coreEvents.FinishModuleLoadingEvent;
 import net.teamcarbon.carbonkit.modules.*;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.UserStore;
 import net.teamcarbon.carbonlib.*;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 import net.teamcarbon.carbonlib.Misc.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.*;
 
 @SuppressWarnings("UnusedDeclaration")
-public class CarbonKit extends JavaPlugin implements Listener {
+public class CarbonKit extends CarbonPlugin implements Listener {
 
 	public static String NMS_VER;
-	public static Log log;
 	public static boolean checkOffline;
 	private static List<Class<? extends Module>> modules;
 	private static HashMap<UUID, UserStore> cachedUserData;
@@ -49,33 +42,11 @@ public class CarbonKit extends JavaPlugin implements Listener {
 		public boolean isInitialized() { return init; }
 	}
 	public static CarbonKit inst;
-	public static PluginManager pm;
-	public static Permission perms;
-	public static Economy econ;
-	public static Chat chat;
 
 	/* ====================================
 	=====[         OVERRIDES         ]=====
 	===================================== */
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onEnable() {
-		NMS_VER = Bukkit.getServer().getClass().getPackage().getName();
-		NMS_VER = NMS_VER.substring(NMS_VER.lastIndexOf('.') + 1);
-		modules = new ArrayList<>();
-		cachedUserData = new HashMap<>();
-		Collections.addAll(modules, CarbonCoreModule.class, CarbonCraftingModule.class,
-				CarbonWatcherModule.class/*, CarbonEssentialsModule.class, CarbonPerksModule.class*/,
-				CarbonSmiteModule.class, CarbonToolsModule.class, CarbonSkullsModule.class, CarbonVoteModule.class,
-				CarbonTriviaModule.class, CarbonNewsModule.class, EssentialsAssistModule.class);
-		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-			public void run() {
-				enablePlugin();
-			}
-		}, 1L);
-	}
-	@Override
 	public void onDisable() {
 		saveAllConfigs();
 		CarbonCoreModule.inst.disableModule();
@@ -88,28 +59,21 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	/**
 	 * CarbonLib thinks Plugin is null in onEnable, delayed so Plugin isn't null
 	 **/
-	private void enablePlugin() {
-		try {
-			CarbonException.setGlobalPluginScope(this, "net.teamcarbon");
-			long time = System.currentTimeMillis();
-			CarbonLib.notifyHook(this);
-			inst = this;
-			pm = Bukkit.getPluginManager();
-			saveDefaultConfig();
-			log = new Log(this, "core.enable-debug-messages");
-			log.debug("Log initialized and files loaded after " + (System.currentTimeMillis() - time) + "ms");
-			if (!setupPermissions() || !setupEconomy() || !setupChat()) {
-				log.severe("Couldn't find Vault! Disabling CarbonKit.");
-				pm.disablePlugin(this);
-				return;
-			}
-			log.debug("Hooked to Vault after " + (System.currentTimeMillis() - time) + "ms");
-			loadPlugin(time);
-		} catch (Exception e) {
-			System.out.println("===[ An exception occurred while trying to enable CarbonKit ]===");
-			(new CarbonException(this, e)).printStackTrace();
-			log.severe("=====================================");
-		}
+	public void enablePlugin() {
+		NMS_VER = Bukkit.getServer().getClass().getPackage().getName();
+		NMS_VER = NMS_VER.substring(NMS_VER.lastIndexOf('.') + 1);
+		modules = new ArrayList<>();
+		cachedUserData = new HashMap<>();
+		Collections.addAll(modules,
+				CarbonCoreModule.class, CarbonCraftingModule.class,
+				CarbonWatcherModule.class/*, CarbonEssentialsModule.class, CarbonPerksModule.class*/,
+				CarbonSmiteModule.class, CarbonToolsModule.class, CarbonSkullsModule.class, CarbonVoteModule.class,
+				CarbonTriviaModule.class, CarbonNewsModule.class, EssentialsAssistModule.class
+		);
+		long time = System.currentTimeMillis();
+		saveDefaultConfig();
+		log.debug("Hooked to Vault after " + (System.currentTimeMillis() - time) + "ms");
+		loadPlugin(time);
 	}
 
 	/**
@@ -165,7 +129,7 @@ public class CarbonKit extends JavaPlugin implements Listener {
 			}
 		}
 		log.debug("Enabled for NMS version " + NMS_VER + " in " + (System.currentTimeMillis() - startTime) + "ms." + avgText);
-		pm.callEvent(new FinishModuleLoadingEvent(enabledModules, disabledModules));
+		pm().callEvent(new FinishModuleLoadingEvent(enabledModules, disabledModules));
 	}
 
 	// User Data
@@ -194,26 +158,5 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	public static void reloadAllConfigs() {
 		inst.reloadConfig();
 		for (ConfType ct : ConfType.values()) ct.reloadConfig();
-	}
-
-	// Vault Initialization
-	private boolean setupPermissions() {
-		RegisteredServiceProvider<Permission> pp = Bukkit.getServicesManager().getRegistration(Permission.class);
-		if (pp != null)
-			perms = pp.getProvider();
-		MiscUtils.setPerms(perms);
-		return perms != null;
-	}
-	private boolean setupEconomy() {
-		RegisteredServiceProvider<Economy> ep = getServer().getServicesManager().getRegistration(Economy.class);
-		if (ep != null)
-			econ = ep.getProvider();
-		return econ != null;
-	}
-	private boolean setupChat() {
-		RegisteredServiceProvider<Chat> ep = getServer().getServicesManager().getRegistration(Chat.class);
-		if (ep != null)
-			chat = ep.getProvider();
-		return chat != null;
 	}
 }

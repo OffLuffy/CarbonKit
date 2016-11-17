@@ -85,9 +85,9 @@ public class TriviaRound {
 
 	// Announces the start of a TriviaRound, includes a started by message if the passed in object is a Player or String
 	private void announce(Object o) {
-		if (!(o instanceof String) && !(o instanceof CommandSender) && !(o instanceof Player)) return;
+		if (!(o instanceof String) && !(o instanceof CommandSender)) return;
 		mbc(CustomMessage.CT_START.noPre());
-		if (o != null && (o instanceof Player || o instanceof String)) {
+		if (o instanceof Player || o instanceof String) {
 			HashMap<String, String> rep = new HashMap<>();
 			rep.put("{STARTER}", o instanceof Player?((Player)o).getName():(String)o);
 			mbc(CustomMessage.CT_PROVIDED_BY.noPre(rep));
@@ -141,7 +141,7 @@ public class TriviaRound {
 				if (Bukkit.getPlayer(id) != null) {
 					if (Bukkit.getPlayer(id).isOnline()) {
 						Player pl = Bukkit.getPlayer(id);
-						if (money > 0.0) CarbonKit.econ.depositPlayer(pl, money);
+						if (money > 0.0) CarbonKit.econ().depositPlayer(pl, money);
 						HashMap<Integer, ItemStack> excess = pl.getInventory().addItem(rewards);
 						if (!excess.isEmpty()) {
 							pl.sendMessage(CarbonTriviaModule.mpre + CustomMessage.CT_EXCESS_REWARDS.noPre());
@@ -270,7 +270,7 @@ public class TriviaRound {
 		if (started) {
 			started = false;
 			TriviaEndEvent tee = new TriviaEndEvent(this);
-			CarbonKit.pm.callEvent(tee);
+			CarbonKit.pm().callEvent(tee);
 			int top = 0;
 			List<UUID> winners = new ArrayList<>();
 			for (UUID id : points.keySet()) {
@@ -325,7 +325,7 @@ public class TriviaRound {
 		if (started) {
 			started = false;
 			TriviaCancelledEvent tce = new TriviaCancelledEvent(this);
-			CarbonKit.pm.callEvent(tce);
+			CarbonKit.pm().callEvent(tce);
 			mbc(CustomMessage.CT_NO_WINS.noPre());
 			flushData();
 			TriviaRound.clearActiveRound();

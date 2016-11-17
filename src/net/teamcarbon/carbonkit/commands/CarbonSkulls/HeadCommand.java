@@ -39,9 +39,9 @@ public class HeadCommand extends ModuleCmd {
 			OfflinePlayer opl = MiscUtils.getPlayer(args[0], CarbonKit.checkOffline);
 			if (opl != null) pName = opl.getName();
 			if (((Player)sender).getInventory().firstEmpty() > -1) {
-				if (CarbonKit.econ.has((OfflinePlayer)sender, price)) {
+				if (CarbonKit.econ().has((OfflinePlayer)sender, price)) {
 					if (price > 0.0) {
-						EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer) sender, price);
+						EconomyResponse er = CarbonKit.econ().withdrawPlayer((OfflinePlayer) sender, price);
 						if (!er.transactionSuccess()) {
 							sender.sendMessage(CustomMessage.CS_TRANSACTION_FAILED.pre());
 							return;

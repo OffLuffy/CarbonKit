@@ -36,8 +36,8 @@ public class DupeHeadCommand extends ModuleCmd {
 		if (CarbonSkullsModule.hasSavedSkull(pl)) {
 			if (pl.getInventory().firstEmpty() > -1) {
 				if (price > 0.0) {
-					if (CarbonKit.econ.has(pl, price)) {
-						EconomyResponse er = CarbonKit.econ.withdrawPlayer(pl, price);
+					if (CarbonKit.econ().has(pl, price)) {
+						EconomyResponse er = CarbonKit.econ().withdrawPlayer(pl, price);
 						if (!er.transactionSuccess()) {
 							sender.sendMessage(CustomMessage.CS_TRANSACTION_FAILED.pre());
 							return;

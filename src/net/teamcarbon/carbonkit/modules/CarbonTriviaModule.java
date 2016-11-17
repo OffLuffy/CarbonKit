@@ -67,10 +67,10 @@ public class CarbonTriviaModule extends Module {
 					final String ans = q.getAnswer(m);
 					if (tconf.getBoolean("quiz-options.anti-cheat", true) && ans.length() * 200 > t - q.display) {
 						TriviaAnswerEvent tae = new TriviaAnswerEvent(p, ans, true);
-						CarbonKit.pm.callEvent(tae);
+						CarbonKit.pm().callEvent(tae);
 						if (!tae.isCancelled()) {
 							TriviaUserBlacklistedEvent tube = new TriviaUserBlacklistedEvent(p);
-							CarbonKit.pm.callEvent(tube);
+							CarbonKit.pm().callEvent(tube);
 							if (!tube.isCancelled()) {
 								r.blacklistPlayer(p);
 								p.sendMessage(mpre + Clr.RED + "Auto-answer detected, you've been disqualified");
@@ -80,7 +80,7 @@ public class CarbonTriviaModule extends Module {
 						}
 					} else {
 						TriviaAnswerEvent tae = new TriviaAnswerEvent(p, ans, false);
-						CarbonKit.pm.callEvent(tae);
+						CarbonKit.pm().callEvent(tae);
 						if (!tae.isCancelled()) {
 							CarbonKit.log.debug(p.getName() + " answered the question with: " + ans);
 							r.setQuestionAnswered();

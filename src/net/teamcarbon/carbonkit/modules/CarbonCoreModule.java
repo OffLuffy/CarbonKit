@@ -69,7 +69,7 @@ public class CarbonCoreModule extends Module {
 			us.addPreviousNames(pl.getName());
 			us.setLastUsername(pl.getName());
 		}
-		CarbonKit.pm.callEvent(pl.hasPlayedBefore() ? new PlayerRejoinEvent(pl) : new PlayerFirstJoinEvent(pl));
+		CarbonKit.pm().callEvent(pl.hasPlayedBefore() ? new PlayerRejoinEvent(pl) : new PlayerFirstJoinEvent(pl));
 	}
 
 	@EventHandler

@@ -85,7 +85,7 @@ public abstract class Module implements Listener {
 	/**
 	 * Registers any listeners included in this Module
 	 */
-	protected void registerListeners() { if (needsListeners()) { CarbonKit.pm.registerEvents(this, CarbonKit.inst); } }
+	protected void registerListeners() { if (needsListeners()) { CarbonKit.pm().registerEvents(this, CarbonKit.inst); } }
 	/**
 	 * Adds a required plugin name to the required plugins list
 	 */

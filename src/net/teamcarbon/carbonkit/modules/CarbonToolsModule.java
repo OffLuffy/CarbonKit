@@ -138,14 +138,14 @@ public class CarbonToolsModule extends Module {
 	/*===[                     LISTENERS                       ]===*/
 	/*=============================================================*/
 
-	@EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void login(AsyncPlayerPreLoginEvent e) {
 		if (!isEnabled()) return;
 		if (e.getLoginResult() == Result.KICK_BANNED) e.setKickMessage(banHandler(e.getKickMessage()));
 		if (e.getLoginResult() == Result.ALLOWED) storeAddress(e.getUniqueId(), e.getAddress());
 	}
 
-	@EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void login(PlayerLoginEvent e) {
 		if (!isEnabled()) return;
 		if (e.getResult() == PlayerLoginEvent.Result.KICK_BANNED) e.setKickMessage(banHandler(e.getKickMessage()));
@@ -198,7 +198,7 @@ public class CarbonToolsModule extends Module {
 		// Animal Info
 		if (pendingAniInfo.contains(pl)) {
 			Entity ent = e.getRightClicked();
-			if (ent instanceof Damageable || ent instanceof Ageable || ent instanceof Tameable) {
+			if (ent instanceof Damageable || ent instanceof Tameable) {
 				showInfo(pl, ent);
 				pendingAniInfo.remove(pl);
 			} else {
@@ -297,7 +297,7 @@ public class CarbonToolsModule extends Module {
 		String msg = r ? Clr.trans(getConfig().getString(bms + "replace-msg", "").replace("\\n", "\n")) : kickMsg;
 		if (p) msg = Clr.trans(getConfig().getString(bms + "prefix", "").replace("\\n", "\n")) + msg;
 		if (s) msg += Clr.trans(getConfig().getString(bms + "suffix", "").replace("\\n", "\n"));
-		if (r || p || s) CarbonKit.log.debug("Setting kick message to: " + msg);
+		CarbonKit.log.debug("Setting kick message to: " + msg);
 		return msg;
 	}
 
@@ -324,7 +324,7 @@ public class CarbonToolsModule extends Module {
 		lstCal.setTime(lst);
 		curCal.setTime(cur);
 
-		boolean plOnline = pl != null && pl.isOnline();
+		boolean plOnline = pl.isOnline();
 		long curSession = 0L;
 		if (plOnline) curSession = System.currentTimeMillis() - us.getLong(inst.getName() + ".online-time.last-online", System.currentTimeMillis());
 		boolean newMonth = lastOnline != -1L && lstCal.get(Calendar.MONTH) != curCal.get(Calendar.MONTH);
@@ -384,10 +384,7 @@ public class CarbonToolsModule extends Module {
 
 	public static long getUnfreezeTime(OfflinePlayer p) {
 		if (!isFrozen(p, true)) return 0;
-		if (p.isOnline()){
-			//if (freezeList.contains(p.getUniqueId())) return -1;
-			//if (tempFreezeList.containsKey(p.getUniqueId())) return tempFreezeList.get(p.getUniqueId());
-		} else {
+		if (!p.isOnline()){
 			FileConfiguration data = CarbonKit.getConfig(ConfType.DATA);
 			String permPath = "CarbonTools.frozen-players", tempPath = "CarbonTools.temp-frozen-players." + p.getUniqueId().toString();
 			if (data.getStringList(permPath).contains(p.getUniqueId().toString())) return -1;
@@ -420,7 +417,7 @@ public class CarbonToolsModule extends Module {
 			Damageable de = (Damageable) ent;
 			pl.sendMessage(Clr.AQUA + "Health: " + de.getHealth() + " / " + de.getMaxHealth());
 		}
-		if (ent instanceof org.bukkit.entity. Horse) {
+		if (ent instanceof AbstractHorse) {
 			Horse horse = (Horse) ent;
 			pl.sendMessage(Clr.AQUA + "Horse Variant: " + prep(horse.getVariant().name()));
 			pl.sendMessage(Clr.AQUA + "Horse Style: " + prep(horse.getStyle().name()));
@@ -470,9 +467,6 @@ public class CarbonToolsModule extends Module {
 				if (perm(p, "freeze.immune")) unfreezePlayer(p);
 				else freezePlayer(p, getUnfreezeTime(p));
 			}
-		} else {
-			//if (tempFreezeList.containsKey(p.getUniqueId())) tempFreezeList.remove(p.getUniqueId());
-			//if (freezeList.contains(p.getUniqueId())) freezeList.remove(p.getUniqueId());
 		}
 		String a = join?"join":"quit";
 		Location l = p.getLocation();
@@ -491,10 +485,12 @@ public class CarbonToolsModule extends Module {
 		if (isFrozen(p, !join)) statuses += "[F]";
 		if (MiscUtils.checkPlugin("Essentials", true)) {
 			com.earth2me.essentials.Essentials ess = (com.earth2me.essentials.Essentials)MiscUtils.getPlugin("Essentials", true);
-			com.earth2me.essentials.User u = ess.getUserMap().getUser(p.getName());
-			if (u != null) {
-				if (u.isJailed()) statuses += "[J]";
-				if (u.isMuted()) statuses += "[M]";
+			if (ess != null) {
+				com.earth2me.essentials.User u = ess.getUserMap().getUser(p.getName());
+				if (u != null) {
+					if (u.isJailed()) statuses += "[J]";
+					if (u.isMuted()) statuses += "[M]";
+				}
 			}
 		}
 		if (statuses.length() > 0)

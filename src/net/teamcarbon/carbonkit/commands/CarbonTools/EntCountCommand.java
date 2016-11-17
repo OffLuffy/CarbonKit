@@ -63,8 +63,8 @@ public class EntCountCommand extends ModuleCmd {
 					p.sendMessage(Clr.RED + "Usage: /ecount [radius|world]");
 				}
 			} else {
-				if (CarbonKit.pm.isPluginEnabled("WorldEdit")) {
-					WorldEditPlugin we = (WorldEditPlugin) CarbonKit.pm.getPlugin("WorldEdit");
+				if (CarbonKit.pm().isPluginEnabled("WorldEdit")) {
+					WorldEditPlugin we = (WorldEditPlugin) CarbonKit.pm().getPlugin("WorldEdit");
 					Selection sel = we.getSelection(p);
 					if (sel != null) {
 						if (!modInst.perm(p, "entcount.selection")) {
@@ -128,16 +128,16 @@ public class EntCountCommand extends ModuleCmd {
 
 		if (CarbonKit.getDefConfig().getBoolean(mod.getName() + ".entity-group-count")) {
 			for (String s : gCounts.keySet()) {
-				if (s.equals("p"))
-					p.sendMessage(Clr.AQUA + "Passive: " + Clr.DARKAQUA + gCounts.get("p"));
-				else if (s.equals("n"))
-					p.sendMessage(Clr.AQUA + "Neutral: " +Clr.DARKAQUA + gCounts.get("n"));
-				else if (s.equals("h"))
-					p.sendMessage(Clr.AQUA + "Hostile: " +Clr.DARKAQUA + gCounts.get("h"));
-				else if (s.equals("pl"))
-					p.sendMessage(Clr.AQUA + "Players: " +Clr.DARKAQUA + gCounts.get("pl"));
-				else if (s.equals("o"))
-					p.sendMessage(Clr.AQUA + "Other: " +Clr.DARKAQUA + gCounts.get("o"));
+				String msg = Clr.AQUA + "";
+				switch (s) {
+					case "p": msg += "Passive"; break;
+					case "n": msg += "Neutral"; break;
+					case "h": msg += "Hostile"; break;
+					case "pl": msg += "Players"; break;
+					case "o": msg += "Other"; break;
+				}
+				msg += ": " + Clr.DARKAQUA + gCounts.get(s);
+				p.sendMessage(msg);
 			}
 		}
 

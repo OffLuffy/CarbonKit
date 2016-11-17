@@ -47,7 +47,7 @@ public abstract class Vote {
 			Vote v = CarbonVoteModule.getActiveVote();
 			if (v.getAgreePercentage(true) > maj) {
 				VotePassEvent vwe = new VotePassEvent(v);
-				CarbonKit.pm.callEvent(vwe);
+				CarbonKit.pm().callEvent(vwe);
 				if (!vwe.isCancelled()) {
 					v.votePass();
 					CarbonKit.log.debug("Vote passed, " + getAgreePercentage(true) + "% agreed ("
@@ -56,7 +56,7 @@ public abstract class Vote {
 				}
 			} else {
 				VoteFailEvent vfe = new VoteFailEvent(v);
-				CarbonKit.pm.callEvent(vfe);
+				CarbonKit.pm().callEvent(vfe);
 				v.voteFail();
 				CarbonKit.log.debug("Vote failed, " + getAgreePercentage(true) + "% agreed ("
 						+ getAgrees().size() + " y, " + getDisagrees().size() + " n, "
