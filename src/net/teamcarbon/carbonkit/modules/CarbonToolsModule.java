@@ -443,13 +443,14 @@ public class CarbonToolsModule extends Module {
 
 	// TODO Update per version change
 	private static double getSpeed(Horse horse) {
+		// TODO: Look into new horse classes
 		double speed = -1;
-		org.bukkit.craftbukkit.v1_10_R1.entity.CraftHorse cHorse = (org.bukkit.craftbukkit.v1_10_R1.entity.CraftHorse) horse;
-		net.minecraft.server.v1_10_R1.NBTTagCompound compound = new net.minecraft.server.v1_10_R1.NBTTagCompound();
+		org.bukkit.craftbukkit.v1_11_R1.entity.CraftHorse cHorse = (org.bukkit.craftbukkit.v1_11_R1.entity.CraftHorse) horse;
+		net.minecraft.server.v1_11_R1.NBTTagCompound compound = new net.minecraft.server.v1_11_R1.NBTTagCompound();
 		cHorse.getHandle().b(compound);
-		net.minecraft.server.v1_10_R1.NBTTagList list = (net.minecraft.server.v1_10_R1.NBTTagList) compound.get("Attributes");
+		net.minecraft.server.v1_11_R1.NBTTagList list = (net.minecraft.server.v1_11_R1.NBTTagList) compound.get("Attributes");
 		for(int i = 0; i < list.size() ; i++) {
-			net.minecraft.server.v1_10_R1.NBTTagCompound base = list.get(i);
+			net.minecraft.server.v1_11_R1.NBTTagCompound base = list.get(i);
 			if (base.getTypeId() == 10)
 				if (base.toString().contains("generic.movementSpeed"))
 					speed = base.getDouble("Base");
