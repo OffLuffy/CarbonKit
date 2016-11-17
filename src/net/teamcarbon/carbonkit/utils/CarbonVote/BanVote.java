@@ -19,8 +19,8 @@ public class BanVote extends TargetedVote {
 	protected void votePass() {
 		HashMap<String, String> rep = new HashMap<>();
 		long ts = 0L;
-		if (CarbonKit.getDefConfig().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) > 0L) {
-			long dura = CarbonKit.getDefConfig().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) * 1000L;
+		if (CarbonKit.inst().getConf().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) > 0L) {
+			long dura = CarbonKit.inst().getConf().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) * 1000L;
 			long current = System.currentTimeMillis();
 			ts = current+dura;
 			dura /= 1000L;

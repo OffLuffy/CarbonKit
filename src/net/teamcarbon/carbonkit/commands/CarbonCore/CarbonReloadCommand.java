@@ -32,7 +32,7 @@ public class CarbonReloadCommand extends ModuleCmd {
 				sender.sendMessage(CustomMessage.CORE_NOT_MODULE.pre());
 			}
 		} else {
-			CarbonKit.loadPlugin(System.currentTimeMillis());
+			CarbonKit.inst().loadPlugin(System.currentTimeMillis());
 			rep.put("{MODULE}", "all modules");
 			sender.sendMessage(CustomMessage.CORE_RELOADED.pre(rep));
 		}

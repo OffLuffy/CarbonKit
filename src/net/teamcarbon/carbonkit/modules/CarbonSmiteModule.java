@@ -50,7 +50,7 @@ public class CarbonSmiteModule extends Module {
 	}
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.reloadDefConfig();
+		CarbonKit.inst().reloadConf();
 		initModule();
 	}
 	protected boolean needsListeners() { return true; }

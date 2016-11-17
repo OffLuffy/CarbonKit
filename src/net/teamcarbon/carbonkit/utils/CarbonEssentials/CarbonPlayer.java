@@ -55,7 +55,7 @@ public class CarbonPlayer {
 
 		public CarbonPlayer(OfflinePlayer pl) {
 			player = pl;
-			config = new ConfigAccessor(CarbonKit.inst, "userData" + File.pathSeparator + pl.getUniqueId().toString() + ".yml", "user.yml");
+			config = new ConfigAccessor(CarbonKit.inst(), "userData" + File.pathSeparator + pl.getUniqueId().toString() + ".yml", "user.yml");
 
 			// Load CarbonCombat Data
 			pvp = config.config().getBoolean("CarbonCombat.pvp-enabled", false);

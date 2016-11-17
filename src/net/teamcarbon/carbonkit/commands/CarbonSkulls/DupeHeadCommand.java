@@ -31,7 +31,7 @@ public class DupeHeadCommand extends ModuleCmd {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
-		double price = CarbonKit.getDefConfig().getDouble("CarbonSkulls.price", 5000.0);
+		double price = CarbonKit.inst().getConf().getDouble("CarbonSkulls.price", 5000.0);
 		if (mod.perm(sender, "skull.free") || price < 0) price = 0;
 		if (CarbonSkullsModule.hasSavedSkull(pl)) {
 			if (pl.getInventory().firstEmpty() > -1) {

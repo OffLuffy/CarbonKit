@@ -22,6 +22,7 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 	public static boolean checkOffline;
 	private static List<Class<? extends Module>> modules;
 	private static HashMap<UUID, UserStore> cachedUserData;
+	private static CarbonKit inst;
 
 	public enum ConfType {
 		DATA("data.yml"), MESSAGES("messages.yml"), TRIVIA("trivia.yml"), HELP("help.yml"), NEWS("news.yml");
@@ -33,7 +34,6 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 		public void initConfType() {
 			File dest = new File(CarbonKit.inst.getDataFolder(), fn);
 			yc = new YamlConfig(CarbonKit.inst, dest, "yml/" + fn);
-			//ca = new ConfigAccessor(CarbonKit.inst, fn);
 			init = true;
 		}
 		public FileConfiguration getConfig() { return yc; }
@@ -41,7 +41,6 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 		public void reloadConfig() { yc.reload(); }
 		public boolean isInitialized() { return init; }
 	}
-	public static CarbonKit inst;
 
 	/* ====================================
 	=====[         OVERRIDES         ]=====
@@ -60,6 +59,7 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 	 * CarbonLib thinks Plugin is null in onEnable, delayed so Plugin isn't null
 	 **/
 	public void enablePlugin() {
+		inst = (CarbonKit) getPlugin();
 		NMS_VER = Bukkit.getServer().getClass().getPackage().getName();
 		NMS_VER = NMS_VER.substring(NMS_VER.lastIndexOf('.') + 1);
 		modules = new ArrayList<>();
@@ -80,14 +80,14 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 	 * Loads data (or reloads if it has already been loaded)
 	 * @param startTime The time the load process began (for logging purposes)
 	 */
-	public static void loadPlugin(long startTime) {
+	public void loadPlugin(long startTime) {
 		if (Module.getAllModules().size() > 0) { // Modules already loaded. Prep for reload
 			CarbonCoreModule.inst.disableModule();
 			Module.flushData();
 		}
-		CarbonKit.inst.reloadConfig();
+		reloadConf();
 		for (ConfType ct : ConfType.values()) if (ct.isInitialized()) { ct.reloadConfig(); } else { ct.initConfType(); }
-		checkOffline = getDefConfig().getBoolean("core.match-offline-players", true);
+		checkOffline = getConf().getBoolean("core.match-offline-players", true);
 		CustomMessage.loadMessages();
 		List<Long> times = new ArrayList<>();
 		List<Module> enabledModules = new ArrayList<>(), disabledModules = new ArrayList<>();
@@ -132,6 +132,9 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 		pm().callEvent(new FinishModuleLoadingEvent(enabledModules, disabledModules));
 	}
 
+	public static CarbonKit inst() { return inst; }
+	public static Log log() { return inst.log; }
+
 	// User Data
 	public static boolean isPlayerDataCached(UUID id) { return cachedUserData.containsKey(id); }
 	public static void cachePlayerData(UUID id) { if (!isPlayerDataCached(id)) cachedUserData.put(id, new UserStore(id)); }
@@ -145,15 +148,12 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 	public static void flushPlayerDataCache() { cachedUserData.clear(); }
 
 	// Config
-	public static FileConfiguration getDefConfig() { return CarbonKit.inst.getConfig(); }
 	public static FileConfiguration getConfig(ConfType ct) { return ct.getConfig(); }
 	public static void saveConfig(ConfType ct) { ct.saveConfig(); }
-	public static void saveDefConfig() { inst.saveConfig(); }
 	public static void saveAllConfigs() {
 		inst.saveConfig();
 		for (ConfType ct : ConfType.values()) ct.saveConfig();
 	}
-	public static void reloadDefConfig() { CarbonKit.inst.reloadConfig(); }
 	public static void reloadConfig(ConfType ct) { ct.reloadConfig(); }
 	public static void reloadAllConfigs() {
 		inst.reloadConfig();

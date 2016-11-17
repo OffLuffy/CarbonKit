@@ -55,7 +55,7 @@ public class TicketCommand extends ModuleCmd {
 				}
 				int tid = createTicket(s instanceof Player ? ((Player) s) : null, MiscUtils.stringFromSubArray(" ", 1, args));
 				s.sendMessage(Clr.GOLD + "[Tickets] " + Clr.AQUA + "created ticket #" + tid);
-				List<Player> avoid = isConsole ? new ArrayList<Player>() : MiscUtils.quickList((Player) s);
+				List<Player> avoid = isConsole ? new ArrayList<>() : MiscUtils.quickList((Player) s);
 				MiscUtils.permBroadcast(p + "notify.create", avoid, Clr.DARKAQUA + "[Tickets] " + Clr.NOTE +
 						(isConsole ? "Console" : s.getName()) + " created ticket #" + tid);
 			} else if (MiscUtils.eq(args[0], "append", "a")) {
@@ -221,7 +221,7 @@ public class TicketCommand extends ModuleCmd {
 				UUID ownerFilter = ((isConsole || mod.perm(s, p + "search.others")) ? null : ((Player) s).getUniqueId());
 				int page = 1;
 				if (TypeUtils.isInteger(args[1])) { // Specified page number
-					CarbonKit.log.debug("Page provided for search: " + Integer.parseInt(args[1]));
+					CarbonKit.inst().logDebug("Page provided for search: " + Integer.parseInt(args[1]));
 					if ((isConsole && (lastConsoleSearch == null || lastConsoleSearch.isEmpty()))
 							|| (!isConsole && !lastSearch.containsKey(((Player) s).getUniqueId()))) {
 						s.sendMessage(Clr.RED + "Search for something first! /" + l + " " + fa + " <query>");
@@ -231,7 +231,7 @@ public class TicketCommand extends ModuleCmd {
 					found = searchTickets(query, ownerFilter);
 					page = Integer.parseInt(args[1]);
 				} else {
-					CarbonKit.log.debug("New search created");
+					CarbonKit.inst().logDebug("New search created");
 					String query = MiscUtils.stringFromSubArray(" ", 2, args);
 					found = searchTickets(MiscUtils.stringFromSubArray(" ", 2, query), ownerFilter);
 					if (!isConsole) lastSearch.put(((Player) s).getUniqueId(), query);
@@ -402,7 +402,7 @@ public class TicketCommand extends ModuleCmd {
 			ConfigurationSection md = mod.getData().getConfigurationSection(path);
 			this.id = id;
 			this.msg = md.getString("message", "");
-			this.witnesses = md.contains("witnesses") ? md.getStringList("witnesses") : new ArrayList<String>();
+			this.witnesses = md.contains("witnesses") ? md.getStringList("witnesses") : new ArrayList<>();
 			this.time = md.getLong("time", 0);
 			this.consoleAuthor = md.getString("author", "CONSOLE").equalsIgnoreCase("CONSOLE");
 			if (!consoleAuthor) {

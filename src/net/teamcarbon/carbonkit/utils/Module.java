@@ -57,12 +57,12 @@ public abstract class Module implements Listener {
 		id = UUID.randomUUID();
 		setEnabled(this instanceof CarbonCoreModule || (isConfigEnabled() && hasAllDependencies()));
 		if (isConfigEnabled() && !hasAllDependencies()) {
-			CarbonKit.log.warn(getName() + " module could not be enabled, server does not meet some requirements. This module requires:");
-			CarbonKit.log.warn("Plugins: " + MiscUtils.stringFromArray(", ", getDependencies()));
-			CarbonKit.log.warn("Required Bukkit server version: " + reqVer);
+			CarbonKit.inst().logWarn(getName() + " module could not be enabled, server does not meet some requirements. This module requires:");
+			CarbonKit.inst().logWarn("Plugins: " + MiscUtils.stringFromArray(", ", getDependencies()));
+			CarbonKit.inst().logWarn("Required Bukkit server version: " + reqVer);
 		}
-		CarbonKit.getDefConfig().set("modules." + getName(), isEnabled());
-		CarbonKit.inst.saveConfig();
+		CarbonKit.inst().getConf().set("modules." + getName(), isEnabled());
+		CarbonKit.inst().saveConf();
 		modules.add(this);
 	}
 	/*=======================[ PRIVATE ]=======================*/
@@ -85,7 +85,7 @@ public abstract class Module implements Listener {
 	/**
 	 * Registers any listeners included in this Module
 	 */
-	protected void registerListeners() { if (needsListeners()) { CarbonKit.pm().registerEvents(this, CarbonKit.inst); } }
+	protected void registerListeners() { if (needsListeners()) { CarbonKit.pm().registerEvents(this, CarbonKit.inst()); } }
 	/**
 	 * Adds a required plugin name to the required plugins list
 	 */
@@ -142,7 +142,7 @@ public abstract class Module implements Listener {
 	/**
 	 * @return Returns true if the module is set enabled in config, false otherwise
 	 */
-	public boolean isConfigEnabled() { return CarbonKit.getDefConfig().getBoolean("modules." + getName(), false); }
+	public boolean isConfigEnabled() { return CarbonKit.inst().getConf().getBoolean("modules." + getName(), false); }
 	/**
 	 * Set the module instance enabled or disabled
 	 * @param enabled Whether the module is enabled or not
@@ -157,8 +157,8 @@ public abstract class Module implements Listener {
 			}
 		}
 		this.enabled = enabled;
-		CarbonKit.getDefConfig().set("modules." + name, enabled);
-		CarbonKit.saveDefConfig();
+		CarbonKit.inst().getConf().set("modules." + name, enabled);
+		CarbonKit.inst().saveConf();
 	}
 	/**
 	 * @return Returns the list of commands the module instance has registered
@@ -175,7 +175,7 @@ public abstract class Module implements Listener {
 	 * @return Returns a ConcifugrationSection contains this module's config
 	 */
 	public ConfigurationSection getConfig() {
-		ConfigurationSection confSect = CarbonKit.getDefConfig().getConfigurationSection(getName());
+		ConfigurationSection confSect = CarbonKit.inst().getConf().getConfigurationSection(getName());
 		if (confSect == null) confSect = new MemoryConfiguration();
 		return confSect;
 	}

@@ -13,7 +13,7 @@ public class VoteFailEvent extends Event {
 	private VoteType vtype;
 	private boolean cancelled;
 	public VoteFailEvent(Vote v) {
-		CarbonKit.log.debug(getEventName() + " called");
+		CarbonKit.inst().logDebug(getEventName() + " called");
 		vote = v;
 		vtype = v.getType();
 	}

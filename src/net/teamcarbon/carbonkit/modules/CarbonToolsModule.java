@@ -57,7 +57,7 @@ public class CarbonToolsModule extends Module {
 				addressMap.put(p.getUniqueId(), addr);
 			} else { addressMap.put(p.getUniqueId(), "X.X.X.X"); }
 		}
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst, new UpdateOnlineTimeTask(instId), 1L, 6000L);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst(), new UpdateOnlineTimeTask(instId), 1L, 6000L);
 		addCmd(new SlapCommand(this));
 		addCmd(new FakeJoinCommand(this));
 		addCmd(new FakeQuitCommand(this));
@@ -127,7 +127,7 @@ public class CarbonToolsModule extends Module {
 
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.reloadDefConfig();
+		CarbonKit.inst().reloadConf();
 		CarbonKit.reloadConfig(ConfType.DATA);
 		initModule();
 	}
@@ -293,11 +293,11 @@ public class CarbonToolsModule extends Module {
 				p = getConfig().getBoolean(bms + "enable-prefix", false),
 				s = getConfig().getBoolean(bms + "enable-suffix", false);
 		if (!(r || p || s)) return kickMsg;
-		CarbonKit.log.debug("Enabled ban messages: " + (r ? " Replace ": "") + (p ? " Prefix " : "") + (s ? " Suffix " : ""));
+		CarbonKit.inst().logDebug("Enabled ban messages: " + (r ? " Replace ": "") + (p ? " Prefix " : "") + (s ? " Suffix " : ""));
 		String msg = r ? Clr.trans(getConfig().getString(bms + "replace-msg", "").replace("\\n", "\n")) : kickMsg;
 		if (p) msg = Clr.trans(getConfig().getString(bms + "prefix", "").replace("\\n", "\n")) + msg;
 		if (s) msg += Clr.trans(getConfig().getString(bms + "suffix", "").replace("\\n", "\n"));
-		CarbonKit.log.debug("Setting kick message to: " + msg);
+		CarbonKit.inst().logDebug("Setting kick message to: " + msg);
 		return msg;
 	}
 
@@ -476,9 +476,11 @@ public class CarbonToolsModule extends Module {
 			p.sendMessage(Clr.DARKAQUA + "[Silent] " + Clr.AQUA + "You have joined silently.");
 			if (perm(p, "siletjoin.vanish") && MiscUtils.checkPlugin("Essentials", true)) {
 				com.earth2me.essentials.Essentials ep = (com.earth2me.essentials.Essentials) MiscUtils.getPlugin("Essentials", true);
-				com.earth2me.essentials.User user = ep.getUser(p);
-				user.setVanished(true);
-				p.sendMessage(Clr.DARKAQUA + "[Silent] " + Clr.AQUA + "You have been vanished");
+				if (ep != null) {
+					com.earth2me.essentials.User user = ep.getUser(p);
+					user.setVanished(true);
+					p.sendMessage(Clr.DARKAQUA + "[Silent] " + Clr.AQUA + "You have been vanished");
+				}
 			}
 		}
 		if (silent) statuses += "[S]";
@@ -493,8 +495,7 @@ public class CarbonToolsModule extends Module {
 				}
 			}
 		}
-		if (statuses.length() > 0)
-			statuses += " ";
+		if (statuses.length() > 0) statuses += " ";
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{STATUS}", statuses);
 		rep.put("{PLAYER}", p.getName());

@@ -31,7 +31,7 @@ public abstract class ModuleCmd implements CommandExecutor {
 		commands.add(this);
 		for (String n : names) {
 			if (Bukkit.getPluginCommand(n) == null) {
-				(new CarbonException(CarbonKit.inst, "Failed to fetch command during ModuleCmd init for command: " + n)).printStackTrace();
+				(new CarbonException(CarbonKit.inst(), "Failed to fetch command during ModuleCmd init for command: " + n)).printStackTrace();
 				return;
 			}
 			Bukkit.getPluginCommand(n).setExecutor(this);

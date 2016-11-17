@@ -14,14 +14,14 @@ public class UserStore extends YamlConfig {
 
 	private UUID uuid;
 
-	private static final File USER_DIR = new File(CarbonKit.inst.getDataFolder(), "userData");
+	private static final File USER_DIR = new File(CarbonKit.inst().getDataFolder(), "userData");
 
 	// CONSTRUCTORS
 
 	public UserStore(OfflinePlayer pl) { this(pl.getUniqueId()); }
 	public UserStore(UUID id) {
-		super(CarbonKit.inst, new File(USER_DIR, id + ".yml"), "yml/user.yml");
-		CarbonKit.log.debug("Loading user data for UUID: " + id);
+		super(CarbonKit.inst(), new File(USER_DIR, id + ".yml"), "yml/user.yml");
+		CarbonKit.inst().logDebug("Loading user data for UUID: " + id);
 		uuid = id;
 		createUserDir();
 
@@ -70,7 +70,7 @@ public class UserStore extends YamlConfig {
 
 	private static void createUserDir() {
 		if (!USER_DIR.exists() && !USER_DIR.mkdirs()) {
-			CarbonKit.log.severe("Failed to create userData directory");
+			CarbonKit.inst().logSevere("Failed to create userData directory");
 		}
 	}
 

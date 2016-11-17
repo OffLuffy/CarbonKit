@@ -422,7 +422,7 @@ public class CarbonNewsCommand extends ModuleCmd {
 				return;
 			}
 			BroadcastTask bt = new BroadcastTask(args[1]);
-			bt.runTaskTimer(CarbonKit.inst, 1200L, 1200L);
+			bt.runTaskTimer(CarbonKit.inst(), 1200L, 1200L);
 			boolean pl = BroadcastTask.taskListSize() != 1;
 			sender.sendMessage(Clr.GRAY + "Message set '" + args[1] + "' created. " + BroadcastTask.taskListSize() + " set" + (pl?"s":"") +  " now exist" + (pl?"":"s") + ".");
 		} else if (MiscUtils.eq(args[0], "removeset", "removeg", "deleteset", "deleteg", "delset", "delg", "rg", "dg")) { // '/cn removeg <set>'

@@ -29,7 +29,7 @@ public class FakeJoinCommand extends ModuleCmd {
 				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 				return;
 			}
-			Player pl = CarbonKit.inst.getServer().getPlayer(args[0]);
+			Player pl = CarbonKit.inst().getServer().getPlayer(args[0]);
 			if (pl != null) {
 				user = pl.getName();
 				if (CarbonToolsModule.addressMap.containsKey(pl.getUniqueId()))
@@ -53,7 +53,7 @@ public class FakeJoinCommand extends ModuleCmd {
 		me = CustomMessage.MISC_JOIN_EXT.noPre(rep);
 		Player p = (Player)sender;
 		String statuses = "";
-		for (Player opl : CarbonKit.inst.getServer().getOnlinePlayers())
+		for (Player opl : CarbonKit.inst().getServer().getOnlinePlayers())
 			if(modInst.perm(opl, "joinmsg.extended")) opl.sendMessage(me); else opl.sendMessage(m);
 	}
 }

@@ -14,7 +14,7 @@ public class TriviaEndEvent extends Event {
 	private boolean cancelled;
 	private TriviaRound round;
 	public TriviaEndEvent(TriviaRound round) {
-		CarbonKit.log.debug(getEventName() + " called");
+		CarbonKit.inst().logDebug(getEventName() + " called");
 		this.round = round;
 	}
 	public TriviaRound getTriviaRound() { return round; }

@@ -32,7 +32,7 @@ public class CarbonCoreModule extends Module {
 		addCmd(new CarbonReloadCommand(this));
 		addCmd(new CarbonToggleCommand(this));
 		if (!LagMeter.initialized())
-			Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst, new LagMeter(), 20L, 1L);
+			Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst(), new LagMeter(), 20L, 1L);
 		registerListeners();
 	}
 	public void disableModule() {
@@ -56,9 +56,9 @@ public class CarbonCoreModule extends Module {
 		String enabled = "enabled: ", disabled = "disabled: ";
 		enabled += MiscUtils.stringFromArray(", ", e.getEnabledModules());
 		disabled += MiscUtils.stringFromArray(", ", e.getDisabledModules());
-		CarbonKit.log.info("CarbonKit finished loading modules.");
-		CarbonKit.log.log(Clr.LIME + enabled);
-		CarbonKit.log.log(Clr.RED + disabled);
+		CarbonKit.inst().logInfo("CarbonKit finished loading modules.");
+		CarbonKit.inst().logMsg(Clr.LIME + enabled);
+		CarbonKit.inst().logMsg(Clr.RED + disabled);
 	}
 
 	@EventHandler
@@ -75,7 +75,7 @@ public class CarbonCoreModule extends Module {
 	@EventHandler
 	public void playerQuit(PlayerQuitEvent e) {
 		final UUID id = e.getPlayer().getUniqueId();
-		Bukkit.getScheduler().runTaskLater(CarbonKit.inst, new Runnable() {
+		Bukkit.getScheduler().runTaskLater(CarbonKit.inst(), new Runnable() {
 			public void run() {
 				CarbonKit.uncachePlayerData(id);
 			}

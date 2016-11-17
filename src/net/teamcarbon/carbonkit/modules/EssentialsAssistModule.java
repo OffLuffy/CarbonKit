@@ -33,7 +33,7 @@ public class EssentialsAssistModule extends Module {
 	}
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.reloadDefConfig();
+		CarbonKit.inst().reloadConf();
 		CarbonKit.reloadConfig(ConfType.DATA);
 		initModule();
 	}
@@ -108,8 +108,10 @@ public class EssentialsAssistModule extends Module {
 	public static boolean isEssVanished(Player pl) {
 		if (MiscUtils.checkPlugin("Essentials", true)) {
 			com.earth2me.essentials.Essentials ess = (com.earth2me.essentials.Essentials)MiscUtils.getPlugin("Essentials", true);
-			com.earth2me.essentials.User eUser = ess.getUser(pl);
-			return eUser.isVanished();
+			if (ess != null) {
+				com.earth2me.essentials.User eUser = ess.getUser(pl);
+				return eUser.isVanished();
+			}
 		}
 		return false;
 	}

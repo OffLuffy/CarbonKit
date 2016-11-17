@@ -14,7 +14,7 @@ public class VotePassEvent extends Event implements Cancellable {
 	private VoteType vtype;
 	private boolean cancelled;
 	public VotePassEvent(Vote v) {
-		CarbonKit.log.debug(getEventName() + " called");
+		CarbonKit.inst().logDebug(getEventName() + " called");
 		vote = v;
 		vtype = v.getType();
 	}

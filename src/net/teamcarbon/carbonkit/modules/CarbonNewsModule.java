@@ -69,7 +69,7 @@ public class CarbonNewsModule extends Module {
 		if (cs.getBoolean("enabled", false)) {
 			final boolean rp = cs.getBoolean("requirePermission", false);
 			final List<String> msgs = cs.getStringList("messageLines");
-			Bukkit.getScheduler().scheduleSyncDelayedTask(CarbonKit.inst, new Runnable() {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(CarbonKit.inst(), new Runnable() {
 				public void run() {
 					for (String msg : msgs) { CarbonNewsModule.sendFormatted(e.getPlayer(), msg, rp, "welcome"); }
 				}
@@ -90,7 +90,7 @@ public class CarbonNewsModule extends Module {
 		try {
 			cp = new PacketPlayOutChat(ChatSerializer.a(msg));
 		} catch (Exception e) {
-			(new CarbonException(CarbonKit.inst, "Failed to parse JSON: " + msg)).printStackTrace();
+			(new CarbonException(CarbonKit.inst(), "Failed to parse JSON: " + msg)).printStackTrace();
 		}
 		if (!needsPerm || inst.perm(cs, perms)) {
 			if (cp != null) {

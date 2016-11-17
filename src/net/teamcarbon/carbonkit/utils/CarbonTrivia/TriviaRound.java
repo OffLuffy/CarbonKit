@@ -77,8 +77,8 @@ public class TriviaRound {
 			if (!tse.isCancelled()) {
 				announce(name);
 				startTrivia();
-			} else { CarbonKit.log.debug("TriviaStartEvent cancelled"); }
-		} else { CarbonKit.log.warn("Trivia event cannot start, it is already running!"); }
+			} else { CarbonKit.inst().logDebug("TriviaStartEvent cancelled"); }
+		} else { CarbonKit.inst().logWarn("Trivia event cannot start, it is already running!"); }
 	}
 
 	// Private Methods
@@ -105,7 +105,7 @@ public class TriviaRound {
 
 	// Rewards the Player{s} provided if they're online.
 	private void rewardUsers(List<UUID> winners) {
-		CarbonKit.log.debug("Attempting to reward winner(s)");
+		CarbonKit.inst().logDebug("Attempting to reward winner(s)");
 		if (CarbonKit.getConfig(ConfType.TRIVIA).isList("rewards.items")
 				&& !CarbonKit.getConfig(ConfType.TRIVIA).getStringList("rewards.items").isEmpty()) {
 			ItemStack[] rewards = new ItemStack[CarbonKit.getConfig(ConfType.TRIVIA).getStringList("rewards.items").size()];
@@ -129,7 +129,7 @@ public class TriviaRound {
 					amount = Integer.parseInt(parts[1]);
 				}
 				if (mat == null) {
-					CarbonKit.log.warn("Invalid trivia reward specified, skipping reward: " + item);
+					CarbonKit.inst().logWarn("Invalid trivia reward specified, skipping reward: " + item);
 					continue;
 				}
 				ItemStack is = new ItemStack(mat, amount);
@@ -150,14 +150,14 @@ public class TriviaRound {
 						}
 						pl.sendMessage(CarbonTriviaModule.mpre + CustomMessage.CT_REWARDED.noPre());
 					} else {
-						CarbonKit.log.debug("A player being rewarded was not online: " + Bukkit.getPlayer(id).getName());
+						CarbonKit.inst().logDebug("A player being rewarded was not online: " + Bukkit.getPlayer(id).getName());
 					}
 				} else {
-					CarbonKit.log.debug("A UUID in the rewarded list could not be converted to a Player");
+					CarbonKit.inst().logDebug("A UUID in the rewarded list could not be converted to a Player");
 				}
 			}
 		} else {
-			CarbonKit.log.warn("Error found with the rewards portion of the config, cannot parse rewards for players!");
+			CarbonKit.inst().logWarn("Error found with the rewards portion of the config, cannot parse rewards for players!");
 		}
 
 	}
@@ -173,10 +173,10 @@ public class TriviaRound {
 			Question q = questions.get(cur);
 			q.display = System.currentTimeMillis();
 			qbc(q.getQuestion());
-			CarbonKit.log.debug("Displaying question " + (cur + 1) + " of " + qCount + " - \"" + q.getQuestion() + "\"");
+			CarbonKit.inst().logDebug("Displaying question " + (cur + 1) + " of " + qCount + " - \"" + q.getQuestion() + "\"");
 			curQuestion = q;
 			cur++;
-			Bukkit.getScheduler().scheduleSyncDelayedTask(CarbonKit.inst, new SkipQuestionTask(q), duration);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(CarbonKit.inst(), new SkipQuestionTask(q), duration);
 		}
 	}
 
@@ -310,7 +310,7 @@ public class TriviaRound {
 				mbc(CustomMessage.CT_MULTI_WINS.noPre(rep));
 				rewardUsers(winners);
 			} else {
-				CarbonKit.log.warn("Something strange happened with the winner list!");
+				CarbonKit.inst().logWarn("Something strange happened with the winner list!");
 				mbc(CustomMessage.CT_GENERIC_END.noPre());
 			}
 			flushData();
@@ -340,7 +340,7 @@ public class TriviaRound {
 			if (cur >= qCount)
 				stopTrivia();
 			else {
-				Bukkit.getScheduler().scheduleSyncDelayedTask(CarbonKit.inst,
+				Bukkit.getScheduler().scheduleSyncDelayedTask(CarbonKit.inst(),
 						new NextQuestionTask(), ((curQuestion == null) ? 20L : interval));
 			}
 		}
@@ -360,7 +360,7 @@ public class TriviaRound {
 		mbc(CustomMessage.CT_ANSWERED.noPre(rep));
 		UUID id = p.getUniqueId();
 		addPoints(p, 1);
-		CarbonKit.log.debug(p.getName() + " answered with '" + ans + "', now has " + getPoints(p) + " points");
+		CarbonKit.inst().logDebug(p.getName() + " answered with '" + ans + "', now has " + getPoints(p) + " points");
 		nextQuestion();
 	}
 
@@ -368,7 +368,7 @@ public class TriviaRound {
 	 * Broadcasts that the answer was not answered in time and skips to the next question.
 	 */
 	public void skipQuestion() {
-		CarbonKit.log.debug("No one answered this question, skipping it.");
+		CarbonKit.inst().logDebug("No one answered this question, skipping it.");
 		mbc(CustomMessage.CT_SKIPPED.noPre());
 		nextQuestion();
 	}

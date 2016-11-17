@@ -30,7 +30,7 @@ public class CarbonWatcherModule extends Module {
 	}
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.reloadDefConfig();
+		CarbonKit.inst().reloadConf();
 		CarbonKit.reloadConfig(ConfType.DATA);
 		initModule();
 	}

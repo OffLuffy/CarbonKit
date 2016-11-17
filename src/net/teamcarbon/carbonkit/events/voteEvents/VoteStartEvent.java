@@ -14,7 +14,7 @@ public class VoteStartEvent extends Event implements Cancellable {
 	private Player player;
 	private Vote vote;
 	public VoteStartEvent(Player player, Vote vote) {
-		CarbonKit.log.debug(getEventName() + " called");
+		CarbonKit.inst().logDebug(getEventName() + " called");
 		this.player = player;
 		this.vote = vote;
 	}

@@ -38,8 +38,8 @@ public class SlapCommand extends ModuleCmd {
 					for (int i = 2; i < args.length; i++)
 						msg += " " + args[i];
 				}
-				pl.damage(CarbonKit.getDefConfig().getDouble("CarbonTools.slap-damage", 0.0));
-				if (CarbonKit.getDefConfig().getBoolean("CarbonTools.knockback"))
+				pl.damage(CarbonKit.inst().getConf().getDouble("CarbonTools.slap-damage", 0.0));
+				if (CarbonKit.inst().getConf().getBoolean("CarbonTools.knockback"))
 					pl.setVelocity(pl.getVelocity().setY(pl.getVelocity().getY()+.5));
 				pl.sendMessage(Clr.GOLD + msg);
 				sender.sendMessage(Clr.GOLD + "Slapped " + pl.getName());

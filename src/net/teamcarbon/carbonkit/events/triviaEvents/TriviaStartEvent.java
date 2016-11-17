@@ -12,7 +12,7 @@ public class TriviaStartEvent extends Event implements Cancellable {
 	private boolean cancelled;
 	private TriviaRound round;
 	public TriviaStartEvent(TriviaRound round) {
-		CarbonKit.log.debug(getEventName() + " called");
+		CarbonKit.inst().logDebug(getEventName() + " called");
 		this.round = round;
 	}
 	public TriviaRound getTriviaRound() { return round; }

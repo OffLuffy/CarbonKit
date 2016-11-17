@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
 import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 import java.util.HashMap;
 
@@ -46,7 +45,7 @@ public class CarbonToggleCommand extends ModuleCmd {
 					} else {
 						sender.sendMessage(CustomMessage.CORE_MODULE_ALREADY_ENABLED.pre(rep));
 					}
-				} else if (!state) {
+				} else {
 					if (m.isEnabled()) {
 						sender.sendMessage(CustomMessage.CORE_MODULE_DISABLED.pre(rep));
 					} else {
@@ -54,7 +53,7 @@ public class CarbonToggleCommand extends ModuleCmd {
 					}
 				}
 				m.setEnabled(state);
-				CarbonKit.log.info(sender.getName() + " has " + (state ? "en" : "dis") + "abled the " + m.getName() + " module");
+				CarbonKit.inst().logInfo(sender.getName() + " has " + (state ? "en" : "dis") + "abled the " + m.getName() + " module");
 			} else {
 				sender.sendMessage(CustomMessage.CORE_NOT_MODULE.pre());
 			}

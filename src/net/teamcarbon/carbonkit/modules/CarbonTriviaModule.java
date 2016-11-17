@@ -42,7 +42,7 @@ public class CarbonTriviaModule extends Module {
 	}
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.reloadDefConfig();
+		CarbonKit.inst().reloadConf();
 		CarbonKit.reloadConfig(ConfType.DATA);
 		CarbonKit.reloadConfig(ConfType.TRIVIA);
 		initModule();
@@ -74,7 +74,7 @@ public class CarbonTriviaModule extends Module {
 							if (!tube.isCancelled()) {
 								r.blacklistPlayer(p);
 								p.sendMessage(mpre + Clr.RED + "Auto-answer detected, you've been disqualified");
-								CarbonKit.log.warn(p.getName() + " is answering too quickly, disqualifying them for this round");
+								CarbonKit.inst().logWarn(p.getName() + " is answering too quickly, disqualifying them for this round");
 								TriviaRound.mbc(CustomMessage.CT_CHEAT_DETECT.noPre().replace("{PLAYER}", p.getName()));
 							}
 						}
@@ -82,10 +82,10 @@ public class CarbonTriviaModule extends Module {
 						TriviaAnswerEvent tae = new TriviaAnswerEvent(p, ans, false);
 						CarbonKit.pm().callEvent(tae);
 						if (!tae.isCancelled()) {
-							CarbonKit.log.debug(p.getName() + " answered the question with: " + ans);
+							CarbonKit.inst().logDebug(p.getName() + " answered the question with: " + ans);
 							r.setQuestionAnswered();
 							// Delayed so it doesn't display before the player's message is sent
-							Bukkit.getScheduler().runTaskLater(CarbonKit.inst, new Runnable() {
+							Bukkit.getScheduler().runTaskLater(CarbonKit.inst(), new Runnable() {
 								@Override
 								public void run() { r.answerQuestion(p, ans); }
 							}, 2L);

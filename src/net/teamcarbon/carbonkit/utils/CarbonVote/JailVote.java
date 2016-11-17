@@ -15,23 +15,25 @@ public class JailVote extends TargetedVote {
 	public JailVote(OfflinePlayer player, OfflinePlayer target) { super(player, target, TargetedVoteType.JAIL); }
 	protected void votePass() {
 		com.earth2me.essentials.Essentials ess = (com.earth2me.essentials.Essentials) MiscUtils.getPlugin("Essentials", true);
-		com.earth2me.essentials.User eUser = ess.getUser(target.getUniqueId());
-		eUser.setJailed(true);
-		HashMap<String, String> rep = new HashMap<>();
-		if (CarbonKit.getDefConfig().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) > 0L) {
-			long dura = CarbonKit.getDefConfig().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) * 1000L;
-			long current = System.currentTimeMillis();
-			eUser.setJailTimeout(current+dura);
-			dura /= 1000L;
-			long m = dura/60,s = dura%60;
-			String time = (m>0?m+" min"+(m!=1?"s":""):"")+(s>0?s+" sec"+(s!=1?"s":""):"");
-			rep.put("{DURATION}", time);
-		} else {
-			rep.put("{DURATION}", "");
+		if (ess != null) {
+			com.earth2me.essentials.User eUser = ess.getUser(target.getUniqueId());
+			eUser.setJailed(true);
+			HashMap<String, String> rep = new HashMap<>();
+			if (CarbonKit.inst().getConf().getLong("CarbonVote." + getTargetedVoteType().lname() + "-time-seconds", 300) > 0L) {
+				long dura = CarbonKit.inst().getConf().getLong("CarbonVote." + getTargetedVoteType().lname() + "-time-seconds", 300) * 1000L;
+				long current = System.currentTimeMillis();
+				eUser.setJailTimeout(current + dura);
+				dura /= 1000L;
+				long m = dura / 60, s = dura % 60;
+				String time = (m > 0 ? m + " min" + (m != 1 ? "s" : "") : "") + (s > 0 ? s + " sec" + (s != 1 ? "s" : "") : "");
+				rep.put("{DURATION}", time);
+			} else {
+				rep.put("{DURATION}", "");
+			}
+			rep.put("{TARGET}", target.getName());
+			MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList((Player) target), CustomMessage.CV_JAIL_VOTE_PASSED.pre(rep));
+			if (target.isOnline()) ((Player) target).sendMessage(CustomMessage.CV_JAIL_MESSAGE.pre(rep));
 		}
-		rep.put("{TARGET}", target.getName());
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList((Player)target), CustomMessage.CV_JAIL_VOTE_PASSED.pre(rep));
-		if (target.isOnline()) ((Player)target).sendMessage(CustomMessage.CV_JAIL_MESSAGE.pre(rep));
 	}
 	protected void voteFail() {
 		HashMap<String, String> rep = new HashMap<>();

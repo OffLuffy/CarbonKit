@@ -12,7 +12,7 @@ public class TriviaUserBlacklistedEvent extends Event implements Cancellable{
 	private boolean cancelled;
 	private Player player;
 	public TriviaUserBlacklistedEvent(Player p) {
-		CarbonKit.log.debug(getEventName() + " called");
+		CarbonKit.inst().logDebug(getEventName() + " called");
 		player = p;
 	}
 	public Player getPlayer() { return player; }

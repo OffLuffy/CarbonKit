@@ -15,7 +15,7 @@ public class VoteCastEvent extends Event implements Cancellable {
 	private Vote vote;
 	private boolean agree;
 	public VoteCastEvent(Player player, Vote vote, boolean agree) {
-		CarbonKit.log.debug(getEventName() + " called");
+		CarbonKit.inst().logDebug(getEventName() + " called");
 		this.player = player;
 		this.vote = vote;
 		this.agree = agree;

@@ -41,7 +41,7 @@ public class CarbonVoteModule extends Module {
 	}
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.reloadDefConfig();
+		CarbonKit.inst().reloadConf();
 		CarbonKit.reloadConfig(ConfType.DATA);
 		initModule();
 	}
@@ -54,7 +54,7 @@ public class CarbonVoteModule extends Module {
 	@EventHandler
 	public void voteStart(VoteStartEvent e) {
 		if (!isEnabled()) return;
-		CarbonKit.log.debug(((e.isCancelled()) ? "[Cancelled] " : "") + "Vote started. Type: "
+		CarbonKit.inst().logDebug(((e.isCancelled()) ? "[Cancelled] " : "") + "Vote started. Type: "
 				+ e.getVote().getType().lname() + ", started by " + e.getStarter().getName());
 		if (e.isCancelled()) {
 			if (Bukkit.getOnlinePlayers().size() == 1) {
@@ -65,7 +65,7 @@ public class CarbonVoteModule extends Module {
 	@EventHandler
 	public void votePass(VotePassEvent e) {
 		if (!isEnabled()) return;
-		CarbonKit.log.debug(((e.isCancelled())?"[Cancelled] ":"") + "Vote passed. Type: "
+		CarbonKit.inst().logDebug(((e.isCancelled())?"[Cancelled] ":"") + "Vote passed. Type: "
 				+ e.getVote().getType().lname());
 		if (e.isCancelled()) {
 
@@ -74,12 +74,12 @@ public class CarbonVoteModule extends Module {
 	@EventHandler
 	public void voteFail(VoteFailEvent e) {
 		if (!isEnabled()) return;
-		CarbonKit.log.debug("Vote failed. Type: " + e.getVote().getType().lname());
+		CarbonKit.inst().logDebug("Vote failed. Type: " + e.getVote().getType().lname());
 	}
 	@EventHandler
 	public void voteCast(VoteCastEvent e) {
 		if (!isEnabled()) return;
-		CarbonKit.log.debug(((e.isCancelled())?"[Cancelled] ":"") + "Vote cast by " + e.getVoter().getName() +
+		CarbonKit.inst().logDebug(((e.isCancelled())?"[Cancelled] ":"") + "Vote cast by " + e.getVoter().getName() +
 				((e.agrees())?"in favor of":"against") + " the pending " + e.getVote().getType().lname() + " vote");
 		if (e.isCancelled()) {
 

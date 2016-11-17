@@ -55,6 +55,6 @@ public class HelpCommand extends ModuleCmd {
 			} else {
 				for (String s : sect.getStringList("no-perm-lines")) { if (s != null && !s.isEmpty()) { sender.sendMessage(Clr.trans(s)); } }
 			}
-		} catch (Exception e) { (new CarbonException(CarbonKit.inst, e)).printStackTrace(); }
+		} catch (Exception e) { (new CarbonException(CarbonKit.inst(), e)).printStackTrace(); }
 	}
 }

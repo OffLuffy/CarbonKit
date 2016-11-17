@@ -42,7 +42,7 @@ public class CarbonCraftingModule extends Module {
 	}
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.reloadDefConfig();
+		CarbonKit.inst().reloadConf();
 		CarbonKit.reloadConfig(ConfType.DATA);
 		initModule();
 	}
@@ -108,13 +108,13 @@ public class CarbonCraftingModule extends Module {
 		if (r instanceof ShapelessRecipe) { ing = new ArrayList<>(((ShapelessRecipe) r).getIngredientList()); }
 		else if (r instanceof ShapedRecipe) {
 			for (ItemStack ris : ((ShapedRecipe) r).getIngredientMap().values()) { ing.add(ris); }
-		} else { CarbonKit.log.warn("Uncraft recipe is not shaped or shapeless"); }
+		} else { CarbonKit.inst().logWarn("Uncraft recipe is not shaped or shapeless"); }
 		int emptySlots = 0;
 		for (int i = 0; i < pl.getInventory().getSize(); i++) {
 			ItemStack item = pl.getInventory().getItem(i);
 			if (item == null || item.getType() == Material.AIR) emptySlots++;
 		}
-		if (ing == null || ing.size() > emptySlots) return UncraftResult.FAIL_FULL_INV;
+		if (ing.size() > emptySlots) return UncraftResult.FAIL_FULL_INV;
 		pl.getInventory().setItem(pl.getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));
 		for (ItemStack item : ing) { if (item != null) pl.getInventory().addItem(new ItemStack(item.getType())); }
 		return UncraftResult.SUCCESS;
@@ -145,9 +145,9 @@ public class CarbonCraftingModule extends Module {
 						if (MiscUtils.getEnchant(e) != null)
 							enchants.put(MiscUtils.getEnchant(e), lvl);
 						else
-							CarbonKit.log.warn("Invalid enchant: " + e + " for item: " + is.getType().name() + ", skipping enchantment");
+							CarbonKit.inst().logWarn("Invalid enchant: " + e + " for item: " + is.getType().name() + ", skipping enchantment");
 					}
-					if (enchants != null && enchants.size() > 0)
+					if (enchants.size() > 0)
 						for (Enchantment ench : enchants.keySet())
 							im.addEnchant(ench, enchants.get(ench), true);
 				}
@@ -163,8 +163,9 @@ public class CarbonCraftingModule extends Module {
 		ConfigurationSection shapeless = inst.getConfig().getConfigurationSection("shapeless-recipes");
 		ConfigurationSection furnace = inst.getConfig().getConfigurationSection("furnace-recipes");
 		for (String r : shaped.getKeys(false)) {
-			if (MiscUtils.getMaterial(r) != null) {
-				ItemStack item = new ItemStack(MiscUtils.getMaterial(r));
+			Material isMat = MiscUtils.getMaterial(r);
+			if (isMat != null) {
+				ItemStack item = new ItemStack(isMat);
 				item = applyData("shaped-recipes." + r, item);
 				ShapedRecipe recipe = new ShapedRecipe(item);
 				char[] chars = new char[]{'A','B','C','D','E','F','G','H','I'};
@@ -191,28 +192,32 @@ public class CarbonCraftingModule extends Module {
 				Bukkit.addRecipe(recipe);
 				//addedRecipes.add(recipe);
 			} else {
-				CarbonKit.log.warn("Invalid item: " + r + ", unable to register shaped recipe");
+				CarbonKit.inst().logWarn("Invalid item: " + r + ", unable to register shaped recipe");
 			}
 		}
 		for (String r : furnace.getKeys(false)) {
-			if (MiscUtils.getMaterial(r) != null) {
+			Material isMat = MiscUtils.getMaterial(r);
+			if (isMat != null) {
 				if (furnace.contains(r + ".source") && MiscUtils.getMaterial(furnace.getString(r + ".source")) != null) {
-					ItemStack item = new ItemStack(MiscUtils.getMaterial(r));
+					ItemStack item = new ItemStack(isMat);
 					Material source = MiscUtils.getMaterial(furnace.getString(r + ".source"));
-					item = applyData("furnace-recipes." + r, item);
-					FurnaceRecipe recipe = new FurnaceRecipe(item, source);
-					Bukkit.addRecipe(recipe);
-					//addedRecipes.add(recipe);
+					if (source != null) {
+						item = applyData("furnace-recipes." + r, item);
+						FurnaceRecipe recipe = new FurnaceRecipe(item, source);
+						Bukkit.addRecipe(recipe);
+						//addedRecipes.add(recipe);
+					}
 				} else {
-					CarbonKit.log.warn("Invalid furnace source for item: " + r + ", unable to register furnace recipe");
+					CarbonKit.inst().logWarn("Invalid furnace source for item: " + r + ", unable to register furnace recipe");
 				}
 			} else {
-				CarbonKit.log.warn("Invalid item: " + r + ", unable to register furnace recipe");
+				CarbonKit.inst().logWarn("Invalid item: " + r + ", unable to register furnace recipe");
 			}
 		}
 		nextRecipe:for (String r : shapeless.getKeys(false)) {
-			if (MiscUtils.getMaterial(r) != null) {
-				ItemStack item = new ItemStack(MiscUtils.getMaterial(r));
+			Material isMat = MiscUtils.getMaterial(r);
+			if (isMat != null) {
+				ItemStack item = new ItemStack(isMat);
 				item = applyData("shapeless-recipes." + r, item);
 				ShapelessRecipe recipe = new ShapelessRecipe(item);
 				if (shapeless.contains(r + ".recipe") && !shapeless.getStringList(r + ".recipe").isEmpty()) {
@@ -225,7 +230,7 @@ public class CarbonCraftingModule extends Module {
 							if (MiscUtils.getMaterial(ing[0]) != null)
 								mat = MiscUtils.getMaterial(ing[0]);
 							else {
-								CarbonKit.log.warn("Invalid ingredient: " + ing[0] + " in item: " + r + ", unable to register shapeless recipe");
+								CarbonKit.inst().logWarn("Invalid ingredient: " + ing[0] + " in item: " + r + ", unable to register shapeless recipe");
 								continue nextRecipe;
 							}
 						} else if (ing.length == 2) {
@@ -234,61 +239,61 @@ public class CarbonCraftingModule extends Module {
 								if (MiscUtils.getMaterial(ing[1]) != null)
 									mat = MiscUtils.getMaterial(ing[1]);
 								else {
-									CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
+									CarbonKit.inst().logWarn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
 									continue nextRecipe;
 								}
 							} else if (MiscUtils.getMaterial(ing[0]) != null)
 								mat = MiscUtils.getMaterial(ing[0]);
 							else {
-								CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
+								CarbonKit.inst().logWarn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
 								continue nextRecipe;
 							}
 							if (mat != null && TypeUtils.isInteger(ing[1]))
 								data = Integer.parseInt(ing[1]);
 							if (mat == null) {
-								CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
+								CarbonKit.inst().logWarn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
 								continue nextRecipe;
 							}
 						} else if (ing.length == 3) {
 							if (TypeUtils.isInteger(ing[0])) {
 								amount = Integer.parseInt(ing[0]);
 							} else {
-								CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
+								CarbonKit.inst().logWarn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
 								continue nextRecipe;
 							}
 							if (MiscUtils.getMaterial(ing[1]) != null)
 								mat = MiscUtils.getMaterial(ing[1]);
 							else {
-								CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
+								CarbonKit.inst().logWarn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
 								continue nextRecipe;
 							}
 							if (TypeUtils.isInteger(ing[2]))
 								data = Integer.parseInt(ing[2]);
 							else {
-								CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
+								CarbonKit.inst().logWarn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
 								continue nextRecipe;
 							}
 						} else {
-							CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
+							CarbonKit.inst().logWarn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
 							continue nextRecipe;
 						}
 						if (amount > 9 || mats + amount > 9) {
-							CarbonKit.log.warn("Too many ingredients in item: " + r + " (can have up to 9), unable to register shapeless recipe");
+							CarbonKit.inst().logWarn("Too many ingredients in item: " + r + " (can have up to 9), unable to register shapeless recipe");
 							continue nextRecipe;
 						} else mats += amount;
 						if (mat == null) {
-							CarbonKit.log.warn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
+							CarbonKit.inst().logWarn("Invalid ingrdient: " + s + " in item: " + r + ", unable to register shapeless recipe");
 							continue nextRecipe;
 						}
 						recipe.addIngredient(amount, mat, data);
 					}
 				} else {
-					CarbonKit.log.warn("No ingredients for item: " + r + ", unable to register shapeless recipe");
+					CarbonKit.inst().logWarn("No ingredients for item: " + r + ", unable to register shapeless recipe");
 				}
 				Bukkit.addRecipe(recipe);
 				//addedRecipes.add(recipe);
 			} else {
-				CarbonKit.log.warn("Invalid item: " + r + ", unable to register shapeless recipe");
+				CarbonKit.inst().logWarn("Invalid item: " + r + ", unable to register shapeless recipe");
 			}
 		}
 	}

@@ -19,7 +19,7 @@ public class TriviaAnswerEvent extends Event implements Cancellable{
 	private String answer;
 	private boolean blacklisted;
 	public TriviaAnswerEvent(Player p, String a, boolean b) {
-		CarbonKit.log.debug(getEventName() + " called");
+		CarbonKit.inst().logDebug(getEventName() + " called");
 		player = p;
 		answer = a;
 		blacklisted = b;
