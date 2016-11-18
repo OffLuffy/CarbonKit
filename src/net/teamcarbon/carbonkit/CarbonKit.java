@@ -46,15 +46,6 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 	=====[         OVERRIDES         ]=====
 	===================================== */
 
-	public void onDisable() {
-		saveAllConfigs();
-		CarbonCoreModule.inst.disableModule();
-	}
-
-	/* ====================================
-	=====[          METHODS          ]=====
-	===================================== */
-
 	public String getDebugPath() { return "core.enable-debug-messages"; }
 
 	public void enablePlugin() {
@@ -74,6 +65,14 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 		log.debug("Hooked to Vault after " + (System.currentTimeMillis() - time) + "ms");
 		loadPlugin(time);
 	}
+	public void disablePlugin() {
+		saveAllConfigs();
+		CarbonCoreModule.inst.disableModule();
+	}
+
+	/* ====================================
+	=====[          METHODS          ]=====
+	===================================== */
 
 	/**
 	 * Loads data (or reloads if it has already been loaded)
