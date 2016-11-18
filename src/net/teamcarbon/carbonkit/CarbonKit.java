@@ -55,9 +55,8 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 	=====[          METHODS          ]=====
 	===================================== */
 
-	/**
-	 * CarbonLib thinks Plugin is null in onEnable, delayed so Plugin isn't null
-	 **/
+	public String getDebugPath() { return "core.enable-debug-messages"; }
+
 	public void enablePlugin() {
 		inst = (CarbonKit) getPlugin();
 		NMS_VER = Bukkit.getServer().getClass().getPackage().getName();
