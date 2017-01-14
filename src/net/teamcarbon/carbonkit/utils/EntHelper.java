@@ -48,9 +48,17 @@ public class EntHelper {
 		}
 		return eGroups;
 	}
-	public static boolean isHostile(EntityType type) { return (entEq(type, SPIDER, CAVE_SPIDER, SKELETON, GIANT, ZOMBIE, GHAST, ENDERMAN, SILVERFISH, BLAZE, MAGMA_CUBE, ENDER_DRAGON, WITHER, WITCH, CREEPER, SLIME, GUARDIAN, ENDERMITE)); }
-	public static boolean isNeutral(EntityType type) { return (entEq(type, WOLF, IRON_GOLEM, PIG_ZOMBIE)); }
-	public static boolean isPassive(EntityType type) { return (entEq(type, BAT, PIG, SHEEP, COW, CHICKEN, SQUID, MUSHROOM_COW, SNOWMAN, OCELOT, VILLAGER, HORSE, RABBIT)); }
+	public static boolean isHostile(EntityType type) { return (entEq(type, SPIDER, CAVE_SPIDER, SKELETON, GIANT, ZOMBIE,
+			GHAST, ENDERMAN, SILVERFISH, BLAZE, MAGMA_CUBE, ENDER_DRAGON, WITHER, WITCH, CREEPER, SLIME, GUARDIAN,
+			ENDERMITE, ZOMBIE_VILLAGER, VEX, VINDICATOR, EVOKER, EVOKER_FANGS, HUSK, ELDER_GUARDIAN, GUARDIAN, SHULKER,
+			SHULKER_BULLET, STRAY)); }
+
+	public static boolean isNeutral(EntityType type) { return (entEq(type, WOLF, IRON_GOLEM, PIG_ZOMBIE, LLAMA,
+			POLAR_BEAR)); }
+
+	public static boolean isPassive(EntityType type) { return (entEq(type, BAT, PIG, SHEEP, COW, CHICKEN, SQUID,
+			MUSHROOM_COW, SNOWMAN, OCELOT, VILLAGER, HORSE, RABBIT, DONKEY, MULE, SKELETON_HORSE, ZOMBIE_HORSE)); }
+
 	public static boolean isPlayer(EntityType type) { return type.equals(EntityType.PLAYER); }
 	public static boolean isDrop(EntityType type) { return type.equals(EntityType.DROPPED_ITEM ); }
 	public static boolean isHostile(LivingEntity ent) { return (isHostile(ent.getType())); }
