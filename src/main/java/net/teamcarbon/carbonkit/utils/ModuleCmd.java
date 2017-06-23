@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonlib.Misc.CarbonException;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
@@ -30,10 +28,7 @@ public abstract class ModuleCmd implements CommandExecutor {
 		this.mod = module;
 		commands.add(this);
 		for (String n : names) {
-			if (Bukkit.getPluginCommand(n) == null) {
-				(new CarbonException(CarbonKit.inst(), "Failed to fetch command during ModuleCmd init for command: " + n)).printStackTrace();
-				return;
-			}
+			if (Bukkit.getPluginCommand(n) == null) { return; }
 			Bukkit.getPluginCommand(n).setExecutor(this);
 		}
 	}

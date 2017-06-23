@@ -1,7 +1,6 @@
 package net.teamcarbon.carbonkit.utils;
 
 import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonlib.Misc.YamlConfig;
 import org.bukkit.OfflinePlayer;
 
 import java.io.File;
@@ -14,14 +13,14 @@ public class UserStore extends YamlConfig {
 
 	private UUID uuid;
 
-	private static final File USER_DIR = new File(CarbonKit.inst().getDataFolder(), "userData");
+	private static final File USER_DIR = new File(CarbonKit.inst.getDataFolder(), "userData");
 
 	// CONSTRUCTORS
 
 	public UserStore(OfflinePlayer pl) { this(pl.getUniqueId()); }
 	public UserStore(UUID id) {
-		super(CarbonKit.inst(), new File(USER_DIR, id + ".yml"), "yml/user.yml");
-		CarbonKit.inst().logDebug("Loading user data for UUID: " + id);
+		super(CarbonKit.inst, new File(USER_DIR, id + ".yml"), "yml/user.yml");
+		CarbonKit.log.debug("Loading user data for UUID: " + id);
 		uuid = id;
 		createUserDir();
 
@@ -70,7 +69,7 @@ public class UserStore extends YamlConfig {
 
 	private static void createUserDir() {
 		if (!USER_DIR.exists() && !USER_DIR.mkdirs()) {
-			CarbonKit.inst().logSevere("Failed to create userData directory");
+			CarbonKit.log.debug("Failed to create userData directory");
 		}
 	}
 

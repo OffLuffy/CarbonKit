@@ -4,7 +4,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
 import net.teamcarbon.carbonkit.utils.CarbonVote.*;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.Misc.TypeUtils;
+import net.teamcarbon.carbonkit.utils.TypeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -18,8 +18,8 @@ import net.teamcarbon.carbonkit.utils.ModuleCmd;
 import net.teamcarbon.carbonkit.utils.CarbonVote.TargetedVote.TargetedVoteType;
 import net.teamcarbon.carbonkit.utils.CarbonVote.Vote.VoteType;
 import net.teamcarbon.carbonkit.utils.CarbonVote.WeatherVote.WeatherType;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -138,7 +138,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 					}
 					String type = CarbonVoteModule.getActiveVote().getType().name();
 					VoteCastEvent vce = new VoteCastEvent(pl, v, TypeUtils.toBoolean(args[0]));
-					CarbonKit.pm().callEvent(vce);
+					CarbonKit.pm.callEvent(vce);
 					if (!vce.isCancelled()) {
 						CarbonVoteModule.getActiveVote().addVoter(pl, TypeUtils.toBoolean(args[0]));
 						sender.sendMessage(Clr.LIME + MiscUtils.capFirst(type, true) + " vote cast");
@@ -219,8 +219,8 @@ public class CarbonVoteCommand extends ModuleCmd {
 			// Check if player has enough money to start the vote (don't withdraw yet)
 			double votePrice = getMod().getConfig().getDouble("vote-prices." + rep.get("{VOTETYPE}"), 0.0);
 			if (votePrice > 0.0 && !mod.perm(sender, "bypassprice." + rep.get("{VOTETYPE}"))) {
-				if (!CarbonKit.econ().has((OfflinePlayer)sender, votePrice)) {
-					rep.put("{VOTECOST}", CarbonKit.econ().format(votePrice));
+				if (!CarbonKit.econ.has((OfflinePlayer)sender, votePrice)) {
+					rep.put("{VOTECOST}", CarbonKit.econ.format(votePrice));
 					sender.sendMessage(CustomMessage.CV_NOT_ENOUGH_MONEY.pre(rep));
 				}
 			}
@@ -244,7 +244,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 				if (args.length > 1) {
 					boolean start = true;
 					if (votePrice > 0.0 && !mod.perm(sender, "bypassprice." + rep.get("{VOTETYPE}"))) {
-						EconomyResponse er = CarbonKit.econ().withdrawPlayer((OfflinePlayer)sender, votePrice);
+						EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer)sender, votePrice);
 						start = er.transactionSuccess();
 						rep.put("{VOTEPRICE}", votePrice+"");
 						if (start) { sender.sendMessage(CustomMessage.CT_CHARGED.pre(rep)); }
@@ -253,7 +253,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 						WeatherType wt = WeatherVote.getWeatherType(args[1]);
 						WeatherVote wv = new WeatherVote((OfflinePlayer) sender, wt, ((Player) sender).getWorld());
 						VoteStartEvent vse = new VoteStartEvent((Player) sender, wv);
-						CarbonKit.pm().callEvent(vse);
+						CarbonKit.pm.callEvent(vse);
 						if (!vse.isCancelled()) CarbonVoteModule.startVote(wv);
 					} else {
 						sender.sendMessage(CustomMessage.CV_ECON_ERROR.pre());
@@ -266,7 +266,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 				if (args.length > 1) {
 					boolean start = true;
 					if (votePrice > 0.0 && !mod.perm(sender, "bypassprice." + rep.get("{VOTETYPE}"))) {
-						EconomyResponse er = CarbonKit.econ().withdrawPlayer((OfflinePlayer)sender, votePrice);
+						EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer)sender, votePrice);
 						start = er.transactionSuccess();
 						rep.put("{VOTEPRICE}", votePrice+"");
 						if (start) { sender.sendMessage(CustomMessage.CT_CHARGED.pre(rep)); }
@@ -275,7 +275,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 						long time = CarbonVoteModule.parseTime(args[1]);
 						TimeVote tv = new TimeVote((OfflinePlayer)sender, time, ((Player)sender).getWorld());
 						VoteStartEvent vse = new VoteStartEvent((Player)sender, tv);
-						CarbonKit.pm().callEvent(vse);
+						CarbonKit.pm.callEvent(vse);
 						if (!vse.isCancelled()) CarbonVoteModule.startVote(tv);
 					} else {
 						sender.sendMessage(CustomMessage.CV_ECON_ERROR.pre());
@@ -300,7 +300,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 						}
 						boolean start = true;
 						if (votePrice > 0.0 && !mod.perm(sender, "bypassprice." + rep.get("{VOTETYPE}"))) {
-							EconomyResponse er = CarbonKit.econ().withdrawPlayer((OfflinePlayer)sender, votePrice);
+							EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer)sender, votePrice);
 							start = er.transactionSuccess();
 							rep.put("{VOTEPRICE}", votePrice+"");
 							if (start) { sender.sendMessage(CustomMessage.CT_CHARGED.pre(rep)); }
@@ -327,7 +327,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 						}
 						boolean start = true;
 						if (votePrice > 0.0 && !mod.perm(sender, "bypassprice." + rep.get("{VOTETYPE}"))) {
-							EconomyResponse er = CarbonKit.econ().withdrawPlayer((OfflinePlayer)sender, votePrice);
+							EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer)sender, votePrice);
 							start = er.transactionSuccess();
 							rep.put("{VOTEPRICE}", votePrice+"");
 							if (start) { sender.sendMessage(CustomMessage.CT_CHARGED.pre(rep)); }
@@ -354,7 +354,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 						}
 						boolean start = true;
 						if (votePrice > 0.0 && !mod.perm(sender, "bypassprice." + rep.get("{VOTETYPE}"))) {
-							EconomyResponse er = CarbonKit.econ().withdrawPlayer((OfflinePlayer)sender, votePrice);
+							EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer)sender, votePrice);
 							start = er.transactionSuccess();
 							rep.put("{VOTEPRICE}", votePrice+"");
 							if (start) { sender.sendMessage(CustomMessage.CT_CHARGED.pre(rep)); }

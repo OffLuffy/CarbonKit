@@ -12,8 +12,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 
 import java.util.HashMap;
 
@@ -39,9 +39,9 @@ public class HeadCommand extends ModuleCmd {
 			OfflinePlayer opl = MiscUtils.getPlayer(args[0], CarbonKit.checkOffline);
 			if (opl != null) pName = opl.getName();
 			if (((Player)sender).getInventory().firstEmpty() > -1) {
-				if (CarbonKit.econ().has((OfflinePlayer)sender, price)) {
+				if (CarbonKit.econ.has((OfflinePlayer)sender, price)) {
 					if (price > 0.0) {
-						EconomyResponse er = CarbonKit.econ().withdrawPlayer((OfflinePlayer) sender, price);
+						EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer) sender, price);
 						if (!er.transactionSuccess()) {
 							sender.sendMessage(CustomMessage.CS_TRANSACTION_FAILED.pre());
 							return;

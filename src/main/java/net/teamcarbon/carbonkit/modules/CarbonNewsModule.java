@@ -9,7 +9,6 @@ import net.teamcarbon.carbonkit.commands.CarbonNews.CarbonNewsCommand;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.tasks.BroadcastTask;
-import net.teamcarbon.carbonlib.Misc.CarbonException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,8 +27,8 @@ public class CarbonNewsModule extends Module {
 	public static final String NAME = "CarbonNews";
 
 	public CarbonNewsModule() throws DuplicateModuleException {
-		super(NAME, "cnews", "news", "cn");
-		reqVer = "1_8_R3";
+		super(CarbonKit.inst, NAME, "cnews", "news", "cn");
+		reqVer = "1_11_R1";
 	}
 	public void initModule() {
 		inst = this;
@@ -69,7 +68,7 @@ public class CarbonNewsModule extends Module {
 		if (cs.getBoolean("enabled", false)) {
 			final boolean rp = cs.getBoolean("requirePermission", false);
 			final List<String> msgs = cs.getStringList("messageLines");
-			Bukkit.getScheduler().scheduleSyncDelayedTask(CarbonKit.inst(), new Runnable() {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(CarbonKit.inst, new Runnable() {
 				public void run() {
 					for (String msg : msgs) { CarbonNewsModule.sendFormatted(e.getPlayer(), msg, rp, "welcome"); }
 				}
@@ -90,7 +89,7 @@ public class CarbonNewsModule extends Module {
 		try {
 			cp = new PacketPlayOutChat(ChatSerializer.a(msg));
 		} catch (Exception e) {
-			(new CarbonException(CarbonKit.inst(), "Failed to parse JSON: " + msg)).printStackTrace();
+			e.printStackTrace();
 		}
 		if (!needsPerm || inst.perm(cs, perms)) {
 			if (cp != null) {

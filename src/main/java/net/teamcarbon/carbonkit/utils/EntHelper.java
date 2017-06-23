@@ -6,7 +6,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Tameable;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 
 import static org.bukkit.entity.EntityType.*;
 

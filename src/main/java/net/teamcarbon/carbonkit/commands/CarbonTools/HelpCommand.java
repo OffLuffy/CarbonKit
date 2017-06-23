@@ -4,9 +4,8 @@ import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Misc.CarbonException;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -55,6 +54,6 @@ public class HelpCommand extends ModuleCmd {
 			} else {
 				for (String s : sect.getStringList("no-perm-lines")) { if (s != null && !s.isEmpty()) { sender.sendMessage(Clr.trans(s)); } }
 			}
-		} catch (Exception e) { (new CarbonException(CarbonKit.inst(), e)).printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 }

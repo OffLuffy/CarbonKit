@@ -6,7 +6,7 @@ import net.teamcarbon.carbonkit.utils.*;
 import net.teamcarbon.carbonkit.utils.CarbonTrivia.Question;
 import net.teamcarbon.carbonkit.utils.CarbonTrivia.TriviaRound;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -19,7 +19,7 @@ import net.teamcarbon.carbonkit.commands.CarbonTrivia.CarbonTriviaCommand;
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonTriviaModule extends Module {
 	public static CarbonTriviaModule inst;
-	public CarbonTriviaModule() throws DuplicateModuleException { super("CarbonTrivia", "ctrivia", "trivia", "ctr"); }
+	public CarbonTriviaModule() throws DuplicateModuleException { super(CarbonKit.inst, "CarbonTrivia", "ctrivia", "trivia", "ctr"); }
 
 	public static String mpre;
 	public static String qpre;
@@ -42,7 +42,7 @@ public class CarbonTriviaModule extends Module {
 	}
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.inst().reloadConf();
+		CarbonKit.inst.reloadConfig();
 		CarbonKit.reloadConfig(ConfType.DATA);
 		CarbonKit.reloadConfig(ConfType.TRIVIA);
 		initModule();
@@ -67,25 +67,25 @@ public class CarbonTriviaModule extends Module {
 					final String ans = q.getAnswer(m);
 					if (tconf.getBoolean("quiz-options.anti-cheat", true) && ans.length() * 200 > t - q.display) {
 						TriviaAnswerEvent tae = new TriviaAnswerEvent(p, ans, true);
-						CarbonKit.pm().callEvent(tae);
+						CarbonKit.pm.callEvent(tae);
 						if (!tae.isCancelled()) {
 							TriviaUserBlacklistedEvent tube = new TriviaUserBlacklistedEvent(p);
-							CarbonKit.pm().callEvent(tube);
+							CarbonKit.pm.callEvent(tube);
 							if (!tube.isCancelled()) {
 								r.blacklistPlayer(p);
 								p.sendMessage(mpre + Clr.RED + "Auto-answer detected, you've been disqualified");
-								CarbonKit.inst().logWarn(p.getName() + " is answering too quickly, disqualifying them for this round");
+								CarbonKit.log.warn(p.getName() + " is answering too quickly, disqualifying them for this round");
 								TriviaRound.mbc(CustomMessage.CT_CHEAT_DETECT.noPre().replace("{PLAYER}", p.getName()));
 							}
 						}
 					} else {
 						TriviaAnswerEvent tae = new TriviaAnswerEvent(p, ans, false);
-						CarbonKit.pm().callEvent(tae);
+						CarbonKit.pm.callEvent(tae);
 						if (!tae.isCancelled()) {
-							CarbonKit.inst().logDebug(p.getName() + " answered the question with: " + ans);
+							CarbonKit.log.debug(p.getName() + " answered the question with: " + ans);
 							r.setQuestionAnswered();
 							// Delayed so it doesn't display before the player's message is sent
-							Bukkit.getScheduler().runTaskLater(CarbonKit.inst(), new Runnable() {
+							Bukkit.getScheduler().runTaskLater(CarbonKit.inst, new Runnable() {
 								@Override
 								public void run() { r.answerQuestion(p, ans); }
 							}, 2L);

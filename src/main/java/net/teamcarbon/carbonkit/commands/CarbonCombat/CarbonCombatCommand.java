@@ -3,7 +3,7 @@ package net.teamcarbon.carbonkit.commands.CarbonCombat;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

@@ -10,9 +10,8 @@ import net.teamcarbon.carbonkit.events.coreEvents.PlayerRejoinEvent;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.UserStore;
-import net.teamcarbon.carbonlib.Misc.LagMeter;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.LagMeter;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,10 +20,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
+import static net.teamcarbon.carbonkit.utils.Messages.Clr.*;
+
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonCoreModule extends Module {
 
-	public CarbonCoreModule() throws DuplicateModuleException { super("CarbonKit", "ckit", "core", "ck"); }
+	public CarbonCoreModule() throws DuplicateModuleException { super(CarbonKit.inst, "CarbonKit", "ckit", "core", "ck"); }
 	public static CarbonCoreModule inst;
 	public void initModule() {
 		inst = this;
@@ -32,7 +33,7 @@ public class CarbonCoreModule extends Module {
 		addCmd(new CarbonReloadCommand(this));
 		addCmd(new CarbonToggleCommand(this));
 		if (!LagMeter.initialized())
-			Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst(), new LagMeter(), 20L, 1L);
+			Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst, new LagMeter(), 20L, 1L);
 		registerListeners();
 	}
 	public void disableModule() {
@@ -56,9 +57,9 @@ public class CarbonCoreModule extends Module {
 		String enabled = "enabled: ", disabled = "disabled: ";
 		enabled += MiscUtils.stringFromArray(", ", e.getEnabledModules());
 		disabled += MiscUtils.stringFromArray(", ", e.getDisabledModules());
-		CarbonKit.inst().logInfo("CarbonKit finished loading modules.");
-		CarbonKit.inst().logMsg(Clr.LIME + enabled);
-		CarbonKit.inst().logMsg(Clr.RED + disabled);
+		CarbonKit.log.info("CarbonKit finished loading modules.");
+		CarbonKit.log.log(LIME + enabled);
+		CarbonKit.log.log(RED + disabled);
 	}
 
 	@EventHandler
@@ -69,13 +70,13 @@ public class CarbonCoreModule extends Module {
 			us.addPreviousNames(pl.getName());
 			us.setLastUsername(pl.getName());
 		}
-		CarbonKit.pm().callEvent(pl.hasPlayedBefore() ? new PlayerRejoinEvent(pl) : new PlayerFirstJoinEvent(pl));
+		CarbonKit.pm.callEvent(pl.hasPlayedBefore() ? new PlayerRejoinEvent(pl) : new PlayerFirstJoinEvent(pl));
 	}
 
 	@EventHandler
 	public void playerQuit(PlayerQuitEvent e) {
 		final UUID id = e.getPlayer().getUniqueId();
-		Bukkit.getScheduler().runTaskLater(CarbonKit.inst(), new Runnable() {
+		Bukkit.getScheduler().runTaskLater(CarbonKit.inst, new Runnable() {
 			public void run() {
 				CarbonKit.uncachePlayerData(id);
 			}

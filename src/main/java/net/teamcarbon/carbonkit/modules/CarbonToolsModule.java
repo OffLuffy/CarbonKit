@@ -8,10 +8,10 @@ import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.UserStore;
-import net.teamcarbon.carbonlib.Misc.LocUtils;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
-import net.teamcarbon.carbonlib.Misc.MiscUtils.TrustLevel;
+import net.teamcarbon.carbonkit.utils.LocUtils;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
+import net.teamcarbon.carbonkit.utils.MiscUtils.TrustLevel;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
@@ -41,7 +41,7 @@ public class CarbonToolsModule extends Module {
 	public static HashMap<UUID, String> addressMap = new HashMap<>();
 
 	public CarbonToolsModule() throws DuplicateModuleException {
-		super("CarbonTools", "misc", "miscmodule", "msc", "ctools", "ctool", "tools", "tool", "ctl");
+		super(CarbonKit.inst, "CarbonTools", "misc", "miscmodule", "msc", "ctools", "ctool", "tools", "tool", "ctl");
 	}
 
 	public void initModule() {
@@ -57,7 +57,7 @@ public class CarbonToolsModule extends Module {
 				addressMap.put(p.getUniqueId(), addr);
 			} else { addressMap.put(p.getUniqueId(), "X.X.X.X"); }
 		}
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst(), new UpdateOnlineTimeTask(instId), 1L, 6000L);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(CarbonKit.inst, new UpdateOnlineTimeTask(instId), 1L, 6000L);
 		addCmd(new SlapCommand(this));
 		addCmd(new FakeJoinCommand(this));
 		addCmd(new FakeQuitCommand(this));
@@ -127,7 +127,7 @@ public class CarbonToolsModule extends Module {
 
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.inst().reloadConf();
+		CarbonKit.inst.reloadConfig();
 		CarbonKit.reloadConfig(ConfType.DATA);
 		initModule();
 	}
@@ -293,11 +293,11 @@ public class CarbonToolsModule extends Module {
 				p = getConfig().getBoolean(bms + "enable-prefix", false),
 				s = getConfig().getBoolean(bms + "enable-suffix", false);
 		if (!(r || p || s)) return kickMsg;
-		CarbonKit.inst().logDebug("Enabled ban messages: " + (r ? " Replace ": "") + (p ? " Prefix " : "") + (s ? " Suffix " : ""));
+		CarbonKit.log.debug("Enabled ban messages: " + (r ? " Replace ": "") + (p ? " Prefix " : "") + (s ? " Suffix " : ""));
 		String msg = r ? Clr.trans(getConfig().getString(bms + "replace-msg", "").replace("\\n", "\n")) : kickMsg;
 		if (p) msg = Clr.trans(getConfig().getString(bms + "prefix", "").replace("\\n", "\n")) + msg;
 		if (s) msg += Clr.trans(getConfig().getString(bms + "suffix", "").replace("\\n", "\n"));
-		CarbonKit.inst().logDebug("Setting kick message to: " + msg);
+		CarbonKit.log.debug("Setting kick message to: " + msg);
 		return msg;
 	}
 

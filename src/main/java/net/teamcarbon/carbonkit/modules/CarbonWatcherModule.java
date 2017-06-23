@@ -2,7 +2,7 @@ package net.teamcarbon.carbonkit.modules;
 
 import net.teamcarbon.carbonkit.commands.CarbonWatcher.WatcherCommand;
 import net.teamcarbon.carbonkit.utils.UserStore;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -14,12 +14,12 @@ import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonWatcherModule extends Module {
 	public static CarbonWatcherModule inst;
-	public CarbonWatcherModule() throws DuplicateModuleException { super("CarbonWatcher", "commandwatcher", "cwatcher", "ckw", "cw"); }
+	public CarbonWatcherModule() throws DuplicateModuleException { super(CarbonKit.inst, "CarbonWatcher", "commandwatcher", "cwatcher", "ckw", "cw"); }
 	public void initModule() {
 		inst = this;
 		addCmd(new WatcherCommand(this));
@@ -30,7 +30,7 @@ public class CarbonWatcherModule extends Module {
 	}
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.inst().reloadConf();
+		CarbonKit.inst.reloadConfig();
 		CarbonKit.reloadConfig(ConfType.DATA);
 		initModule();
 	}

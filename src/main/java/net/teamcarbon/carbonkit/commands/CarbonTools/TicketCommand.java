@@ -3,11 +3,11 @@ package net.teamcarbon.carbonkit.commands.CarbonTools;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.FormatUtils.FormattedMessage;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
-import net.teamcarbon.carbonlib.Misc.NumUtils;
-import net.teamcarbon.carbonlib.Misc.TypeUtils;
+import net.teamcarbon.carbonkit.utils.FormattedMessage;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
+import net.teamcarbon.carbonkit.utils.NumUtils;
+import net.teamcarbon.carbonkit.utils.TypeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -221,7 +221,7 @@ public class TicketCommand extends ModuleCmd {
 				UUID ownerFilter = ((isConsole || mod.perm(s, p + "search.others")) ? null : ((Player) s).getUniqueId());
 				int page = 1;
 				if (TypeUtils.isInteger(args[1])) { // Specified page number
-					CarbonKit.inst().logDebug("Page provided for search: " + Integer.parseInt(args[1]));
+					CarbonKit.log.debug("Page provided for search: " + Integer.parseInt(args[1]));
 					if ((isConsole && (lastConsoleSearch == null || lastConsoleSearch.isEmpty()))
 							|| (!isConsole && !lastSearch.containsKey(((Player) s).getUniqueId()))) {
 						s.sendMessage(Clr.RED + "Search for something first! /" + l + " " + fa + " <query>");
@@ -231,7 +231,7 @@ public class TicketCommand extends ModuleCmd {
 					found = searchTickets(query, ownerFilter);
 					page = Integer.parseInt(args[1]);
 				} else {
-					CarbonKit.inst().logDebug("New search created");
+					CarbonKit.log.debug("New search created");
 					String query = MiscUtils.stringFromSubArray(" ", 2, args);
 					found = searchTickets(MiscUtils.stringFromSubArray(" ", 2, query), ownerFilter);
 					if (!isConsole) lastSearch.put(((Player) s).getUniqueId(), query);

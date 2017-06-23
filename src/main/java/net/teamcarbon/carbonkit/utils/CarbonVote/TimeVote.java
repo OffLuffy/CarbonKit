@@ -4,7 +4,7 @@ import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 
 import java.util.HashMap;
 import java.util.Locale;

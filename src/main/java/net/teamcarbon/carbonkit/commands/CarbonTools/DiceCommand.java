@@ -1,9 +1,9 @@
 package net.teamcarbon.carbonkit.commands.CarbonTools;
 
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.NumUtils;
-import net.teamcarbon.carbonlib.Misc.TypeUtils;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.NumUtils;
+import net.teamcarbon.carbonkit.utils.TypeUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import net.teamcarbon.carbonkit.utils.Module;

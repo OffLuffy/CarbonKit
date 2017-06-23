@@ -2,7 +2,7 @@ package net.teamcarbon.carbonkit.utils.CarbonVote;
 
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -19,8 +19,8 @@ public class BanVote extends TargetedVote {
 	protected void votePass() {
 		HashMap<String, String> rep = new HashMap<>();
 		long ts = 0L;
-		if (CarbonKit.inst().getConf().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) > 0L) {
-			long dura = CarbonKit.inst().getConf().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) * 1000L;
+		if (CarbonKit.inst.getConfig().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) > 0L) {
+			long dura = CarbonKit.inst.getConfig().getLong("CarbonVote."+getTargetedVoteType().lname()+"-time-seconds", 300) * 1000L;
 			long current = System.currentTimeMillis();
 			ts = current+dura;
 			dura /= 1000L;

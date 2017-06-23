@@ -2,8 +2,7 @@ package net.teamcarbon.carbonkit.commands.CarbonTools;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.Misc.TypeUtils;
-import org.bukkit.Bukkit;
+import net.teamcarbon.carbonkit.utils.TypeUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,8 +10,8 @@ import org.bukkit.entity.Player;
 import net.teamcarbon.carbonkit.modules.CarbonToolsModule;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 
 @SuppressWarnings("UnusedDeclaration")
 public class FreezeCommand extends ModuleCmd {

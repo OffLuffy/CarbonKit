@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
 
 @SuppressWarnings("UnusedDeclaration")
 public class SlapCommand extends ModuleCmd {
@@ -38,8 +38,8 @@ public class SlapCommand extends ModuleCmd {
 					for (int i = 2; i < args.length; i++)
 						msg += " " + args[i];
 				}
-				pl.damage(CarbonKit.inst().getConf().getDouble("CarbonTools.slap-damage", 0.0));
-				if (CarbonKit.inst().getConf().getBoolean("CarbonTools.knockback"))
+				pl.damage(CarbonKit.inst.getConfig().getDouble("CarbonTools.slap-damage", 0.0));
+				if (CarbonKit.inst.getConfig().getBoolean("CarbonTools.knockback"))
 					pl.setVelocity(pl.getVelocity().setY(pl.getVelocity().getY()+.5));
 				pl.sendMessage(Clr.GOLD + msg);
 				sender.sendMessage(Clr.GOLD + "Slapped " + pl.getName());

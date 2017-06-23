@@ -30,9 +30,9 @@ public class Question {
 				if (qSect.isList(s) && qSect.getStringList(s).size() > 0) {
 					Question q = new Question(s, qSect.getStringList(s));
 					questions.add(q);
-				} else CarbonKit.inst().logWarn("A question was found with no answers. This one will not be used:" + s);
+				} else CarbonKit.log.warn("A question was found with no answers. This one will not be used:" + s);
 			}
-		} else CarbonKit.inst().logWarn("It seems that CarbonTrivia has no questions to use! Add some in the config.yml!");
+		} else CarbonKit.log.warn("It seems that CarbonTrivia has no questions to use! Add some in the config.yml!");
 	}
 	public String getQuestion() { return question; }
 	public List<String> getAnswers() { return answers; }

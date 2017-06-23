@@ -3,7 +3,6 @@ package net.teamcarbon.carbonkit.tasks;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.modules.CarbonNewsModule;
-import net.teamcarbon.carbonlib.Misc.CarbonException;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.configuration.ConfigurationSection;
@@ -47,17 +46,17 @@ public class BroadcastTask extends BukkitRunnable {
 
 	public void startBroadcasts() {
 		try {
-			runTaskTimer(CarbonKit.inst(), getDelay() * 20L, getDelay() * 20L);
-			CarbonKit.inst().logDebug("Started broadcast task for set: " + getSetName());
+			runTaskTimer(CarbonKit.inst, getDelay() * 20L, getDelay() * 20L);
+			CarbonKit.log.debug("Started broadcast task for set: " + getSetName());
 			enabled = true;
 		} catch (Exception e) {
-			CarbonKit.inst().logDebug("Broadcast task already started for set: " + getSetName());
+			CarbonKit.log.debug("Broadcast task already started for set: " + getSetName());
 		}
 	}
 	public void stopBroadcasts() {
 		try { cancel(); } catch (Exception ignored) {}
 		enabled = false;
-		CarbonKit.inst().logDebug("Stopped broadcast task for set: " + getSetName());
+		CarbonKit.log.debug("Stopped broadcast task for set: " + getSetName());
 	}
 	public void restartBroadcasts() {
 		try {
@@ -66,10 +65,8 @@ public class BroadcastTask extends BukkitRunnable {
 			BroadcastTask t = new BroadcastTask(getSetName());
 			t.startBroadcasts();
 			enabled = true;
-			CarbonKit.inst().logDebug("Restarted broadcast task for set: " + getSetName());
-		} catch (Exception e) {
-			(new CarbonException(CarbonKit.inst(), e)).printStackTrace();
-		}
+			CarbonKit.log.debug("Restarted broadcast task for set: " + getSetName());
+		} catch (Exception e) { e.printStackTrace(); }
 	}
 
 	public void setEnabled(boolean enabled) {
@@ -77,7 +74,7 @@ public class BroadcastTask extends BukkitRunnable {
 		CarbonKit.getConfig(ConfType.NEWS).set(path("setEnabled"), enabled);
 		CarbonKit.saveConfig(ConfType.NEWS);
 		if (enabled) startBroadcasts(); else stopBroadcasts();
-		CarbonKit.inst().logDebug("Set broadcast task " + (enabled ? "enabled" : "disabled") + " for set: " + getSetName());
+		CarbonKit.log.debug("Set broadcast task " + (enabled ? "enabled" : "disabled") + " for set: " + getSetName());
 	}
 	public void setRandom(boolean random) {
 		if (random != this.random) {
@@ -90,31 +87,31 @@ public class BroadcastTask extends BukkitRunnable {
 			CarbonKit.saveConfig(ConfType.NEWS);
 			restartTask();
 		}
-		CarbonKit.inst().logDebug("Set broadcast task random order " + (random ? "enabled" : "disabled") + " for set: " + getSetName());
+		CarbonKit.log.debug("Set broadcast task random order " + (random ? "enabled" : "disabled") + " for set: " + getSetName());
 	}
 	public void setDelay(long delay) {
 		restartTask();
 		CarbonKit.getConfig(ConfType.NEWS).set(path("delaySeconds"), delay);
 		CarbonKit.saveConfig(ConfType.NEWS);
-		CarbonKit.inst().logDebug("Set broadcast task delay to " + delay + " seconds for set: " + getSetName());
+		CarbonKit.log.debug("Set broadcast task delay to " + delay + " seconds for set: " + getSetName());
 	}
 	public void setRequirePerms(boolean requirePerms) {
 		this.perm = requirePerms;
 		CarbonKit.getConfig(ConfType.NEWS).set(path("requirePermission"), perm);
 		CarbonKit.saveConfig(ConfType.NEWS);
-		CarbonKit.inst().logDebug("Set broadcast task require perm " + (perm ? "enabled" : "disabled") + " for set: " + getSetName());
+		CarbonKit.log.debug("Set broadcast task require perm " + (perm ? "enabled" : "disabled") + " for set: " + getSetName());
 	}
 	public void setPrefix(String prefix) {
 		pre = prefix;
 		CarbonKit.getConfig(ConfType.NEWS).set(path("prefix"), prefix);
 		CarbonKit.saveConfig(ConfType.NEWS);
-		CarbonKit.inst().logDebug("Set broadcast task prefix to " + prefix + " for set: " + getSetName());
+		CarbonKit.log.debug("Set broadcast task prefix to " + prefix + " for set: " + getSetName());
 	}
 	public void setPostfix(String postfix) {
 		pst = postfix;
 		CarbonKit.getConfig(ConfType.NEWS).set(path("postfix"), postfix);
 		CarbonKit.saveConfig(ConfType.NEWS);
-		CarbonKit.inst().logDebug("Set broadcast task postfix to " + postfix + " for set: " + getSetName());
+		CarbonKit.log.debug("Set broadcast task postfix to " + postfix + " for set: " + getSetName());
 	}
 	public void setMessages(List<String> messages) {
 		normalMsgList.clear();
@@ -191,14 +188,14 @@ public class BroadcastTask extends BukkitRunnable {
 				normalMsgList = new ArrayList<>();
 			if (size() < 1) {
 				enabled = false;
-				CarbonKit.inst().logWarn("Message list for set " + setName + " is empty, disabling it");
+				CarbonKit.log.warn("Message list for set " + setName + " is empty, disabling it");
 			}
 			randomMsgList = new ArrayList<>(normalMsgList);
 		} else if (allowCreate) {
-			CarbonKit.inst().logWarn("Failed to find settings for message set '" + setName + "', creating it...");
+			CarbonKit.log.warn("Failed to find settings for message set '" + setName + "', creating it...");
 			CarbonKit.getConfig(ConfType.NEWS).set("MessageSets." + setName, CarbonKit.getConfig(ConfType.NEWS).getConfigurationSection("setDefaults"));
 			CarbonKit.saveConfig(ConfType.NEWS);
-			CarbonKit.inst().logInfo("Created message set '" + setName + "' with default values (setName disabled by default, no messages)");
+			CarbonKit.log.info("Created message set '" + setName + "' with default values (setName disabled by default, no messages)");
 			loadSet(false); // Reload it now that default values has been added to the set, shouldn't cause stack overflow...
 		}
 	}

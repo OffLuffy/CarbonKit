@@ -31,13 +31,13 @@ public class DupeHeadCommand extends ModuleCmd {
 			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
 			return;
 		}
-		double price = CarbonKit.inst().getConf().getDouble("CarbonSkulls.price", 5000.0);
+		double price = CarbonKit.inst.getConfig().getDouble("CarbonSkulls.price", 5000.0);
 		if (mod.perm(sender, "skull.free") || price < 0) price = 0;
 		if (CarbonSkullsModule.hasSavedSkull(pl)) {
 			if (pl.getInventory().firstEmpty() > -1) {
 				if (price > 0.0) {
-					if (CarbonKit.econ().has(pl, price)) {
-						EconomyResponse er = CarbonKit.econ().withdrawPlayer(pl, price);
+					if (CarbonKit.econ.has(pl, price)) {
+						EconomyResponse er = CarbonKit.econ.withdrawPlayer(pl, price);
 						if (!er.transactionSuccess()) {
 							sender.sendMessage(CustomMessage.CS_TRANSACTION_FAILED.pre());
 							return;

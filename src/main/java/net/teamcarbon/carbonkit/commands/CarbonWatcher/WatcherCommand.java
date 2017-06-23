@@ -1,7 +1,7 @@
 package net.teamcarbon.carbonkit.commands.CarbonWatcher;
 
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.Misc.TypeUtils;
+import net.teamcarbon.carbonkit.utils.TypeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 import net.teamcarbon.carbonkit.modules.CarbonWatcherModule;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 
 import java.util.HashMap;
 

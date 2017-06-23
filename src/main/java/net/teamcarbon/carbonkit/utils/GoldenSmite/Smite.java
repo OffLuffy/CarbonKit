@@ -6,9 +6,8 @@ import net.teamcarbon.carbonkit.modules.CarbonSmiteModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.EntHelper;
 import net.teamcarbon.carbonkit.utils.EntHelper.EntityGroup;
-//import net.teamcarbon.carbonkit.utils.Firework.FireworkUtils;
-import net.teamcarbon.carbonlib.Misc.LocUtils;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.LocUtils;
+import net.teamcarbon.carbonkit.utils.Messages;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
@@ -25,7 +24,7 @@ public class Smite {
 	}
 	private static final int OVER_NINE_THOUSAND = 9001;
 	public static void createSmite(Player pl, Location l, SmiteType smiteMethod) {
-		CarbonKit.inst().logDebug(pl.getName() + " smote " + l.getX() + ", " + l.getY() + ", " + l.getZ() + ", " + l.getWorld().getName() + " (" + smiteMethod.lname() + ")");
+		CarbonKit.log.debug(pl.getName() + " smote " + l.getX() + ", " + l.getY() + ", " + l.getZ() + ", " + l.getWorld().getName() + " (" + smiteMethod.lname() + ")");
 		Location effectLocation = l.clone();
 		if (!smiteMethod.equals(SmiteType.PROJECTILE)) {
 			effectLocation.setX(effectLocation.getBlockX() + 0.5);
@@ -39,7 +38,7 @@ public class Smite {
 				if (x instanceof LivingEntity) {
 					((LivingEntity)x).damage(OVER_NINE_THOUSAND, pl);
 					final LivingEntity fx = (LivingEntity)x;
-					Bukkit.getScheduler().runTaskLater(CarbonKit.inst(), new Runnable() {
+					Bukkit.getScheduler().runTaskLater(CarbonKit.inst, new Runnable() {
 						public void run() {
 							if (!(fx instanceof Player) && !fx.isDead())
 								fx.remove();
@@ -61,12 +60,12 @@ public class Smite {
 	
 	public static void smitePlayer(Player pl, Player vic) {
 		if (modInst.perm(vic, "immune.cmd"))
-			pl.sendMessage(Clr.RED + vic.getName() + " is immune!");
+			pl.sendMessage(Messages.Clr.RED + vic.getName() + " is immune!");
 		else {
 			Location effectLocation = vic.getLocation();
 			createEffects(effectLocation);
 			vic.damage(OVER_NINE_THOUSAND);
-			pl.sendMessage(Clr.AQUA + vic.getName() + " has been smited");
+			pl.sendMessage(Messages.Clr.AQUA + vic.getName() + " has been smited");
 		}
 	}
 	
@@ -76,8 +75,8 @@ public class Smite {
 				pass = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.PASSIVE), tame = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.TAMED),
 				play = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.PLAYER), drop = CarbonSmiteModule.isGroupEnabled(pl, EntityGroup.DROP);
 		if (host || neut || pass || tame || play || drop) {
-			if (modInst == null) CarbonKit.inst().logWarn("Module is null");
-			if (modInst.getConfig() == null) CarbonKit.inst().logWarn("Module config is null");
+			if (modInst == null) CarbonKit.log.warn("Module is null");
+			if (modInst.getConfig() == null) CarbonKit.log.warn("Module config is null");
 			int rad = modInst.getConfig().getInt("radius", 6), rng = modInst.getConfig().getInt("range", 100) + rad;
 			ArrayList<Entity> ents = new ArrayList<>();
 			for (Entity e : pl.getNearbyEntities(rng, rng, rng)) {

@@ -2,7 +2,7 @@ package net.teamcarbon.carbonkit.commands.CarbonTools;
 
 import net.teamcarbon.carbonkit.modules.CarbonToolsModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import net.teamcarbon.carbonkit.utils.Module;

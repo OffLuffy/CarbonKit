@@ -21,7 +21,7 @@ import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.GoldenSmite.Smite;
 import net.teamcarbon.carbonkit.utils.GoldenSmite.Smite.SmiteType;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 
 import static org.bukkit.Material.*;
 
@@ -32,7 +32,7 @@ import java.util.List;
 @SuppressWarnings({"UnusedDeclaration", "MismatchedQueryAndUpdateOfCollection"})
 public class CarbonSmiteModule extends Module {
 	public static CarbonSmiteModule inst;
-	public CarbonSmiteModule() throws DuplicateModuleException { super("CarbonSmite", "csmite", "smite", "cs"); }
+	public CarbonSmiteModule() throws DuplicateModuleException { super(CarbonKit.inst, "CarbonSmite", "csmite", "smite", "cs"); }
 	public static List<Entity> killed = new ArrayList<>();
 	private static List<Projectile> launchedProj = new ArrayList<>();
 	public void initModule() {
@@ -50,7 +50,7 @@ public class CarbonSmiteModule extends Module {
 	}
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.inst().reloadConf();
+		CarbonKit.inst.reloadConfig();
 		initModule();
 	}
 	protected boolean needsListeners() { return true; }

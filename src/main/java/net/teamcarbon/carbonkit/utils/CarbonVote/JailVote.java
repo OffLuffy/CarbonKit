@@ -5,7 +5,7 @@ import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -19,8 +19,8 @@ public class JailVote extends TargetedVote {
 			com.earth2me.essentials.User eUser = ess.getUser(target.getUniqueId());
 			eUser.setJailed(true);
 			HashMap<String, String> rep = new HashMap<>();
-			if (CarbonKit.inst().getConf().getLong("CarbonVote." + getTargetedVoteType().lname() + "-time-seconds", 300) > 0L) {
-				long dura = CarbonKit.inst().getConf().getLong("CarbonVote." + getTargetedVoteType().lname() + "-time-seconds", 300) * 1000L;
+			if (CarbonKit.inst.getConfig().getLong("CarbonVote." + getTargetedVoteType().lname() + "-time-seconds", 300) > 0L) {
+				long dura = CarbonKit.inst.getConfig().getLong("CarbonVote." + getTargetedVoteType().lname() + "-time-seconds", 300) * 1000L;
 				long current = System.currentTimeMillis();
 				eUser.setJailTimeout(current + dura);
 				dura /= 1000L;

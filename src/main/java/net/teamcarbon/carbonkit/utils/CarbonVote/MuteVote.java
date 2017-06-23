@@ -3,7 +3,7 @@ package net.teamcarbon.carbonkit.utils.CarbonVote;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -19,8 +19,8 @@ public class MuteVote extends TargetedVote {
 			com.earth2me.essentials.User eUser = ess.getUser(target.getUniqueId());
 			eUser.setMuted(true);
 			HashMap<String, String> rep = new HashMap<>();
-			if (CarbonKit.inst().getConf().getLong("CarbonVote." + getTargetedVoteType().lname() + "-time-seconds", 300) > 0L) {
-				long dura = CarbonKit.inst().getConf().getLong("CarbonVote." + getTargetedVoteType().lname() + "-time-seconds", 300) * 1000L;
+			if (CarbonKit.inst.getConfig().getLong("CarbonVote." + getTargetedVoteType().lname() + "-time-seconds", 300) > 0L) {
+				long dura = CarbonKit.inst.getConfig().getLong("CarbonVote." + getTargetedVoteType().lname() + "-time-seconds", 300) * 1000L;
 				long current = System.currentTimeMillis();
 				eUser.setMuteTimeout(current + dura);
 				dura /= 1000L;

@@ -20,7 +20,7 @@ import java.util.HashMap;
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonSkullsModule extends Module {
 	public static CarbonSkullsModule inst;
-	public CarbonSkullsModule() throws DuplicateModuleException { super("CarbonSkulls", "headshop", "sshop", "hshop", "ss"); }
+	public CarbonSkullsModule() throws DuplicateModuleException { super(CarbonKit.inst, "CarbonSkulls", "headshop", "sshop", "hshop", "ss"); }
 	public static HashMap<Player, String> getSkulls = new HashMap<>();
 	public void initModule() {
 		inst = this;
@@ -36,7 +36,7 @@ public class CarbonSkullsModule extends Module {
 	}
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.inst().reloadConf();
+		CarbonKit.inst.reloadConfig();
 		CarbonKit.reloadConfig(ConfType.DATA);
 		initModule();
 	}

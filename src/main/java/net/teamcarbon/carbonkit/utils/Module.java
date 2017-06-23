@@ -8,8 +8,6 @@ import java.util.UUID;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException.DupeType;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.OfflinePlayer;
@@ -21,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import net.teamcarbon.carbonkit.modules.CarbonCoreModule;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
 
 /**
  * Abstract Module class to keep track of initialized modules and organize universal module information
@@ -29,6 +28,7 @@ import net.teamcarbon.carbonkit.modules.CarbonCoreModule;
 @SuppressWarnings("UnusedDeclaration")
 public abstract class Module implements Listener {
 	public static List<Module> modules = new ArrayList<>();
+	private CarbonKit base;
 	private UUID id;
 	private String name;
 	private List<String> aliases;
@@ -43,13 +43,14 @@ public abstract class Module implements Listener {
 	 * @param aliases Other names or abbreviations of the plugin (Used for fetching modules by alias)
 	 * @throws DuplicateModuleException Thrown if a module already exists that has the same name or any matching aliases
 	 */
-	public Module(String name, String ... aliases) throws DuplicateModuleException {
+	public Module(CarbonKit plugin, String name, String ... aliases) throws DuplicateModuleException {
 		if (getModule(name) != null)
 			throw new DuplicateModuleException(DupeType.DUPE_NAME);
 		for (String a : aliases)
 			if (getModule(a) != null)
 				throw new DuplicateModuleException(DupeType.DUPE_ALIAS);
 		setName(name);
+		this.base = plugin;
 		this.aliases = new ArrayList<>();
 		this.requires = new ArrayList<>();
 		this.modCmds = new ArrayList<>();
@@ -57,12 +58,12 @@ public abstract class Module implements Listener {
 		id = UUID.randomUUID();
 		setEnabled(this instanceof CarbonCoreModule || (isConfigEnabled() && hasAllDependencies()));
 		if (isConfigEnabled() && !hasAllDependencies()) {
-			CarbonKit.inst().logWarn(getName() + " module could not be enabled, server does not meet some requirements. This module requires:");
-			CarbonKit.inst().logWarn("Plugins: " + MiscUtils.stringFromArray(", ", getDependencies()));
-			CarbonKit.inst().logWarn("Required Bukkit server version: " + reqVer);
+			CarbonKit.log.warn(getName() + " module could not be enabled, server does not meet some requirements. This module requires:");
+			CarbonKit.log.warn("Plugins: " + MiscUtils.stringFromArray(", ", getDependencies()));
+			CarbonKit.log.warn("Required Bukkit server version: " + reqVer);
 		}
-		CarbonKit.inst().getConf().set("modules." + getName(), isEnabled());
-		CarbonKit.inst().saveConf();
+		base.getConfig().set("modules." + getName(), isEnabled());
+		base.saveConfig();
 		modules.add(this);
 	}
 	/*=======================[ PRIVATE ]=======================*/
@@ -85,7 +86,7 @@ public abstract class Module implements Listener {
 	/**
 	 * Registers any listeners included in this Module
 	 */
-	protected void registerListeners() { if (needsListeners()) { CarbonKit.pm().registerEvents(this, CarbonKit.inst()); } }
+	protected void registerListeners() { if (needsListeners()) { CarbonKit.pm.registerEvents(this, base); } }
 	/**
 	 * Adds a required plugin name to the required plugins list
 	 */
@@ -142,7 +143,7 @@ public abstract class Module implements Listener {
 	/**
 	 * @return Returns true if the module is set enabled in config, false otherwise
 	 */
-	public boolean isConfigEnabled() { return CarbonKit.inst().getConf().getBoolean("modules." + getName(), false); }
+	public boolean isConfigEnabled() { return base.getConfig().getBoolean("modules." + getName(), false); }
 	/**
 	 * Set the module instance enabled or disabled
 	 * @param enabled Whether the module is enabled or not
@@ -157,8 +158,8 @@ public abstract class Module implements Listener {
 			}
 		}
 		this.enabled = enabled;
-		CarbonKit.inst().getConf().set("modules." + name, enabled);
-		CarbonKit.inst().saveConf();
+		base.getConfig().set("modules." + name, enabled);
+		base.saveConfig();
 	}
 	/**
 	 * @return Returns the list of commands the module instance has registered
@@ -175,7 +176,7 @@ public abstract class Module implements Listener {
 	 * @return Returns a ConcifugrationSection contains this module's config
 	 */
 	public ConfigurationSection getConfig() {
-		ConfigurationSection confSect = CarbonKit.inst().getConf().getConfigurationSection(getName());
+		ConfigurationSection confSect = base.getConfig().getConfigurationSection(getName());
 		if (confSect == null) confSect = new MemoryConfiguration();
 		return confSect;
 	}

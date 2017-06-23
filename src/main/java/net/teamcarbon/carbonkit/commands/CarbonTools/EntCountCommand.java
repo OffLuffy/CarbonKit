@@ -8,9 +8,9 @@ import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.EntHelper;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
-import net.teamcarbon.carbonlib.Misc.NumUtils;
-import net.teamcarbon.carbonlib.Misc.TypeUtils;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.NumUtils;
+import net.teamcarbon.carbonkit.utils.TypeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -46,7 +46,7 @@ public class EntCountCommand extends ModuleCmd {
 						return;
 					}
 					double r = Double.parseDouble(args[0]);
-					double mr = CarbonKit.inst().getConf().getDouble(mod.getName() + ".entity-count-max-radius", 500);
+					double mr = CarbonKit.inst.getConfig().getDouble(mod.getName() + ".entity-count-max-radius", 500);
 					if (r > mr || r <= 0) r = NumUtils.normalizeDouble(r, 0, mr);
 					List<Entity> ents = p.getNearbyEntities(r,r,r);
 					p.sendMessage(Clr.GRAY + "Entity count in radius: " + r);
@@ -63,8 +63,8 @@ public class EntCountCommand extends ModuleCmd {
 					p.sendMessage(Clr.RED + "Usage: /ecount [radius|world]");
 				}
 			} else {
-				if (CarbonKit.pm().isPluginEnabled("WorldEdit")) {
-					WorldEditPlugin we = (WorldEditPlugin) CarbonKit.pm().getPlugin("WorldEdit");
+				if (CarbonKit.pm.isPluginEnabled("WorldEdit")) {
+					WorldEditPlugin we = (WorldEditPlugin) CarbonKit.pm.getPlugin("WorldEdit");
 					Selection sel = we.getSelection(p);
 					if (sel != null) {
 						if (!modInst.perm(p, "entcount.selection")) {
@@ -102,7 +102,7 @@ public class EntCountCommand extends ModuleCmd {
 		HashMap<String, Integer> gCounts = new HashMap<>();
 		for (Entity ent : ents) {
 			counts.put(ent.getType(), (counts.containsKey(ent.getType())?counts.get(ent.getType())+1:1));
-			if (CarbonKit.inst().getConf().getBoolean(mod.getName() + ".entity-group-count", true)) {
+			if (CarbonKit.inst.getConfig().getBoolean(mod.getName() + ".entity-group-count", true)) {
 				if(EntHelper.isPassive(ent.getType()))
 					gCounts.put("p", (gCounts.containsKey("p")?gCounts.get("p")+1:1));
 				else if(EntHelper.isNeutral(ent.getType()))
@@ -122,11 +122,11 @@ public class EntCountCommand extends ModuleCmd {
 			else if(EntHelper.isNeutral(type)) pre = Clr.DARKAQUA + "[N] ";
 			else if(EntHelper.isHostile(type)) pre = Clr.RED + "[H] ";
 			else if(EntHelper.isPlayer(type)) pre = Clr.GOLD + "[PL] ";
-			if (CarbonKit.inst().getConf().getBoolean(mod.getName() + ".entity-type-count", false))
+			if (CarbonKit.inst.getConfig().getBoolean(mod.getName() + ".entity-type-count", false))
 				p.sendMessage(pre + Clr.GOLD + type.toString() + ": " + Clr.AQUA + counts.get(type));
 		}
 
-		if (CarbonKit.inst().getConf().getBoolean(mod.getName() + ".entity-group-count")) {
+		if (CarbonKit.inst.getConfig().getBoolean(mod.getName() + ".entity-group-count")) {
 			for (String s : gCounts.keySet()) {
 				String msg = Clr.AQUA + "";
 				switch (s) {
@@ -141,7 +141,7 @@ public class EntCountCommand extends ModuleCmd {
 			}
 		}
 
-		if (CarbonKit.inst().getConf().getBoolean(mod.getName() + ".entity-total-count"))
+		if (CarbonKit.inst.getConfig().getBoolean(mod.getName() + ".entity-total-count"))
 			p.sendMessage(Clr.DARKAQUA + "" + ChatColor.BOLD + "TOTAL: " +Clr.DARKAQUA + ents.size());
 	}
 }

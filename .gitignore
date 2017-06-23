@@ -44,14 +44,12 @@ build/
 *.tlb
 *.tli
 *.tlh
-*.tmp
 *.tmp_proj
 *.log
 *.vspscc
 *.vssscc
 .builds
 *.pidb
-*.log
 *.scc
 ipch/
 *.aps
@@ -110,7 +108,6 @@ $RECYCLE.BIN/
 *.egg
 *.egg-info
 dist/
-build/
 eggs/
 parts/
 var/
@@ -122,3 +119,4 @@ pip-log.txt
 .tox
 *.mo
 .mr.developer.cfg
+target/

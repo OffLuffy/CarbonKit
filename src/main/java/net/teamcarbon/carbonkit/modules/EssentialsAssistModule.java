@@ -14,13 +14,13 @@ import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
+import net.teamcarbon.carbonkit.utils.MiscUtils;
 
 @SuppressWarnings({"UnusedDeclaration", "SuspiciousMethodCalls"})
 public class EssentialsAssistModule extends Module {
 	public static EssentialsAssistModule inst;
 	public EssentialsAssistModule() throws DuplicateModuleException {
-		super("EssentialsAssist", "essassist", "eassist", "ea");
+		super(CarbonKit.inst, "EssentialsAssist", "essassist", "eassist", "ea");
 		addRequires("Essentials");
 	}
 	private final static String VT = "vanish-toggles.prevent-";
@@ -33,7 +33,7 @@ public class EssentialsAssistModule extends Module {
 	}
 	public void reloadModule() {
 		disableModule();
-		CarbonKit.inst().reloadConf();
+		CarbonKit.inst.reloadConfig();
 		CarbonKit.reloadConfig(ConfType.DATA);
 		initModule();
 	}

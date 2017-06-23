@@ -1,15 +1,12 @@
 package net.teamcarbon.carbonkit.utils;
 
-import net.teamcarbon.carbonlib.FormatUtils.FormattedMessage;
-import net.teamcarbon.carbonlib.Misc.MiscUtils;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
-import net.teamcarbon.carbonlib.Misc.NumUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
 
 import java.util.HashMap;
 import java.util.Locale;

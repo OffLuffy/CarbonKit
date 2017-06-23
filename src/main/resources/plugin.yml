@@ -1,5 +1,5 @@
-name: CarbonKit
-version: 0.8
+name: ${artifactId}
+version: ${version}
 description: Plugin Kit Designed for Minecraft Team-Carbon
 author: OffLuffy
 depend: [CarbonLib, Vault]

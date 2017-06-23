@@ -3,12 +3,12 @@ package net.teamcarbon.carbonkit.commands.CarbonCore;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.modules.CarbonCoreModule;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonlib.Misc.TypeUtils;
+import net.teamcarbon.carbonkit.utils.TypeUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
-import net.teamcarbon.carbonlib.Misc.Messages.Clr;
+import net.teamcarbon.carbonkit.utils.Messages.Clr;
 
 import java.util.HashMap;
 
@@ -53,7 +53,7 @@ public class CarbonToggleCommand extends ModuleCmd {
 					}
 				}
 				m.setEnabled(state);
-				CarbonKit.inst().logInfo(sender.getName() + " has " + (state ? "en" : "dis") + "abled the " + m.getName() + " module");
+				CarbonKit.log.info(sender.getName() + " has " + (state ? "en" : "dis") + "abled the " + m.getName() + " module");
 			} else {
 				sender.sendMessage(CustomMessage.CORE_NOT_MODULE.pre());
 			}

@@ -1,38 +1,43 @@
 package net.teamcarbon.carbonkit;
 
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 import net.teamcarbon.carbonkit.events.coreEvents.FinishModuleLoadingEvent;
 import net.teamcarbon.carbonkit.modules.*;
+import net.teamcarbon.carbonkit.utils.*;
 import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonkit.utils.UserStore;
-import net.teamcarbon.carbonlib.*;
-import net.teamcarbon.carbonlib.Misc.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.*;
 
-@SuppressWarnings("UnusedDeclaration")
-public class CarbonKit extends CarbonPlugin implements Listener {
+public class CarbonKit extends JavaPlugin implements Listener {
 
+	public static CarbonKit inst;
 	public static String NMS_VER;
 	public static boolean checkOffline;
+	public static Log log;
+	public static PluginManager pm;
+	public static Economy econ;
+	public static Permission perm;
+
 	private static List<Class<? extends Module>> modules;
 	private static HashMap<UUID, UserStore> cachedUserData;
-	private static CarbonKit inst;
 
 	public enum ConfType {
 		DATA("data.yml"), MESSAGES("messages.yml"), TRIVIA("trivia.yml"), HELP("help.yml"), NEWS("news.yml");
 		private String fn;
-		//private ConfigAccessor ca;
 		private YamlConfig yc;
 		private boolean init = false;
 		ConfType(String fileName) { fn = fileName; }
 		public void initConfType() {
-			File dest = new File(CarbonKit.inst.getDataFolder(), fn);
+			File dest = new File(inst.getDataFolder(), fn);
 			yc = new YamlConfig(CarbonKit.inst, dest, "yml/" + fn);
 			init = true;
 		}
@@ -49,7 +54,7 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 	public String getDebugPath() { return "core.enable-debug-messages"; }
 
 	public void enablePlugin() {
-		inst = (CarbonKit) getPlugin();
+		inst = this;
 		NMS_VER = Bukkit.getServer().getClass().getPackage().getName();
 		NMS_VER = NMS_VER.substring(NMS_VER.lastIndexOf('.') + 1);
 		modules = new ArrayList<>();
@@ -83,9 +88,9 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 			CarbonCoreModule.inst.disableModule();
 			Module.flushData();
 		}
-		reloadConf();
+		reloadConfig();
 		for (ConfType ct : ConfType.values()) if (ct.isInitialized()) { ct.reloadConfig(); } else { ct.initConfType(); }
-		checkOffline = getConf().getBoolean("core.match-offline-players", true);
+		checkOffline = getConfig().getBoolean("core.match-offline-players", true);
 		CustomMessage.loadMessages();
 		List<Long> times = new ArrayList<>();
 		List<Module> enabledModules = new ArrayList<>(), disabledModules = new ArrayList<>();
@@ -106,7 +111,7 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 				} else { disabledModules.add(m); }
 			} catch (Exception e) {
 				log.severe("===[ An exception occurred while trying to enable module: " + name + " ]===");
-				(new CarbonException(inst, e)).printStackTrace();
+				e.printStackTrace();
 				log.severe("=====================================");
 			}
 		}
@@ -127,11 +132,17 @@ public class CarbonKit extends CarbonPlugin implements Listener {
 			}
 		}
 		log.debug("Enabled for NMS version " + NMS_VER + " in " + (System.currentTimeMillis() - startTime) + "ms." + avgText);
-		pm().callEvent(new FinishModuleLoadingEvent(enabledModules, disabledModules));
+		pm.callEvent(new FinishModuleLoadingEvent(enabledModules, disabledModules));
 	}
 
-	public static CarbonKit inst() { return inst; }
-	public static Log log() { return inst.log; }
+	private static boolean setupPerm() {
+		RegisteredServiceProvider<Permission> pp = Bukkit.getServicesManager().getRegistration(Permission.class);
+		RegisteredServiceProvider<Economy> ep = Bukkit.getServicesManager().getRegistration(Economy.class);
+		if (pp != null) perm = pp.getProvider();
+		if (ep != null) econ = ep.getProvider();
+		MiscUtils.setPerms(perm);
+		return perm != null && econ != null;
+	}
 
 	// User Data
 	public static boolean isPlayerDataCached(UUID id) { return cachedUserData.containsKey(id); }
