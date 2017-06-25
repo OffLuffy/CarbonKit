@@ -44,9 +44,12 @@ public final class Messages {
 		 * @return Returns a sequence of each character prepended with the section symbol
 		 */
 		public static String fromChars(char ... chars) {
-			String clrs = "";
-			for (char c : chars) clrs += "\u00A7"+c;
-			return clrs;
+			StringBuilder sb = new StringBuilder();
+			for (char c : chars) {
+				sb.append("\u00A7");
+				sb.append(c);
+			}
+			return sb.toString();
 		}
 		/**
 		 * Converts a series of characters into a color code sequence (doesn't check for valid characters)

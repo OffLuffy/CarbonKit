@@ -1,8 +1,8 @@
 package net.teamcarbon.carbonkit.modules;
 
 import com.google.gson.Gson;
-import net.minecraft.server.v1_11_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_11_R1.PacketPlayOutChat;
+import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.commands.CarbonNews.CarbonNewsCommand;
@@ -12,7 +12,7 @@ import net.teamcarbon.carbonkit.tasks.BroadcastTask;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -28,7 +28,7 @@ public class CarbonNewsModule extends Module {
 
 	public CarbonNewsModule() throws DuplicateModuleException {
 		super(CarbonKit.inst, NAME, "cnews", "news", "cn");
-		reqVer = "1_11_R1";
+		reqVer = "1_12_R1";
 	}
 	public void initModule() {
 		inst = this;
@@ -112,14 +112,19 @@ public class CarbonNewsModule extends Module {
 	 */
 	public static String toFormatArray(String ... jsonObjects) {
 		if (jsonObjects.length < 1) return "{\"text\":\"\"}";
-		String array = "[{\"text\":\"\",\"extra\":" + jsonObjects[0] + "}";
+		//String array = "[{\"text\":\"\",\"extra\":" + jsonObjects[0] + "}";
+		StringBuilder sb = new StringBuilder("[{\"text\":\"\",\"extra\":" + jsonObjects[0] + "}");
 		for (int i = 1; i < jsonObjects.length; i++) {
 			String jo = jsonObjects[i];
 			if (jo != null && !jo.isEmpty()) {
-				array += ",{\"text\":\"\",\"extra\":" + jo + "}";
+				//array += ",{\"text\":\"\",\"extra\":" + jo + "}";
+				sb.append(",{\"text\":\"\",\"extra\":");
+				sb.append(jo);
+				sb.append("}");
 			}
 		}
-		array += "]";
-		return array;
+		//array += "]";
+		sb.append("]");
+		return sb.toString();
 	}
 }

@@ -25,8 +25,12 @@ public class CarbonTriviaCommand extends ModuleCmd {
 					return;
 				}
 				if (args.length > 1) {
-					String startedBy = args[1];
-					for (int i = 2; i < args.length; i++) { startedBy += " " + args[i]; }
+					StringBuilder sb = new StringBuilder(args[1]);
+					for (int i = 2; i < args.length; i++) {
+						sb.append(" ");
+						sb.append(args[i]);
+					}
+					String startedBy = sb.toString();
 					TriviaRound.newTriviaRound(startedBy);
 				} else { TriviaRound.newTriviaRound(sender); }
 				return;

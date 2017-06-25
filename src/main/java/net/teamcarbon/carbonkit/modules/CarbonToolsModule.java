@@ -14,6 +14,9 @@ import net.teamcarbon.carbonkit.utils.MiscUtils;
 import net.teamcarbon.carbonkit.utils.MiscUtils.TrustLevel;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.attribute.Attributable;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
@@ -42,6 +45,7 @@ public class CarbonToolsModule extends Module {
 
 	public CarbonToolsModule() throws DuplicateModuleException {
 		super(CarbonKit.inst, "CarbonTools", "misc", "miscmodule", "msc", "ctools", "ctool", "tools", "tool", "ctl");
+		//reqVer = "1_12_R1";
 	}
 
 	public void initModule() {
@@ -61,7 +65,6 @@ public class CarbonToolsModule extends Module {
 		addCmd(new SlapCommand(this));
 		addCmd(new FakeJoinCommand(this));
 		addCmd(new FakeQuitCommand(this));
-		addCmd(new RideCommand(this));
 		addCmd(new EntCountCommand(this));
 		addCmd(new GamemodeCommand(this));
 		addCmd(new HelpCommand(this));
@@ -212,7 +215,6 @@ public class CarbonToolsModule extends Module {
 	public void moveEvent(PlayerMoveEvent e) {
 		if (!isEnabled()) return;
 		if (isFrozen(e.getPlayer(), false)) {
-			// TODO Allow looking but not moving? Place on ground to prevent kicking for flight?
 			UserStore us = CarbonKit.getPlayerData(e.getPlayer().getUniqueId());
 			Location loc = LocUtils.fromStr(us.getString(inst.getName() + ".freeze-location", ""));
 			if (!LocUtils.isSameLoc(e.getTo(), loc)) {
@@ -415,13 +417,31 @@ public class CarbonToolsModule extends Module {
 		}
 		if (ent instanceof Damageable) {
 			Damageable de = (Damageable) ent;
-			pl.sendMessage(Clr.AQUA + "Health: " + de.getHealth() + " / " + de.getMaxHealth());
+			Attributable atr = (Attributable) ent;
+			AttributeInstance ai = atr.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+			double maxHealth = ai.getValue();
+			pl.sendMessage(Clr.AQUA + "Health: " + de.getHealth() + " / " + maxHealth);
 		}
 		if (ent instanceof AbstractHorse) {
 			Horse horse = (Horse) ent;
-			pl.sendMessage(Clr.AQUA + "Horse Variant: " + prep(horse.getVariant().name()));
-			pl.sendMessage(Clr.AQUA + "Horse Style: " + prep(horse.getStyle().name()));
-			pl.sendMessage(Clr.AQUA + "Horse Color: " + prep(horse.getColor().name()));
+			String horseVariant = prep(ent.getType().name());
+			/*String horseVariant = "Horse";
+			if (ent instanceof Donkey) {
+				horseVariant = "Donkey";
+			} else if (ent instanceof Llama) {
+				horseVariant = "Llame";
+			} else if (ent instanceof Mule) {
+				horseVariant = "Mule";
+			} else if (ent instanceof SkeletonHorse) {
+				horseVariant = "Skeletal Horse";
+			} else if (ent instanceof ZombieHorse) {
+				horseVariant = "Zombie Horse";
+			}*/
+			pl.sendMessage(Clr.AQUA + "Horse Variant: " + horseVariant);
+			if (!(ent instanceof SkeletonHorse) && !(ent instanceof ZombieHorse)) {
+				pl.sendMessage(Clr.AQUA + "Horse Style: " + prep(horse.getStyle().name()));
+				pl.sendMessage(Clr.AQUA + "Horse Color: " + prep(horse.getColor().name()));
+			}
 			pl.sendMessage(Clr.AQUA + "Horse Speed: " + getSpeed(horse));
 			pl.sendMessage(Clr.AQUA + "Horse Jump Strength: " + horse.getJumpStrength());
 		}
@@ -438,21 +458,21 @@ public class CarbonToolsModule extends Module {
 
 	private static String prep(String s) { return MiscUtils.capFirst(s, true).replace("_", " "); }
 
-	// TODO Update per version change
-	private static double getSpeed(Horse horse) {
-		// TODO: Look into new horse classes
-		double speed = -1;
-		org.bukkit.craftbukkit.v1_11_R1.entity.CraftHorse cHorse = (org.bukkit.craftbukkit.v1_11_R1.entity.CraftHorse) horse;
-		net.minecraft.server.v1_11_R1.NBTTagCompound compound = new net.minecraft.server.v1_11_R1.NBTTagCompound();
+	private static double getSpeed(AbstractHorse horse) {
+		AttributeInstance ai = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+		return ai.getValue();
+		/*double speed = -1;
+		org.bukkit.craftbukkit.v1_12_R1.entity.CraftHorse cHorse = (org.bukkit.craftbukkit.v1_12_R1.entity.CraftHorse) horse;
+		net.minecraft.server.v1_12_R1.NBTTagCompound compound = new net.minecraft.server.v1_12_R1.NBTTagCompound();
 		cHorse.getHandle().b(compound);
-		net.minecraft.server.v1_11_R1.NBTTagList list = (net.minecraft.server.v1_11_R1.NBTTagList) compound.get("Attributes");
+		net.minecraft.server.v1_12_R1.NBTTagList list = (net.minecraft.server.v1_12_R1.NBTTagList) compound.get("Attributes");
 		for(int i = 0; i < list.size() ; i++) {
-			net.minecraft.server.v1_11_R1.NBTTagCompound base = list.get(i);
+			net.minecraft.server.v1_12_R1.NBTTagCompound base = list.get(i);
 			if (base.getTypeId() == 10)
 				if (base.toString().contains("generic.movementSpeed"))
 					speed = base.getDouble("Base");
 		}
-		return speed;
+		return speed;*/
 	}
 
 	private static Art getNextArt(Art curArt) { return Art.values()[(curArt.ordinal() + 1) % Art.values().length]; }

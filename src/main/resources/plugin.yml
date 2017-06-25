@@ -2,7 +2,7 @@ name: ${artifactId}
 version: ${version}
 description: Plugin Kit Designed for Minecraft Team-Carbon
 author: OffLuffy
-depend: [CarbonLib, Vault]
+depend: [Vault]
 soft-depend: [Essentials, GriefPrevention, WorldEdit]
 main: net.teamcarbon.carbonkit.CarbonKit
 

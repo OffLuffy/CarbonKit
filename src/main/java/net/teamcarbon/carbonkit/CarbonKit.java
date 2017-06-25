@@ -60,9 +60,8 @@ public class CarbonKit extends JavaPlugin implements Listener {
 		modules = new ArrayList<>();
 		cachedUserData = new HashMap<>();
 		Collections.addAll(modules,
-				CarbonCoreModule.class, CarbonCraftingModule.class,
-				CarbonWatcherModule.class/*, CarbonEssentialsModule.class, CarbonPerksModule.class*/,
-				CarbonSmiteModule.class, CarbonToolsModule.class, CarbonSkullsModule.class, CarbonVoteModule.class,
+				CarbonCoreModule.class, CarbonWatcherModule.class,
+				CarbonSmiteModule.class, CarbonToolsModule.class, CarbonVoteModule.class,
 				CarbonTriviaModule.class, CarbonNewsModule.class, EssentialsAssistModule.class
 		);
 		long time = System.currentTimeMillis();
@@ -84,9 +83,9 @@ public class CarbonKit extends JavaPlugin implements Listener {
 	 * @param startTime The time the load process began (for logging purposes)
 	 */
 	public void loadPlugin(long startTime) {
-		if (Module.getAllModules().size() > 0) { // Modules already loaded. Prep for reload
-			CarbonCoreModule.inst.disableModule();
-			Module.flushData();
+		if (Module.getAllModules().size() > 0) {	// Modules already loaded. Prep for reload
+			CarbonCoreModule.inst.disableModule();	// Disables all modules by disabling core module
+			Module.flushData();						// Flushes static data stored in each module
 		}
 		reloadConfig();
 		for (ConfType ct : ConfType.values()) if (ct.isInitialized()) { ct.reloadConfig(); } else { ct.initConfType(); }

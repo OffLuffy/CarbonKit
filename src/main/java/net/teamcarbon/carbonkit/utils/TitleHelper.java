@@ -1,11 +1,7 @@
 package net.teamcarbon.carbonkit.utils;
 
-import net.minecraft.server.v1_11_R1.IChatBaseComponent;
-import net.minecraft.server.v1_11_R1.Packet;
-import net.minecraft.server.v1_11_R1.PacketPlayOutChat;
-import net.minecraft.server.v1_11_R1.PacketPlayOutPlayerListHeaderFooter;
-import net.minecraft.server.v1_11_R1.PacketPlayOutTitle;
-import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
+import net.minecraft.server.v1_12_R1.*;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -45,7 +41,8 @@ public class TitleHelper implements Listener {
 	}
 	public static void sendRawActionBar(Player player, String message){
 		IChatBaseComponent actionMessage = IChatBaseComponent.ChatSerializer.a(MiscUtils.repVars(Messages.Clr.trans(message), player));
-		sendPacket(player, new PacketPlayOutChat(actionMessage, (byte) 2));
+		// sendPacket(player, new PacketPlayOutChat(actionMessage, (byte) 2));
+		sendPacket(player, new PacketPlayOutChat(actionMessage, ChatMessageType.CHAT));
 	}
 
 	// Tab Title/Footer API
@@ -58,7 +55,8 @@ public class TitleHelper implements Listener {
 	public static void sendRawTabTitle(Player player, String header, String footer) {
 		IChatBaseComponent tabTitle = IChatBaseComponent.ChatSerializer.a(MiscUtils.repVars(header, player));
 		IChatBaseComponent tabFoot = IChatBaseComponent.ChatSerializer.a(MiscUtils.repVars(footer, player));
-		PacketPlayOutPlayerListHeaderFooter headerPacket = new PacketPlayOutPlayerListHeaderFooter(tabTitle);
+		//PacketPlayOutPlayerListHeaderFooter headerPacket = new PacketPlayOutPlayerListHeaderFooter(tabTitle);
+		PacketPlayOutPlayerListHeaderFooter headerPacket = new PacketPlayOutPlayerListHeaderFooter();
 		try {
 			Field field = headerPacket.getClass().getDeclaredField("b");
 			field.setAccessible(true);
