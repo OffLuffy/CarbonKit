@@ -4,7 +4,6 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.modules.CarbonToolsModule;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.EntHelper;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
@@ -34,7 +33,7 @@ public class EntCountCommand extends ModuleCmd {
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
+			sender.sendMessage(mod.getCoreMsg("not-online", false));
 			return;
 		}
 		Player p = (Player)sender;
@@ -42,7 +41,7 @@ public class EntCountCommand extends ModuleCmd {
 			if (args.length > 0) {
 				if (TypeUtils.isDouble(args[0])) {
 					if (!modInst.perm(p, "entcount.radius")) {
-						sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+						sender.sendMessage(mod.getCoreMsg("no-perm", false));
 						return;
 					}
 					double r = Double.parseDouble(args[0]);
@@ -53,7 +52,7 @@ public class EntCountCommand extends ModuleCmd {
 					printResults(p, ents);
 				} else if (Bukkit.getWorld(args[0]) != null) {
 					if (!modInst.perm(p, "entcount.world")) {
-						sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+						sender.sendMessage(mod.getCoreMsg("no-perm", false));
 						return;
 					}
 					World w = Bukkit.getWorld(args[0]);
@@ -68,7 +67,7 @@ public class EntCountCommand extends ModuleCmd {
 					Selection sel = we.getSelection(p);
 					if (sel != null) {
 						if (!modInst.perm(p, "entcount.selection")) {
-							sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
+							sender.sendMessage(mod.getCoreMsg("not-online", false));
 							return;
 						}
 						List<Entity> selEnts = sel.getWorld().getEntities();
@@ -89,7 +88,7 @@ public class EntCountCommand extends ModuleCmd {
 					}
 				}
 				if (!modInst.perm(p, "entcount.world")) {
-					sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
+					sender.sendMessage(mod.getCoreMsg("not-online", false));
 					return;
 				}
 				p.sendMessage(Clr.GRAY + "Entity count in world: " + p.getWorld().getName());

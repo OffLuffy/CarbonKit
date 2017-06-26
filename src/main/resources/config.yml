@@ -2,57 +2,13 @@ core:
   enable-debug-messages: false
   match-offline-players: false
 modules:
-  CarbonCrafting: true
-  CarbonEssentials: true
   CarbonNews: true
-  CarbonSkulls: true
   CarbonSmite: true
   CarbonTools: true
   CarbonTrivia: true
   CarbonVote: true
   CarbonWatcher: true
   EssentialsAssist: true
-CarbonCrafting:
-  allow-uncrafting: true
-  shaped-recipes:
-    SADDLE:
-      recipe:
-      - ''
-      - LEATHER,,LEATHER
-      - IRON_INGOT,LEATHER,IRON_INGOT
-    NAME_TAG:
-      amount: 2
-      recipe:
-      - PAPER,PAPER,
-      - PAPER,SLIME_BALL,
-      - ',,STRING'
-    DIAMOND_BARDING:
-      recipe:
-      - ',DIAMOND'
-      - DIAMOND,LEATHER,DIAMOND
-      - LEATHER,LEATHER,LEATHER
-    GOLD_BARDING:
-      recipe:
-      - ',GOLD_INGOT,'
-      - GOLD_INGOT,LEATHER,GOLD_INGOT
-      - LEATHER,LEATHER,LEATHER
-    IRON_BARDING:
-      recipe:
-      - ',IRON_INGOT,'
-      - IRON_INGOT,LEATHER,IRON_INGOT
-      - LEATHER,LEATHER,LEATHER
-  shapeless-recipes:
-    LEATHER:
-      recipe:
-      - 2 ROTTEN_FLESH
-      - 1 COAL 1
-    COAL:
-      durability: 1
-      recipe:
-      - 2 COAL
-  furnace-recipes:
-    LEATHER:
-      source: ROTTEN_FLESH
 CarbonSmite:
   range: 100
   radius: 8
@@ -62,9 +18,6 @@ CarbonSmite:
   explosionEffect: false
   lightningEffect: false
   fireworkEffect: true
-CarbonSkulls:
-  buy-price: 5000
-  update-price: 500
 CarbonTools:
   ban-message-settings:
     enable-replace: false

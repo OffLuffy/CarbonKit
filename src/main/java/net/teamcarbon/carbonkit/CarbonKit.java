@@ -5,7 +5,6 @@ import net.milkbowl.vault.permission.Permission;
 import net.teamcarbon.carbonkit.events.coreEvents.FinishModuleLoadingEvent;
 import net.teamcarbon.carbonkit.modules.*;
 import net.teamcarbon.carbonkit.utils.*;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -66,6 +65,7 @@ public class CarbonKit extends JavaPlugin implements Listener {
 		);
 		long time = System.currentTimeMillis();
 		saveDefaultConfig();
+		log = new Log(this, getDebugPath());
 		log.debug("Hooked to Vault after " + (System.currentTimeMillis() - time) + "ms");
 		loadPlugin(time);
 	}
@@ -90,7 +90,6 @@ public class CarbonKit extends JavaPlugin implements Listener {
 		reloadConfig();
 		for (ConfType ct : ConfType.values()) if (ct.isInitialized()) { ct.reloadConfig(); } else { ct.initConfType(); }
 		checkOffline = getConfig().getBoolean("core.match-offline-players", true);
-		CustomMessage.loadMessages();
 		List<Long> times = new ArrayList<>();
 		List<Module> enabledModules = new ArrayList<>(), disabledModules = new ArrayList<>();
 		for (Class<? extends Module> mc : modules) {

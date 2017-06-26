@@ -1,6 +1,5 @@
 package net.teamcarbon.carbonkit.commands.CarbonTools;
 
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,7 +15,7 @@ public class SlapCommand extends ModuleCmd {
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!mod.perm(sender, "slap")) {
-			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+			sender.sendMessage(mod.getCoreMsg("no-perm", false));
 			return;
 		}
 		if (args.length == 0) {

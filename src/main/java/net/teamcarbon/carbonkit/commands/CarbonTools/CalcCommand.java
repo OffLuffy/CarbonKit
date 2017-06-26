@@ -1,6 +1,5 @@
 package net.teamcarbon.carbonkit.commands.CarbonTools;
 
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
 import net.teamcarbon.carbonkit.utils.Messages.Clr;
@@ -17,10 +16,10 @@ public class CalcCommand extends ModuleCmd {
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!mod.perm(sender, "calc")) {
-			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+			sender.sendMessage(mod.getCoreMsg("no-perm", false));
 			return;
 		}
-		String equation = MiscUtils.stringFromArray(" ", args);
+		String equation = MiscUtils.implode(" ",0, args);
 		try {
 			ScriptEngineManager mgr = new ScriptEngineManager();
 			ScriptEngine engine = mgr.getEngineByName("JavaScript");

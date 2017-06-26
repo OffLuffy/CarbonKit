@@ -1,7 +1,6 @@
 package net.teamcarbon.carbonkit.commands.CarbonTools;
 
 import net.teamcarbon.carbonkit.CarbonKit;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.NumUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -19,14 +18,14 @@ public class FakeQuitCommand extends ModuleCmd {
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!mod.perm(sender, "fakequit", "fakequit.others")) {
-			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+			sender.sendMessage(mod.getCoreMsg("no-perm", false));
 			return ;
 		}
 		String user, m, me, addr = NumUtils.rand(16, 255) + "." + NumUtils.rand(16,255) + "." + NumUtils.rand(16, 255) + "." + NumUtils.rand(16,255);
 		HashMap<String, String> rep = new HashMap<>();
 		if (args.length > 0) {
 			if (!mod.perm(sender, "fakequit.others")) {
-				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+				sender.sendMessage(mod.getCoreMsg("no-perm", false));
 				return ;
 			}
 			Player pl = CarbonKit.inst.getServer().getPlayer(args[0]);
@@ -37,7 +36,7 @@ public class FakeQuitCommand extends ModuleCmd {
 			} else user = args[0];
 		} else {
 			if (!mod.perm(sender, "fakequit")) {
-				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+				sender.sendMessage(mod.getCoreMsg("no-perm", false));
 				return ;
 			}
 			if (sender instanceof Player) {
@@ -49,9 +48,8 @@ public class FakeQuitCommand extends ModuleCmd {
 		rep.put("{STATUS}", "");
 		rep.put("{PLAYER}", user);
 		rep.put("{IP}", addr);
-		m = CustomMessage.MISC_QUIT.noPre(rep);
-		me = CustomMessage.MISC_QUIT_EXT.noPre(rep);
-		Player p = (Player)sender;
+		m = mod.getMsg("quit-message", false, rep);
+		me = mod.getMsg("quit-message-extended", false, rep);
 		String statuses = "";
 		for (Player opl : CarbonKit.inst.getServer().getOnlinePlayers())
 			if(modInst.perm(opl, "quitmsg.extended")) opl.sendMessage(me); else opl.sendMessage(m);

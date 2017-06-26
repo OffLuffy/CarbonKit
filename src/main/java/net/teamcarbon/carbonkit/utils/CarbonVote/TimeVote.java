@@ -1,7 +1,7 @@
 package net.teamcarbon.carbonkit.utils.CarbonVote;
 
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
+import net.teamcarbon.carbonkit.utils.Module;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import net.teamcarbon.carbonkit.utils.MiscUtils;
@@ -43,19 +43,19 @@ public class TimeVote extends Vote {
 		world.setTime(time);
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{TIME}", CarbonVoteModule.stringifyTime(time));
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_TIME_VOTE_PASSED.pre(rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, Module.getMsg("carbonvote", "time-vote-passed", true, rep));
 	}
 	protected void voteFail() {
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{YESPERCENT}", String.format(Locale.ENGLISH, "%.2f", getAgreePercentage(true)));
 		rep.put("{NOPERCENT}", String.format(Locale.ENGLISH, "%.2f", (100 - getAgreePercentage(true))));
 		rep.put("{VOTETYPE}", "Time");
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_FAILED.pre(rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, Module.getMsg("carbonvote", "vote-failed", true, rep));
 	}
 	protected void broadcastStart() {
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{VOTETYPE}", "time");
 		rep.put("{VOTEREASON}", "for " + CarbonVoteModule.stringifyTime(time));
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_STARTED.pre(rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, Module.getMsg("carbonvote", "vote-started", true, rep));
 	}
 }

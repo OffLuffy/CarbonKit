@@ -5,7 +5,6 @@ import net.teamcarbon.carbonkit.events.triviaEvents.TriviaUserBlacklistedEvent;
 import net.teamcarbon.carbonkit.utils.*;
 import net.teamcarbon.carbonkit.utils.CarbonTrivia.Question;
 import net.teamcarbon.carbonkit.utils.CarbonTrivia.TriviaRound;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Messages.Clr;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,6 +14,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.commands.CarbonTrivia.CarbonTriviaCommand;
+
+import java.util.HashMap;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CarbonTriviaModule extends Module {
@@ -29,8 +30,8 @@ public class CarbonTriviaModule extends Module {
 	public void initModule() {
 		inst = this;
 		Question.loadQuestions();
-		mpre = CustomMessage.CT_MPREFIX.noPre();
-		qpre = CustomMessage.CT_QPREFIX.noPre();
+		mpre = getMsg("message-prefix", false);
+		qpre = getMsg("question-prefix", false);
 		tconf = CarbonKit.getConfig(ConfType.TRIVIA);
 		addCmd(new CarbonTriviaCommand(this));
 		registerListeners();
@@ -75,7 +76,9 @@ public class CarbonTriviaModule extends Module {
 								r.blacklistPlayer(p);
 								p.sendMessage(mpre + Clr.RED + "Auto-answer detected, you've been disqualified");
 								CarbonKit.log.warn(p.getName() + " is answering too quickly, disqualifying them for this round");
-								TriviaRound.mbc(CustomMessage.CT_CHEAT_DETECT.noPre().replace("{PLAYER}", p.getName()));
+								HashMap<String, String> rep = new HashMap<>();
+								rep.put("{PLAYER}", p.getName());
+								TriviaRound.mbc(getMsg("cheat-detected", false, rep));
 							}
 						}
 					} else {

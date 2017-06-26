@@ -2,7 +2,6 @@ package net.teamcarbon.carbonkit.commands.CarbonTools;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.FormattedMessage;
 import net.teamcarbon.carbonkit.utils.Messages.Clr;
 import net.teamcarbon.carbonkit.utils.MiscUtils;
@@ -46,21 +45,21 @@ public class TicketCommand extends ModuleCmd {
 			String fa = args[0].toLowerCase();
 			if (MiscUtils.eq(args[0], "new", "create", "n", "c")) {
 				if (!mod.perm(s, p + "create")) {
-					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+					s.sendMessage(mod.getCoreMsg("no-perm", false));
 					return;
 				}
-				if (args.length < 5 || MiscUtils.stringFromSubArray(" ", 1, args).length() < 16) {
+				if (args.length < 5 || MiscUtils.implode(" ", 1, args).length() < 16) {
 					s.sendMessage(Clr.RED + "/" + l + " " + fa + " <msg>" + Clr.GRAY + " - Creates a new ticket (message is required)");
 					return;
 				}
-				int tid = createTicket(s instanceof Player ? ((Player) s) : null, MiscUtils.stringFromSubArray(" ", 1, args));
+				int tid = createTicket(s instanceof Player ? ((Player) s) : null, MiscUtils.implode(" ", 1, args));
 				s.sendMessage(Clr.GOLD + "[Tickets] " + Clr.AQUA + "created ticket #" + tid);
 				List<Player> avoid = isConsole ? new ArrayList<>() : MiscUtils.quickList((Player) s);
 				MiscUtils.permBroadcast(p + "notify.create", avoid, Clr.DARKAQUA + "[Tickets] " + Clr.NOTE +
 						(isConsole ? "Console" : s.getName()) + " created ticket #" + tid);
 			} else if (MiscUtils.eq(args[0], "append", "a")) {
 				if (!mod.perm(s, p + "append.others", p + "append.self")) {
-					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+					s.sendMessage(mod.getCoreMsg("no-perm", false));
 					return;
 				}
 				if (args.length < 3) {
@@ -78,7 +77,7 @@ public class TicketCommand extends ModuleCmd {
 				}
 				if (isConsole || mod.perm(s, p + "append.others")
 						|| (isAuthor(((Player) s).getUniqueId(), tid) && mod.perm(s, p + "append.self"))) {
-					appendToTicket(tid, MiscUtils.stringFromSubArray(" ", 2, args));
+					appendToTicket(tid, MiscUtils.implode(" ", 2, args));
 					s.sendMessage(Clr.GOLD + "[Tickets] " + Clr.AQUA + "Modified ticket #" + tid);
 					List<Player> avoid = MiscUtils.quickList((Player) s);
 					MiscUtils.permBroadcast(p + "notify.append", avoid, Clr.DARKAQUA + "[Tickets] " + Clr.NOTE +
@@ -86,7 +85,7 @@ public class TicketCommand extends ModuleCmd {
 				}
 			} else if (MiscUtils.eq(args[0], "delete", "remove", "del", "rem")) {
 				if (!mod.perm(s, p + "delete.others", p + "delete.self")) {
-					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+					s.sendMessage(mod.getCoreMsg("no-perm", false));
 					return;
 				}
 				if (args.length < 2) {
@@ -122,7 +121,7 @@ public class TicketCommand extends ModuleCmd {
 				}
 			} else if (MiscUtils.eq(args[0], "info", "i")) {
 				if (!mod.perm(s, p + "info.others", p + "info.self")) {
-					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+					s.sendMessage(mod.getCoreMsg("no-perm", false));
 					return;
 				}
 				if (args.length < 2) {
@@ -144,14 +143,14 @@ public class TicketCommand extends ModuleCmd {
 						Calendar cal = Calendar.getInstance();
 						Ticket t = new Ticket(tid);
 						cal.setTimeInMillis(t.time);
-						CustomMessage.printHeader(s, "Ticket #" + tid + " Info");
+						MiscUtils.printHeader(s, "Ticket #" + tid + " Info");
 						if (!t.consoleAuthor) {
 							s.sendMessage(Clr.AQUA + "Author ID: " + Clr.DARKAQUA + t.author.toString());
 							s.sendMessage(Clr.AQUA + "Author Name: " + Clr.DARKAQUA + t.authorName);
 						} else { s.sendMessage(Clr.AQUA + "Author: " + Clr.DARKAQUA + "Console"); }
 						s.sendMessage(Clr.AQUA + "Time: " + Clr.DARKAQUA + getTimePrint(cal));
 						if (t.witnesses.size() > 0)
-							s.sendMessage(Clr.AQUA + "Witnesses: " + Clr.DARKAQUA + MiscUtils.stringFromArray(", ", t.witnesses.toArray()));
+							s.sendMessage(Clr.AQUA + "Witnesses: " + Clr.DARKAQUA + MiscUtils.implode(", ",0, t.witnesses.toArray()));
 						s.sendMessage(Clr.AQUA + "Message: " + Clr.DARKAQUA + t.msg);
 						FormattedMessage fm = new FormattedMessage("");
 						if (isConsole || mod.perm(s, p + "delete.others") || (isAuthor(((Player) s).getUniqueId(), tid)
@@ -160,14 +159,14 @@ public class TicketCommand extends ModuleCmd {
 									.tooltip("Click to delete this ticket");
 							fm.send((Player) s);
 						}
-						CustomMessage.printFooter(s);
+						MiscUtils.printFooter(s);
 					} catch (Exception e) {
 						sender.sendMessage(Clr.RED + "There was an error loading the specified ticket");
 					}
 				}
 			} else if (MiscUtils.eq(args[0], "listall", "viewall", "la", "va")) {
 				if (!mod.perm(s, p + "view.all")) {
-					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+					s.sendMessage(mod.getCoreMsg("no-perm", false));
 					return;
 				}
 				int page = 1;
@@ -178,15 +177,15 @@ public class TicketCommand extends ModuleCmd {
 				int pages = tickets.size() % PER_PAGE > 0 ? tickets.size() / PER_PAGE + 1 : tickets.size() / PER_PAGE;
 				page = NumUtils.normalizeInt(page, 1, pages);
 				int low = (page-1) * PER_PAGE, high = ((page-1) * PER_PAGE) + PER_PAGE;
-				CustomMessage.printHeader(s, "All Tickets (pg " + page + "/" + pages + ")");
+				MiscUtils.printHeader(s, "All Tickets (pg " + page + "/" + pages + ")");
 				for (Ticket t : tickets.subList(low, NumUtils.normalizeInt(high, 0, tickets.size()))) { listTicket(t, true); }
 				if (isConsole)
-					CustomMessage.printFooter(s);
+					MiscUtils.printFooter(s);
 				else
-					CustomMessage.printPaginatedFooter((Player) s, pages, page, "/" + l + " " + fa + " %d");
+					MiscUtils.printPaginatedFooter((Player) s, pages, page, "/" + l + " " + fa + " %d");
 			} else if (MiscUtils.eq(args[0], "list", "view", "l", "v")) {
 				if (!mod.perm(s, p + "view")) {
-					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+					s.sendMessage(mod.getCoreMsg("no-perm", false));
 					return;
 				}
 				int page = 1;
@@ -201,15 +200,15 @@ public class TicketCommand extends ModuleCmd {
 				int pages = tickets.size() % PER_PAGE > 0 ? tickets.size() / PER_PAGE + 1 : tickets.size() / PER_PAGE;
 				page = NumUtils.normalizeInt(page, 1, pages);
 				int low = (page-1) * PER_PAGE, high = ((page-1) * PER_PAGE) + PER_PAGE;
-				CustomMessage.printHeader(s, "Your Tickets (pg " + page + "/" + pages + ")");
+				MiscUtils.printHeader(s, "Your Tickets (pg " + page + "/" + pages + ")");
 				for (Ticket t : tickets.subList(low, NumUtils.normalizeInt(high, 0, tickets.size()))) { listTicket(t, false); }
 				if (isConsole)
-					CustomMessage.printFooter(s);
+					MiscUtils.printFooter(s);
 				else
-					CustomMessage.printPaginatedFooter((Player) s, pages, page, "/" + l + " " + fa + " %d");
+					MiscUtils.printPaginatedFooter((Player) s, pages, page, "/" + l + " " + fa + " %d");
 			} else if (MiscUtils.eq(args[0], "search", "find", "s", "f")) {
 				if (!mod.perm(s, p + "search.others", p + "search.self")) {
-					s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+					s.sendMessage(mod.getCoreMsg("no-perm", false));
 					return;
 				}
 				if (args.length < 2) {
@@ -232,8 +231,8 @@ public class TicketCommand extends ModuleCmd {
 					page = Integer.parseInt(args[1]);
 				} else {
 					CarbonKit.log.debug("New search created");
-					String query = MiscUtils.stringFromSubArray(" ", 2, args);
-					found = searchTickets(MiscUtils.stringFromSubArray(" ", 2, query), ownerFilter);
+					String query = MiscUtils.implode(" ", 2, args);
+					found = searchTickets(MiscUtils.implode(" ", 2, query), ownerFilter);
 					if (!isConsole) lastSearch.put(((Player) s).getUniqueId(), query);
 					else lastConsoleSearch = query;
 					sender.sendMessage(Clr.NOTE + "View other pages with " + Clr.DARKAQUA + "/" + l + " " + fa + " <pageNum>");
@@ -241,12 +240,12 @@ public class TicketCommand extends ModuleCmd {
 				if (found.isEmpty()) { s.sendMessage(Clr.DARKAQUA + "Could not find tickets matching the search"); return; }
 				int low = (page-1) * PER_PAGE, high = ((page-1) * PER_PAGE) + PER_PAGE;
 				int pages = found.size() % PER_PAGE > 0 ? found.size() / PER_PAGE + 1 : found.size() / PER_PAGE;
-				CustomMessage.printHeader(s, "Ticket Search Results");
+				MiscUtils.printHeader(s, "Ticket Search Results");
 				for (Ticket t : found.subList(low, NumUtils.normalizeInt(high, 0, found.size()))) listTicket(t, mod.perm(s, p + "search.others"));
 				if (isConsole)
-					CustomMessage.printFooter(s);
+					MiscUtils.printFooter(s);
 				else
-					CustomMessage.printPaginatedFooter((Player) s, pages, page, "/" + l + " " + fa + " %d");
+					MiscUtils.printPaginatedFooter((Player) s, pages, page, "/" + l + " " + fa + " %d");
 			} else if (MiscUtils.eq(args[0], "cancel")) {
 				if (delConfirm.containsKey(((Player) s).getUniqueId())) {
 					delConfirm.remove(((Player) s).getUniqueId());
@@ -360,12 +359,12 @@ public class TicketCommand extends ModuleCmd {
 		if (s == null) return;
 		if (mod.perm(s, p + "create", p + "append.others", p + "append.self", p + "delete.others", p + "delete.self",
 				p + "info.others", p + "info.self", p + "view.all", p + "view", p + "search.others", p + "search.self")) {
-			CustomMessage.printHeader(s, "Ticket Help");
+			MiscUtils.printHeader(s, "Ticket Help");
 			s.sendMessage(Clr.NOTE + "Tickets are used to report infractions, suggest new ideas, etc. If " +
 					"reporting rule breakers, try to include the time of the incident and any relevant details. " +
 					"If you need to add text to the ticket, use " + Clr.DARKAQUA + "/" + l + " append");
 			s.sendMessage(Clr.NOTE + "The time and players online when created are recorded.");
-			CustomMessage.printDivider(s);
+			MiscUtils.printDivider(s);
 			h("new <msg>", "Creates a new ticket", p + "create");
 			h("append <ID> <msg>", "Adds text to existing ticket", p + "append.others", p + "append.self");
 			h("delete <ID>", "Deletes a ticket", p + "delete.others", p + "delete.self");
@@ -373,9 +372,9 @@ public class TicketCommand extends ModuleCmd {
 			h("listall [#]", "Lists all tickets", p + "view.all");
 			h("list [#]", "Lists your tickets", p + "view");
 			h("search <query|#>", "Search tickets or view result page", p + "search.others", p + "search.self");
-			CustomMessage.printFooter(s);
+			MiscUtils.printFooter(s);
 		} else {
-			s.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+			s.sendMessage(mod.getCoreMsg("no-perm", false));
 		}
 	}
 	/* short-hand to perm-check and print a command help line */

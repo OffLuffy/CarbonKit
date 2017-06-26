@@ -55,8 +55,8 @@ public class CarbonCoreModule extends Module {
 	@EventHandler
 	public void finishedLoading(FinishModuleLoadingEvent e) {
 		String enabled = "enabled: ", disabled = "disabled: ";
-		enabled += MiscUtils.stringFromArray(", ", e.getEnabledModules());
-		disabled += MiscUtils.stringFromArray(", ", e.getDisabledModules());
+		enabled += MiscUtils.implode(", ",0, e.getEnabledModules());
+		disabled += MiscUtils.implode(", ",0, e.getDisabledModules());
 		CarbonKit.log.info("CarbonKit finished loading modules.");
 		CarbonKit.log.log(LIME + enabled);
 		CarbonKit.log.log(RED + disabled);

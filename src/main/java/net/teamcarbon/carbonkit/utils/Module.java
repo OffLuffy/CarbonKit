@@ -1,9 +1,6 @@
 package net.teamcarbon.carbonkit.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
@@ -59,7 +56,7 @@ public abstract class Module implements Listener {
 		setEnabled(this instanceof CarbonCoreModule || (isConfigEnabled() && hasAllDependencies()));
 		if (isConfigEnabled() && !hasAllDependencies()) {
 			CarbonKit.log.warn(getName() + " module could not be enabled, server does not meet some requirements. This module requires:");
-			CarbonKit.log.warn("Plugins: " + MiscUtils.stringFromArray(", ", getDependencies()));
+			CarbonKit.log.warn("Plugins: " + MiscUtils.implode(", ",0, getDependencies()));
 			CarbonKit.log.warn("Required Bukkit server version: " + reqVer);
 		}
 		base.getConfig().set("modules." + getName(), isEnabled());
@@ -209,12 +206,11 @@ public abstract class Module implements Listener {
 		}
 		return null;
 	}
-
 	/**
 	 * Fetches a message from the core message set
 	 * @param msgKey The key of the message to find
 	 * @param prefix Whether or not to append the prefix to the message
-	 * @return Returns a message from this module's message set or null if not found
+	 * @return Returns a message from the core module's message set or null if not found
 	 */
 	public String getCoreMsg(String msgKey, boolean prefix) {
 		ConfigurationSection msgSect = CarbonKit.getConfig(ConfType.MESSAGES).getConfigurationSection("carbonkit");
@@ -229,6 +225,28 @@ public abstract class Module implements Listener {
 			return msg;
 		}
 		return null;
+	}
+	/**
+	 * Fetches a message from this module's message set
+	 * @param msgKey The key of the message to find
+	 * @param prefix Whether or not to append the prefix to the message
+	 * @param rep A HashMap<String, String> of placeholders to find and what to replace them with
+	 * @return Returns a message from this module's message set with replaced placeholders or null if not found
+	 */
+	public String getMsg(String msgKey, boolean prefix, HashMap<String, String> rep) {
+		String msg = getMsg(msgKey, prefix);
+		return MiscUtils.massReplace(msg, rep);
+	}
+	/**
+	 * Fetches a message from the core message set
+	 * @param msgKey The key of the message to find
+	 * @param prefix Whether or not to append the prefix to the message
+	 * @param rep A HashMap<String, String> of placeholders to find and what to replace them with
+	 * @return Returns a message from the core module's message set or null if not found
+	 */
+	public String getCoreMsg(String msgKey, boolean prefix, HashMap<String, String> rep) {
+		String msg = getCoreMsg(msgKey, prefix);
+		return MiscUtils.massReplace(msg, rep);
 	}
 	/**
 	 * Prefixes all permissions with 'carbonkit.[modulename].' before checking.
@@ -311,6 +329,18 @@ public abstract class Module implements Listener {
 	 */
 	public static void flushData() {
 		if (modules != null && !modules.isEmpty()) modules.clear(); else modules = new ArrayList<>();
+	}
+
+	public static String getMsg(String moduleName, String msgKey, boolean prefix) {
+		Module m = getModule(moduleName);
+		if (m != null) { return m.getMsg(msgKey, prefix); }
+		return null;
+	}
+
+	public static String getMsg(String moduleName, String msgKey, boolean prefix, HashMap<String, String> rep) {
+		Module m = getModule(moduleName);
+		if (m != null) { return m.getMsg(msgKey, prefix, rep); }
+		return null;
 	}
 
 	/*=======================[ OVERRIDES ]=======================*/

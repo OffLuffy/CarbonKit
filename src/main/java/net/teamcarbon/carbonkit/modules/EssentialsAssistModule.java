@@ -1,6 +1,5 @@
 package net.teamcarbon.carbonkit.modules;
 
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.UserStore;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -120,11 +119,11 @@ public class EssentialsAssistModule extends Module {
 			if (!isEssVanished(pl) && !canInteract(pl)) {
 				setInteract(pl, false);
 				if (getConfig().getBoolean("message-on-auto-anti-interact", false))
-					pl.sendMessage(CustomMessage.EA_ANTIINTERACT_AUTO_DISABLE.pre());
+					pl.sendMessage(getMsg("anti-interact-disable-self", true));
 			} else if (isEssVanished(pl) && canInteract(pl)) {
 				setInteract(pl, true);
 				if (getConfig().getBoolean("message-on-auto-anti-interact", false))
-					pl.sendMessage(CustomMessage.EA_ANTIINTERACT_AUTO_ENABLE.pre());
+					pl.sendMessage(getMsg("anti-interact-enable-self", true));
 			}
 		}
 	}

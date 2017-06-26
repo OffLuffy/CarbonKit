@@ -5,8 +5,6 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import java.lang.reflect.Field;
-
 @SuppressWarnings("unused")
 public class TitleHelper implements Listener {
 	private static final int[] DEF_TIMES = {10, 40, 10};
@@ -43,26 +41,6 @@ public class TitleHelper implements Listener {
 		IChatBaseComponent actionMessage = IChatBaseComponent.ChatSerializer.a(MiscUtils.repVars(Messages.Clr.trans(message), player));
 		// sendPacket(player, new PacketPlayOutChat(actionMessage, (byte) 2));
 		sendPacket(player, new PacketPlayOutChat(actionMessage, ChatMessageType.CHAT));
-	}
-
-	// Tab Title/Footer API
-	public static void sendTabTitle(Player player, String header, String footer) {
-		sendRawTabTitle(player, jsonWrap(header), jsonWrap(footer));
-	}
-	public static void sendTabTitle(Player player, FormattedMessage header, FormattedMessage footer) {
-		sendRawTabTitle(player, header.toJSONString(), footer.toJSONString());
-	}
-	public static void sendRawTabTitle(Player player, String header, String footer) {
-		IChatBaseComponent tabTitle = IChatBaseComponent.ChatSerializer.a(MiscUtils.repVars(header, player));
-		IChatBaseComponent tabFoot = IChatBaseComponent.ChatSerializer.a(MiscUtils.repVars(footer, player));
-		//PacketPlayOutPlayerListHeaderFooter headerPacket = new PacketPlayOutPlayerListHeaderFooter(tabTitle);
-		PacketPlayOutPlayerListHeaderFooter headerPacket = new PacketPlayOutPlayerListHeaderFooter();
-		try {
-			Field field = headerPacket.getClass().getDeclaredField("b");
-			field.setAccessible(true);
-			field.set(headerPacket, tabFoot);
-		} catch (Exception ignored) {}
-		sendPacket(player, headerPacket);
 	}
 
 	// Private Methods

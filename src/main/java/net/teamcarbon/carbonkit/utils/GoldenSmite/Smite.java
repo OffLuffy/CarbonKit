@@ -3,7 +3,6 @@ package net.teamcarbon.carbonkit.utils.GoldenSmite;
 import java.util.ArrayList;
 
 import net.teamcarbon.carbonkit.modules.CarbonSmiteModule;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.EntHelper;
 import net.teamcarbon.carbonkit.utils.EntHelper.EntityGroup;
 import net.teamcarbon.carbonkit.utils.LocUtils;
@@ -52,7 +51,7 @@ public class Smite {
 	
 	public static void smitePlayer(CommandSender p, Player vic) {
 		if (!(p instanceof Player)) {
-			p.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
+			p.sendMessage(modInst.getCoreMsg("not-online", false));
 			return;
 		}
 		smitePlayer((Player)p, vic);

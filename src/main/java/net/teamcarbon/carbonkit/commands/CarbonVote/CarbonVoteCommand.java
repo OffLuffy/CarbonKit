@@ -2,9 +2,8 @@ package net.teamcarbon.carbonkit.commands.CarbonVote;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
+import net.teamcarbon.carbonkit.utils.*;
 import net.teamcarbon.carbonkit.utils.CarbonVote.*;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
-import net.teamcarbon.carbonkit.utils.TypeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -13,13 +12,10 @@ import org.bukkit.entity.Player;
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.events.voteEvents.VoteCastEvent;
 import net.teamcarbon.carbonkit.events.voteEvents.VoteStartEvent;
-import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonkit.utils.ModuleCmd;
 import net.teamcarbon.carbonkit.utils.CarbonVote.TargetedVote.TargetedVoteType;
 import net.teamcarbon.carbonkit.utils.CarbonVote.Vote.VoteType;
 import net.teamcarbon.carbonkit.utils.CarbonVote.WeatherVote.WeatherType;
 import net.teamcarbon.carbonkit.utils.Messages.Clr;
-import net.teamcarbon.carbonkit.utils.MiscUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -31,20 +27,20 @@ public class CarbonVoteCommand extends ModuleCmd {
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
+			sender.sendMessage(mod.getCoreMsg("not-online", false));
 			return;
 		}
 		if (args.length < 1 || MiscUtils.eq(args[0], "help")) {
 			if (!mod.perm(sender, "help")) {
-				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+				sender.sendMessage(mod.getCoreMsg("no-perm", false));
 			} else if(!mod.perm(sender, "startvote.weather", "startvote.time", "startvote.ban",
 					"startvote.kick", "startvote.mute", "startvote.trivia")) {
 				if (CarbonVoteModule.isVoteOngoing()) {
 					if (!mod.perm(sender, "vote." + CarbonVoteModule.getActiveVote().getType())) {
-						sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+						sender.sendMessage(mod.getCoreMsg("no-perm", false));
 					}
 				} else {
-					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+					sender.sendMessage(mod.getCoreMsg("no-perm", false));
 				}
 			} else {
 
@@ -62,7 +58,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 						bypassKick = mod.perm(sender, "bypassprice.kick"),
 						bypassMute = mod.perm(sender, "bypassprice.mute");
 
-				CustomMessage.printHeader(sender, "Vote Help");
+				MiscUtils.printHeader(sender, "Vote Help");
 				if (CarbonVoteModule.isVoteTypeEnabled(VoteType.WEATHER) && mod.perm(sender, "startvote.weather")) {
 					sender.sendMessage(Clr.AQUA + "/cv w [clear|storm|rain]" + Clr.DARKAQUA + " - Vote to change weather"
 							+ ((!bypassWeather && weatherPrice > 0) ? Clr.NOTE + " (" + weatherPrice + ")" : ""));
@@ -89,19 +85,19 @@ public class CarbonVoteCommand extends ModuleCmd {
 					sender.sendMessage(Clr.AQUA + "/cv tr" + Clr.DARKAQUA + " - Vote to start a round of trivia");
 				if (CarbonVoteModule.isVoteOngoing()) {
 					Vote v = CarbonVoteModule.getActiveVote();
-					if (v instanceof TargetedVote &&((TargetedVote)v).getTarget().equals(sender)) // TODO <--- Make sure this is viable - CommandSender.equals(OfflinePlayer)
+					if (v instanceof TargetedVote &&((TargetedVote)v).getTarget().equals(sender))
 						return;
 					HashMap<String, String> rep = new HashMap<>();
 					String vt = v.getTypeName();
 					rep.put("{VOTETYPE}", vt);
-					if (sender.equals(v.getVoteStarter())) { // TODO <--- Make sure this is viable - CommandSender.equals(OfflinePlayer)
+					if (sender.equals(v.getVoteStarter())) {
 						rep.put("{YESPERCENT}", String.format(Locale.ENGLISH, "%.2f", v.getAgreePercentage(true)));
 						rep.put("{NOPERCENT}", String.format(Locale.ENGLISH, "%.2f", 100f-v.getAgreePercentage(true)));
-						sender.sendMessage(CustomMessage.CV_OWNER_HELP.pre(rep));
+						sender.sendMessage(mod.getMsg("starter-help", true, rep));
 						return;
 					}
 					if (mod.perm(sender, "vote." + vt)) {
-						sender.sendMessage(CustomMessage.CV_VOTER_HELP.pre(rep));
+						sender.sendMessage(mod.getMsg("voter-help", true, rep));
 					}
 				}
 			}
@@ -123,17 +119,17 @@ public class CarbonVoteCommand extends ModuleCmd {
 					Vote v = CarbonVoteModule.getActiveVote();
 					if (v instanceof TargetedVote) {
 						if (((TargetedVote)v).getTarget().equals(sender)) {
-							sender.sendMessage(CustomMessage.CV_BLOCKED.pre());
+							sender.sendMessage(mod.getMsg("blocked", true));
 							return;
 						}
 					}
 					if (!mod.perm(sender, "vote." + v.getType().lname())) {
-						sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+						sender.sendMessage(mod.getCoreMsg("no-perm", false));
 						return;
 					}
 					Player pl = (Player)sender;
 					if (v.getAgrees().contains(pl) || v.getDisagrees().contains(pl)) {
-						sender.sendMessage(CustomMessage.CV_ALREADY_VOTED.pre());
+						sender.sendMessage(mod.getMsg("already-voted", true));
 						return;
 					}
 					String type = CarbonVoteModule.getActiveVote().getType().name();
@@ -148,12 +144,12 @@ public class CarbonVoteCommand extends ModuleCmd {
 							rep.put("{VOTED}", TypeUtils.toBoolean(args[0]) ? "in favor of" : "against");
 							rep.put("{VOTETYPE}", v.getTypeName());
 							MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList(pl),
-									CustomMessage.CV_VOTE_CAST_BROADCAST.pre(rep));
+									mod.getMsg("vote-cast-broadcast", true, rep));
 						}
 					}
 					return;
 				} else {
-					sender.sendMessage(CustomMessage.CV_NO_VOTE.pre());
+					sender.sendMessage(mod.getMsg("no-vote", true));
 					return;
 				}
 			}
@@ -162,12 +158,12 @@ public class CarbonVoteCommand extends ModuleCmd {
 			// Check to see if a vote is already active
 			if (CarbonVoteModule.isVoteOngoing()) {
 				rep.put("{VOTETYPE}", CarbonVoteModule.getActiveVote().getTypeName());
-				sender.sendMessage(CustomMessage.CV_VOTE_EXISTS.pre(rep));
+				sender.sendMessage(mod.getMsg("vote-exists", true, rep));
 				return;
 			}
 			// Check if vote-type specified is valid
 			if (CarbonVoteModule.getVoteType(args[0]) == null) {
-				sender.sendMessage(CustomMessage.CV_INVALID_VOTETYPE.pre());
+				sender.sendMessage(mod.getMsg("invalid-votetype", true));
 				return;
 			}
 			VoteType vt = CarbonVoteModule.getVoteType(args[0]);
@@ -175,11 +171,11 @@ public class CarbonVoteCommand extends ModuleCmd {
 				TargetedVoteType tvt = CarbonVoteModule.getTargetedVoteType(args[0]);
 				if (tvt != null)
 					if (!CarbonVoteModule.isVoteTypeEnabled(tvt)) {
-						sender.sendMessage(CustomMessage.CV_INVALID_VOTETYPE.pre());
+						sender.sendMessage(mod.getMsg("invalid-votetype", true));
 						return;
 					}
 			} else if (!CarbonVoteModule.isVoteTypeEnabled(vt)) {
-				sender.sendMessage(CustomMessage.CV_INVALID_VOTETYPE.pre());
+				sender.sendMessage(mod.getMsg("invalid-votetype", true));
 				return;
 			}
 			if (vt == VoteType.TARGETED) {
@@ -193,7 +189,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 			}
 			// Check if sender has perm to start this vote-type
 			if (!mod.perm(sender, "startvote." + rep.get("{VOTETYPE}"))) {
-				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+				sender.sendMessage(mod.getCoreMsg("no-perm", false));
 				return;
 			}
 			// Check to see if this vote-type has been used too recently
@@ -212,7 +208,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 					} else { // Second(s) remain
 						rep.put("{REMAININGTIME}", rem + " seconds");
 					}
-					sender.sendMessage(CustomMessage.CV_MUST_WAIT.pre(rep));
+					sender.sendMessage(mod.getMsg("must-wait", true, rep));
 					return;
 				}
 			}
@@ -221,7 +217,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 			if (votePrice > 0.0 && !mod.perm(sender, "bypassprice." + rep.get("{VOTETYPE}"))) {
 				if (!CarbonKit.econ.has((OfflinePlayer)sender, votePrice)) {
 					rep.put("{VOTECOST}", CarbonKit.econ.format(votePrice));
-					sender.sendMessage(CustomMessage.CV_NOT_ENOUGH_MONEY.pre(rep));
+					sender.sendMessage(mod.getMsg("not-enough-money", true, rep));
 				}
 			}
 			// Check to see if there's enough players to start this vote-type
@@ -229,13 +225,13 @@ public class CarbonVoteCommand extends ModuleCmd {
 				TargetedVoteType tvt = CarbonVoteModule.getTargetedVoteType(args[0]);
 				if (!CarbonVoteModule.hasEnoughPlayers(vt)) {
 					rep.put("{MOREPLAYERS}", CarbonVoteModule.additionalNeeded(tvt) + "");
-					sender.sendMessage(CustomMessage.CV_NOT_ENOUGH_PLAYERS.pre(rep));
+					sender.sendMessage(mod.getMsg("not-enough-players", true, rep));
 					return;
 				}
 			} else {
 				if (!CarbonVoteModule.hasEnoughPlayers(vt)) {
 					rep.put("{MOREPLAYERS}", CarbonVoteModule.additionalNeeded(vt) + "");
-					sender.sendMessage(CustomMessage.CV_NOT_ENOUGH_PLAYERS.pre(rep));
+					sender.sendMessage(mod.getMsg("not-enough-players", true, rep));
 					return;
 				}
 			}
@@ -247,7 +243,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 						EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer)sender, votePrice);
 						start = er.transactionSuccess();
 						rep.put("{VOTEPRICE}", votePrice+"");
-						if (start) { sender.sendMessage(CustomMessage.CT_CHARGED.pre(rep)); }
+						if (start) { sender.sendMessage(mod.getMsg("charged", true, rep)); }
 					}
 					if (start) {
 						WeatherType wt = WeatherVote.getWeatherType(args[1]);
@@ -256,7 +252,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 						CarbonKit.pm.callEvent(vse);
 						if (!vse.isCancelled()) CarbonVoteModule.startVote(wv);
 					} else {
-						sender.sendMessage(CustomMessage.CV_ECON_ERROR.pre());
+						sender.sendMessage(mod.getMsg("econ-error", true));
 					}
 				} else {
 					sender.sendMessage(Clr.RED + "Usage: /cv w [weathertype]");
@@ -269,7 +265,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 						EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer)sender, votePrice);
 						start = er.transactionSuccess();
 						rep.put("{VOTEPRICE}", votePrice+"");
-						if (start) { sender.sendMessage(CustomMessage.CT_CHARGED.pre(rep)); }
+						if (start) { sender.sendMessage(mod.getMsg("charged", true, rep)); }
 					}
 					if (start) {
 						long time = CarbonVoteModule.parseTime(args[1]);
@@ -278,7 +274,7 @@ public class CarbonVoteCommand extends ModuleCmd {
 						CarbonKit.pm.callEvent(vse);
 						if (!vse.isCancelled()) CarbonVoteModule.startVote(tv);
 					} else {
-						sender.sendMessage(CustomMessage.CV_ECON_ERROR.pre());
+						sender.sendMessage(mod.getMsg("econ-error", true));
 					}
 				} else {
 					sender.sendMessage(Clr.RED + "Usage: /cv t [time]");
@@ -290,30 +286,30 @@ public class CarbonVoteCommand extends ModuleCmd {
 					TriviaVote trv = new TriviaVote((OfflinePlayer) sender);
 					VoteStartEvent vse = new VoteStartEvent((Player) sender, trv);
 					if (!vse.isCancelled()) CarbonVoteModule.startVote(trv);
-				} else { sender.sendMessage(CustomMessage.CV_TRIVIA_DISABLED.pre()); }
+				} else { sender.sendMessage(mod.getMsg("trivia-disabled", true)); }
 			} else if (MiscUtils.eq(args[0], "ban", "b")) {
 				if (args.length > 1) {
 					if (Bukkit.getPlayer(args[0]) != null) {
 						if (modInst.perm(Bukkit.getPlayer(args[0]), "exempt.ban-vote")) {
 							rep.put("{ACTTION}", "banned");
-							sender.sendMessage(CustomMessage.CV_EXEMPT.pre(rep));
+							sender.sendMessage(mod.getMsg("exempt", true, rep));
 						}
 						boolean start = true;
 						if (votePrice > 0.0 && !mod.perm(sender, "bypassprice." + rep.get("{VOTETYPE}"))) {
 							EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer)sender, votePrice);
 							start = er.transactionSuccess();
 							rep.put("{VOTEPRICE}", votePrice+"");
-							if (start) { sender.sendMessage(CustomMessage.CT_CHARGED.pre(rep)); }
+							if (start) { sender.sendMessage(mod.getMsg("charged", true, rep)); }
 						}
 						if (start) {
 							BanVote bv = new BanVote((OfflinePlayer) sender, Bukkit.getPlayer(args[0]));
 							VoteStartEvent vse = new VoteStartEvent((Player) sender, bv);
 							if (!vse.isCancelled()) CarbonVoteModule.startVote(bv);
 						} else {
-							sender.sendMessage(CustomMessage.CV_ECON_ERROR.pre());
+							sender.sendMessage(mod.getMsg("econ-error", true));
 						}
 					} else {
-						sender.sendMessage(CustomMessage.GEN_PLAYER_NOT_FOUND.pre());
+						sender.sendMessage(mod.getCoreMsg("player-not-found", true));
 					}
 				} else {
 					sender.sendMessage(Clr.RED + "Usage: /cv b [player]");
@@ -323,24 +319,24 @@ public class CarbonVoteCommand extends ModuleCmd {
 					if (Bukkit.getPlayer(args[0]) != null) {
 						if (modInst.perm(Bukkit.getPlayer(args[0]), "exempt.kick-vote")) {
 							rep.put("{ACTTION}", "kicked");
-							sender.sendMessage(CustomMessage.CV_EXEMPT.pre(rep));
+							sender.sendMessage(mod.getMsg("exempt", true, rep));
 						}
 						boolean start = true;
 						if (votePrice > 0.0 && !mod.perm(sender, "bypassprice." + rep.get("{VOTETYPE}"))) {
 							EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer)sender, votePrice);
 							start = er.transactionSuccess();
 							rep.put("{VOTEPRICE}", votePrice+"");
-							if (start) { sender.sendMessage(CustomMessage.CT_CHARGED.pre(rep)); }
+							if (start) { sender.sendMessage(mod.getMsg("charged", true, rep)); }
 						}
 						if (start) {
 							KickVote kv = new KickVote((OfflinePlayer) sender, Bukkit.getPlayer(args[0]));
 							VoteStartEvent vse = new VoteStartEvent((Player) sender, kv);
 							if (!vse.isCancelled()) CarbonVoteModule.startVote(kv);
 						} else {
-							sender.sendMessage(CustomMessage.CV_ECON_ERROR.pre());
+							sender.sendMessage(mod.getMsg("econ-error", true));
 						}
 					} else {
-						sender.sendMessage(CustomMessage.GEN_PLAYER_NOT_FOUND.pre());
+						sender.sendMessage(mod.getCoreMsg("player-not-found", true));
 					}
 				} else {
 					sender.sendMessage(Clr.RED + "Usage: /cv k [player]");
@@ -350,24 +346,24 @@ public class CarbonVoteCommand extends ModuleCmd {
 					if (Bukkit.getPlayer(args[0]) != null) {
 						if (modInst.perm(Bukkit.getPlayer(args[0]), "exempt.mute-vote")) {
 							rep.put("{ACTTION}", "muted");
-							sender.sendMessage(CustomMessage.CV_EXEMPT.pre(rep));
+							sender.sendMessage(mod.getMsg("exempt", true, rep));
 						}
 						boolean start = true;
 						if (votePrice > 0.0 && !mod.perm(sender, "bypassprice." + rep.get("{VOTETYPE}"))) {
 							EconomyResponse er = CarbonKit.econ.withdrawPlayer((OfflinePlayer)sender, votePrice);
 							start = er.transactionSuccess();
 							rep.put("{VOTEPRICE}", votePrice+"");
-							if (start) { sender.sendMessage(CustomMessage.CT_CHARGED.pre(rep)); }
+							if (start) { sender.sendMessage(mod.getMsg("charged", true, rep)); }
 						}
 						if (start) {
 							MuteVote mv = new MuteVote((OfflinePlayer) sender, Bukkit.getPlayer(args[0]));
 							VoteStartEvent vse = new VoteStartEvent((Player) sender, mv);
 							if (!vse.isCancelled()) CarbonVoteModule.startVote(mv);
 						} else {
-							sender.sendMessage(CustomMessage.CV_ECON_ERROR.pre());
+							sender.sendMessage(mod.getMsg("econ-error", true));
 						}
 					} else {
-						sender.sendMessage(CustomMessage.GEN_PLAYER_NOT_FOUND.pre());
+						sender.sendMessage(mod.getCoreMsg("player-not-found", true));
 					}
 				} else {
 					sender.sendMessage(Clr.RED + "Usage: /cv m [player]");

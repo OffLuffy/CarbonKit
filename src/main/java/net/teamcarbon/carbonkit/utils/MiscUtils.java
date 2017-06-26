@@ -50,7 +50,6 @@ public final class MiscUtils {
 	};
 
 	// Of the Materials that are permeable, ones that allow the player to stand on them and covers whole square
-	// TODO Check if these can be negated from permeableMats later (depending on use)
 	private static final Material[] supportingMats = new Material[]{
 			POWERED_RAIL, RAILS, SNOW, CARPET, ACTIVATOR_RAIL, DETECTOR_RAIL
 	};
@@ -252,7 +251,7 @@ public final class MiscUtils {
 	public static String capAllFirst(String words, boolean lowerOthers) {
 		String[] wa = words.split(" "), wa2 = new String[wa.length];
 		for (int i = 0; i < wa.length; i++) { wa2[i] = capFirst(wa[i], lowerOthers); }
-		return stringFromArray(" ", wa2);
+		return implode(" ",0, wa2);
 	}
 	/**
 	 * Replaces all instances of key values in 'rep' in 'subject' with the associated values in the HashMap
@@ -363,7 +362,6 @@ public final class MiscUtils {
 	 * @return Returns an OfflinePlayer if found, false otherwise
 	 */
 	public static OfflinePlayer getPlayer(String query, boolean matchOffline) {
-		// TODO Improve this?
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			try { if (p.getName().equalsIgnoreCase(query) || p.getUniqueId().equals(UUID.fromString(query))) return p;
 			} catch (Exception e) { /*(new CarbonException(e)).printStackTrace();*/ }
@@ -435,7 +433,8 @@ public final class MiscUtils {
 	 * Attempts to parse out each color/format code individually based on the permissions of the user
 	 * @param msg The message to parse colors in
 	 * @param p The Player whose permissions will be checked
-	 * @param perm The permission node that will be appended with specific nodes like .color.red or .format.bold
+	 * @param perm The permission node that will be appended with specific nodes like .color.red or .format.bold. A '.'
+	 *             is not required at the end of this, it'll be added automatically if necessary.
 	 * @return Returns the message that's parsed, doesn't parse codes the user doesn't have permission for
 	 */
 	public static String permColorParse(String msg, Player p, String perm) {
@@ -464,22 +463,25 @@ public final class MiscUtils {
 	 * @param toIndex The index of the array to end (inclusive)
 	 * @return Returns the concatenated Strings as a single String. Returns an empty string if array is null
 	 */
-	public static String stringFromSubArray(String delimiter, int fromIndex, int toIndex, Object... array) {
+	public static String implode(String delimiter, int fromIndex, int toIndex, Object... array) {
 		if (array == null) return "";
 		if (fromIndex < 0) { fromIndex = 0; }
 		if (toIndex > array.length-1) { toIndex = array.length-1; }
 		array = Arrays.copyOfRange(array, fromIndex, toIndex);
-		String newString = "";
+		StringBuilder sb = new StringBuilder();
+		//String newString = "";
 		boolean first = true;
 		for (Object o : array) {
 			String word = o == null ? "" : o.toString();
 			if (o instanceof String) word = (String) o;
 			else if (o instanceof Player) word = ((Player) o).getName();
 			else if (o instanceof World) word = ((World) o).getName();
-			newString += (first ? "" : delimiter) + word;
+			//newString += (first ? "" : delimiter) + word;
+			sb.append(first ? "" : delimiter);
+			sb.append(word);
 			first = false;
 		}
-		return newString;
+		return sb.toString();
 	}
 
 	/**
@@ -490,21 +492,22 @@ public final class MiscUtils {
 	 * @param fromIndex The index of the array to start from (inclusive)
 	 * @return Returns the concatenated Strings as a single String. Returns an empty string if array is null
 	 */
-	public static String stringFromSubArray(String delimiter, int fromIndex, Object... array) {
-		return stringFromSubArray(delimiter, fromIndex, array.length - 1, array);
+	public static String implode(String delimiter, int fromIndex, Object... array) {
+		return implode(delimiter, fromIndex, array.length - 1, array);
 	}
 
-	/**
+	/*
 	 * Concatenates the array of Strings togther with the specified delimiter between each String.
 	 * This method will use all the Strings from the array
 	 * @param array The array of Strings tos concatenate together
 	 * @param delimiter The String to place between each String that's combined
 	 * @return Returns the concatenated Strings as a single String. Returns an empty string if array is null
 	 */
-	public static String stringFromArray(String delimiter, Object... array) {
-		return stringFromSubArray(delimiter, 0, array.length - 1, array);
+/*
+	public static String implode(String delimiter, Object... array) {
+		return implode(delimiter, 0, array.length - 1, array);
 	}
-
+*/
 	/**
 	 * Checks if the Material allows a user to pass through it
 	 * @param mat The Material to check
@@ -617,6 +620,62 @@ public final class MiscUtils {
 		}
 		return allow;
 	}
+
+	/**
+	 * Prints a formatted header for the specified CommandSender
+	 * @param sender The CommandSender to send the message to
+	 * @param header The header to print (is wrapped in brackets)
+	 */
+	public static void printHeader(CommandSender sender, String header) {
+		if (header != null && !header.isEmpty())
+			sender.sendMessage(Clr.fromChars("6lm") + "=-=[" + Clr.fromChars("r6") + " " + header + " " + Clr.fromChars("6lm") + "]=-=-=-=");
+		else printFooter(sender);
+	}
+
+	/**
+	 * Prints a formatted divider for the specified CommandSender
+	 * @param sender The CommandSender to send the message to
+	 */
+	public static void printDivider(CommandSender sender) { sender.sendMessage(Clr.fromChars("6lm") + "----------------"); }
+
+	/**
+	 * Prints a formatted footer for the specified CommandSender
+	 * @param sender The CommandSender to send the message to
+	 */
+	public static void printFooter(CommandSender sender) { sender.sendMessage(Clr.fromChars("6lm") + "=-=-=-=-=-=-=-=-="); }
+
+	/**
+	 * Sends a formatted interactive  pagination footer to a Player (not supported for CommandSender)
+	 * @param pl The Player to send the footer to
+	 * @param numPages The number of pages in total
+	 * @param curPage The currently viewed page
+	 * @param cmdFormat The String used in String.format() with a single %d placeholder to build the command<br />
+	 *                  <b>Example:</b> "/ticket listall %d" where %d will be replaced with the page number
+	 */
+	public static void printPaginatedFooter(Player pl, int numPages, int curPage, String cmdFormat) {
+		final char PREV = '\u25C0', NEXT = '\u25B6';
+		final String DPREV = PREV + "" + PREV, DNEXT = NEXT + "" + NEXT;
+		final String PGIND = "[" + curPage + "/" + numPages + "]", PGINDT = "Page " + curPage + " of " + numPages;
+		final Locale L = Locale.ENGLISH;
+		curPage = NumUtils.normalizeInt(curPage, 1, numPages);
+		boolean hasPrev = curPage != 1, hasNext = curPage != numPages;
+		ChatColor nextClr = hasNext ? ChatColor.GREEN : ChatColor.GRAY;
+		ChatColor prevClr = hasPrev ? ChatColor.GREEN : ChatColor.GRAY;
+		ChatColor gldClr = ChatColor.GOLD, ylwClr = ChatColor.YELLOW;
+		ChatColor[] bsClrs = new ChatColor[]{ChatColor.BOLD, ChatColor.STRIKETHROUGH};
+		FormattedMessage fm = new FormattedMessage("");
+		fm.then("=-=-=[").color(gldClr).style(bsClrs) .then(" " + DPREV + " ").color(prevClr);
+		if (hasPrev) fm.command(String.format(L, cmdFormat, 1)).tooltip("First page");
+		fm.then("-").color(gldClr).style(bsClrs) .then(" " + PREV + " ").color(prevClr);
+		if (hasPrev) fm.command(String.format(L, cmdFormat, curPage-1)).tooltip("Prev page");
+		fm.then(PGIND).color(ylwClr).tooltip(PGINDT).then(" " + NEXT + " ").color(nextClr);
+		if (hasNext) fm.command(String.format(L, cmdFormat, curPage+1)).tooltip("Next page");
+		fm.then("-").color(gldClr).style(bsClrs).then(" " + DNEXT + " ").color(nextClr);
+		if (hasNext) fm.command(String.format(L, cmdFormat, numPages)).tooltip("Last page");
+		fm.then("]=-=-=").color(gldClr).style(bsClrs);
+		fm.send(pl);
+	}
+
 	public enum TrustLevel { BUILD, CONTAINER, ACCESS }
 
 	/**

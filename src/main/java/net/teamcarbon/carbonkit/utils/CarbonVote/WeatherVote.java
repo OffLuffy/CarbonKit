@@ -1,8 +1,8 @@
 package net.teamcarbon.carbonkit.utils.CarbonVote;
 
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.MiscUtils;
+import net.teamcarbon.carbonkit.utils.Module;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
@@ -51,20 +51,20 @@ public class WeatherVote extends Vote {
 			world.setThundering(true);
 			rep.put("{WEATHER}", "stormy");
 		}
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_WEATHER_VOTE_PASSED.pre(rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, Module.getMsg("carbonvote", "weather-vote-passed", true, rep));
 	}
 	protected void voteFail() {
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{YESPERCENT}", String.format(Locale.ENGLISH, "%.2f", getAgreePercentage(true)));
 		rep.put("{NOPERCENT}", String.format(Locale.ENGLISH, "%.2f", (100-getAgreePercentage(true))));
 		rep.put("{VOTETYPE}", "Weather");
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_FAILED.pre(rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, Module.getMsg("carbonvote", "vote-failed", true, rep));
 	}
 	protected void broadcastStart() {
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{VOTETYPE}", "weather");
 		rep.put("{VOTEREASON}", "for " + wtype.lname());
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_STARTED.pre(rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, Module.getMsg("carbonvote", "vote-started", true, rep));
 	}
 	/**
 	 * Attempts to resolve a String into a WeatherType

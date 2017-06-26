@@ -1,6 +1,5 @@
 package net.teamcarbon.carbonkit.commands.CarbonCore;
 
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import net.teamcarbon.carbonkit.CarbonKit;
@@ -17,7 +16,7 @@ public class CarbonReloadCommand extends ModuleCmd {
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!mod.perm(sender, "reload")) {
-			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+			sender.sendMessage(mod.getCoreMsg("no-perm", false));
 			return;
 		}
 		HashMap<String, String> rep = new HashMap<>();
@@ -27,14 +26,14 @@ public class CarbonReloadCommand extends ModuleCmd {
 			if (m != null) {
 				m.reloadModule();
 				rep.put("{MODULE}", m.getName());
-				sender.sendMessage(CustomMessage.CORE_RELOADED.pre(rep));
+				sender.sendMessage(mod.getCoreMsg("reloaded", true, rep));
 			} else {
-				sender.sendMessage(CustomMessage.CORE_NOT_MODULE.pre());
+				sender.sendMessage(mod.getCoreMsg("no-module", true));
 			}
 		} else {
 			CarbonKit.inst.loadPlugin(System.currentTimeMillis());
 			rep.put("{MODULE}", "all modules");
-			sender.sendMessage(CustomMessage.CORE_RELOADED.pre(rep));
+			sender.sendMessage(mod.getCoreMsg("reloaded", true, rep));
 		}
 	}
 

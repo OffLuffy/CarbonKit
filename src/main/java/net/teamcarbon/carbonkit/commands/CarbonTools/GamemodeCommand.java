@@ -1,6 +1,5 @@
 package net.teamcarbon.carbonkit.commands.CarbonTools;
 
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
 import net.teamcarbon.carbonkit.utils.Messages.Clr;
@@ -60,7 +59,7 @@ public class GamemodeCommand extends ModuleCmd {
 		if (args.length > 0) {
 			Mode m = Mode.getMode(args[0]);
 			if (m == null) {
-				sender.sendMessage(CustomMessage.MISC_INVALID_MODE.pre());
+				sender.sendMessage(mod.getMsg("invalid-gamemode", true));
 			} else {
 				HashMap<String, String> rep = new HashMap<>();
 				rep.put("{MODE}", m.lname());
@@ -71,16 +70,16 @@ public class GamemodeCommand extends ModuleCmd {
 							((Player) p).setGameMode(m.getGameMode());
 							rep.put("{USER}", p.getName());
 							if (!p.equals(sender)) {
-								sender.sendMessage(CustomMessage.MISC_MODE_SET_OTHER.pre(rep));
-								((Player) p).sendMessage(CustomMessage.MISC_MODE_CHANGE.pre(rep));
+								sender.sendMessage(mod.getMsg("mode-set-other", true, rep));
+								((Player) p).sendMessage(mod.getMsg("mode-change", true, rep));
 							} else {
-								sender.sendMessage(CustomMessage.MISC_MODE_SET_SELF.pre(rep));
+								sender.sendMessage(mod.getMsg("mode-set-self", true, rep));
 							}
 						} else {
-							sender.sendMessage(CustomMessage.GEN_PLAYER_NOT_FOUND.noPre());
+							sender.sendMessage(mod.getCoreMsg("player-not-found", false));
 						}
 					} else {
-						sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+						sender.sendMessage(mod.getCoreMsg("no-perm", false));
 					}
 				} else {
 					if (!(sender instanceof Player)) {
@@ -88,9 +87,9 @@ public class GamemodeCommand extends ModuleCmd {
 					} else {
 						if (mod.perm(sender, "gamemode.self." + m.lname())) {
 							((Player) sender).setGameMode(m.getGameMode());
-							sender.sendMessage(CustomMessage.MISC_MODE_SET_SELF.pre(rep));
+							sender.sendMessage(mod.getMsg("mode-set-self", true, rep));
 						} else {
-							sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+							sender.sendMessage(mod.getCoreMsg("no-perm", false));
 						}
 					}
 				}
@@ -103,21 +102,25 @@ public class GamemodeCommand extends ModuleCmd {
 			}
 			if (mod.perm(sender, sPerms)) {
 				sender.sendMessage(Clr.AQUA + "/gm [mode]" + Clr.DARKAQUA + " - Set your own mode");
-				String modes = Clr.NOTE + "Allowed modes:";
+				StringBuilder sb = new StringBuilder(Clr.NOTE + "Allowed modes:");
+				//String modes = Clr.NOTE + "Allowed modes:";
 				for (GameMode gm : GameMode.values()) {
 					String gml = gm.name().toLowerCase();
-					modes += (mod.perm(sender, "gamemode.self." + gml) ? " " + gml : "");
+					sb.append((mod.perm(sender, "gamemode.self." + gml) ? " " + gml : ""));
+					//modes += (mod.perm(sender, "gamemode.self." + gml) ? " " + gml : "");
 				}
-				sender.sendMessage(modes);
+				sender.sendMessage(sb.toString());
 			}
 			if (mod.perm(sender, oPerms)) {
 				sender.sendMessage(Clr.AQUA + "/gm [mode] [user]" + Clr.DARKAQUA + " - Set another user's mode");
-				String modes = Clr.NOTE + "Allowed modes:";
+				StringBuilder sb = new StringBuilder(Clr.NOTE + "Allowed modes:");
+				//String modes = Clr.NOTE + "Allowed modes:";
 				for (GameMode gm : GameMode.values()) {
 					String gml = gm.name().toLowerCase();
-					modes += (mod.perm(sender, "gamemode.other." + gml) ? " " + gml : "");
+					sb.append((mod.perm(sender, "gamemode.other." + gml) ? " " + gml : ""));
+					//modes += (mod.perm(sender, "gamemode.other." + gml) ? " " + gml : "");
 				}
-				sender.sendMessage(modes);
+				sender.sendMessage(sb.toString());
 			}
 		}
 	}

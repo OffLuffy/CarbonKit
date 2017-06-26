@@ -4,7 +4,6 @@ import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.CarbonKit.ConfType;
 import net.teamcarbon.carbonkit.commands.CarbonTools.*;
 import net.teamcarbon.carbonkit.tasks.UpdateOnlineTimeTask;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.DuplicateModuleException;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.UserStore;
@@ -399,7 +398,7 @@ public class CarbonToolsModule extends Module {
 	// Tameable: Horse, Ocelot, Wolf
 
 	public static void showInfo(Player pl, Entity ent) {
-		CustomMessage.printHeader(pl, "Animal Info");
+		MiscUtils.printHeader(pl, "Animal Info");
 		pl.sendMessage(Clr.AQUA + "Type: " + prep(ent.getType().name()));
 		if (ent instanceof Tameable) {
 			Tameable te = (Tameable) ent;
@@ -453,7 +452,7 @@ public class CarbonToolsModule extends Module {
 			Ocelot ocelot = (Ocelot) ent;
 			pl.sendMessage(Clr.AQUA + "Cat Type: " + prep(ocelot.getCatType().name()));
 		}
-		CustomMessage.printFooter(pl);
+		MiscUtils.printFooter(pl);
 	}
 
 	private static String prep(String s) { return MiscUtils.capFirst(s, true).replace("_", " "); }
@@ -524,8 +523,8 @@ public class CarbonToolsModule extends Module {
 		rep.put("{Y}", l.getBlockY()+"");
 		rep.put("{Z}", l.getBlockZ()+"");
 		rep.put("{WORLD}", l.getWorld().getName());
-		String m = join ? CustomMessage.MISC_JOIN.noPre(rep) : CustomMessage.MISC_QUIT.noPre(rep);
-		String me = join ? CustomMessage.MISC_JOIN_EXT.noPre(rep) : CustomMessage.MISC_QUIT_EXT.noPre(rep);
+		String m = getMsg((join ? "join" : "quit") + "-message", false, rep);
+		String me = getMsg((join ? "join" : "quit") + "-message-extended", false, rep);
 		for (Player opl : Bukkit.getOnlinePlayers()) {
 			if (!silent || perm(opl, "silent" + a + ".notify")) {
 				opl.sendMessage(perm(opl, a + "msg.extended") ? me : m);

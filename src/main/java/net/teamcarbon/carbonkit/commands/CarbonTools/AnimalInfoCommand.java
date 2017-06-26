@@ -1,7 +1,6 @@
 package net.teamcarbon.carbonkit.commands.CarbonTools;
 
 import net.teamcarbon.carbonkit.modules.CarbonToolsModule;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Messages.Clr;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -17,11 +16,11 @@ public class AnimalInfoCommand extends ModuleCmd {
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			sender.sendMessage(CustomMessage.GEN_NOT_ONLINE.noPre());
+			sender.sendMessage(mod.getCoreMsg("not-online", false));
 			return;
 		}
 		if (!mod.perm(sender, "animalinfo")) {
-			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+			sender.sendMessage(mod.getMsg("no-perm", false));
 			return;
 		}
 		CarbonToolsModule.pendingAniInfo.add((Player) sender);

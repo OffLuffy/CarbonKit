@@ -1,8 +1,8 @@
 package net.teamcarbon.carbonkit.utils.CarbonVote;
 
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.MiscUtils;
+import net.teamcarbon.carbonkit.utils.Module;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -11,6 +11,7 @@ import net.teamcarbon.carbonkit.CarbonKit;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("UnusedDeclaration")
@@ -32,20 +33,22 @@ public class BanVote extends TargetedVote {
 		}
 		rep.put("{TARGET}", target.getName());
 		Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(target.getName(), "Vote Banned by " + getVoteStarter().getName(), ((ts>0L)?new Date(ts):null), "CarbonVote");
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList((Player) target), CustomMessage.CV_BAN_VOTE_PASSED.pre(rep));
-		if (target.isOnline()) ((Player)target).kickPlayer(CustomMessage.CV_BAN_MESSAGE.noPre(rep));
+		List<Player> plList = MiscUtils.quickList((Player) target);
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, plList, Module.getMsg("carbonvote", "ban-vote-passed", true, rep));
+		if (target.isOnline()) ((Player)target).kickPlayer(Module.getMsg("carbonvote", "ban-message", false, rep));
 	}
 	protected void voteFail() {
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{YESPERCENT}", String.format(Locale.ENGLISH, "%.2f", getAgreePercentage(true)));
 		rep.put("{NOPERCENT}", String.format(Locale.ENGLISH, "%.2f", (100 - getAgreePercentage(true))));
 		rep.put("{VOTETYPE}", "Ban");
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList((Player)target), CustomMessage.CV_VOTE_FAILED.pre(rep));
+		List<Player> plList = MiscUtils.quickList((Player) target);
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, plList, Module.getMsg("carbonvote", "vote-failed", true, rep));
 	}
 	protected void broadcastStart() {
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{VOTETYPE}", getTargetedVoteType().lname());
 		rep.put("{VOTEREASON}", "to " + getTargetedVoteType().lname() + " " + target.getName());
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_STARTED.pre(rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, Module.getMsg("carbonvote", "vote-started", true, rep));
 	}
 }

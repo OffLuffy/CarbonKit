@@ -1,13 +1,9 @@
 package net.teamcarbon.carbonkit.commands.CarbonTools;
 
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
+import net.teamcarbon.carbonkit.utils.*;
 import net.teamcarbon.carbonkit.utils.Messages.Clr;
-import net.teamcarbon.carbonkit.utils.NumUtils;
-import net.teamcarbon.carbonkit.utils.TypeUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import net.teamcarbon.carbonkit.utils.Module;
-import net.teamcarbon.carbonkit.utils.ModuleCmd;
 
 @SuppressWarnings("UnusedDeclaration")
 public class DiceCommand extends ModuleCmd {
@@ -17,7 +13,7 @@ public class DiceCommand extends ModuleCmd {
 	@Override
 	public void execModCmd(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!mod.perm(sender, "dice")) {
-			sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+			sender.sendMessage(mod.getCoreMsg("no-perm", false));
 			return;
 		}
 		int min = 1, max = 6;
@@ -25,11 +21,11 @@ public class DiceCommand extends ModuleCmd {
 			if (TypeUtils.isInteger(args[0])) {
 				try {max = Integer.parseInt(args[0]); } catch (Exception ignore) {}
 			} else {
-				CustomMessage.printHeader(sender, "Dice Help");
+				MiscUtils.printHeader(sender, "Dice Help");
 				sender.sendMessage(Clr.AQUA + "/dice" + Clr.DARKAQUA + " - Rolls a number between 1 and 6");
 				sender.sendMessage(Clr.AQUA + "/dice [max]" + Clr.DARKAQUA + " - Rolls a number between 1 and max");
 				sender.sendMessage(Clr.AQUA + "/dice [max] [min]" + Clr.DARKAQUA + " - Rolls a number between min and max");
-				CustomMessage.printFooter(sender);
+				MiscUtils.printFooter(sender);
 				return;
 			}
 		}

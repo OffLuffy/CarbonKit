@@ -9,7 +9,6 @@ import net.teamcarbon.carbonkit.events.triviaEvents.TriviaStartEvent;
 import net.teamcarbon.carbonkit.modules.CarbonTriviaModule;
 import net.teamcarbon.carbonkit.tasks.NextQuestionTask;
 import net.teamcarbon.carbonkit.tasks.SkipQuestionTask;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.TypeUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -86,11 +85,11 @@ public class TriviaRound {
 	// Announces the start of a TriviaRound, includes a started by message if the passed in object is a Player or String
 	private void announce(Object o) {
 		if (!(o instanceof String) && !(o instanceof CommandSender)) return;
-		mbc(CustomMessage.CT_START.noPre());
+		mbc(ctm.getMsg("start", false));
 		if (o instanceof Player || o instanceof String) {
 			HashMap<String, String> rep = new HashMap<>();
 			rep.put("{STARTER}", o instanceof Player?((Player)o).getName():(String)o);
-			mbc(CustomMessage.CT_PROVIDED_BY.noPre(rep));
+			mbc(ctm.getMsg("provided-by", false, rep));
 		}
 	}
 
@@ -144,11 +143,11 @@ public class TriviaRound {
 						if (money > 0.0) CarbonKit.econ.depositPlayer(pl, money);
 						HashMap<Integer, ItemStack> excess = pl.getInventory().addItem(rewards);
 						if (!excess.isEmpty()) {
-							pl.sendMessage(CarbonTriviaModule.mpre + CustomMessage.CT_EXCESS_REWARDS.noPre());
+							pl.sendMessage(CarbonTriviaModule.mpre + ctm.getMsg("excess-rewards", false));
 							for (ItemStack is : excess.values())
 								pl.getWorld().dropItem(pl.getLocation(), is);
 						}
-						pl.sendMessage(CarbonTriviaModule.mpre + CustomMessage.CT_REWARDED.noPre());
+						pl.sendMessage(CarbonTriviaModule.mpre + ctm.getMsg("rewarded", false));
 					} else {
 						CarbonKit.log.debug("A player being rewarded was not online: " + Bukkit.getPlayer(id).getName());
 					}
@@ -288,7 +287,7 @@ public class TriviaRound {
 			}
 			HashMap<String, String> rep = new HashMap<>();
 			if (winners.size() == 0) {
-				mbc(CustomMessage.CT_NO_WINS.noPre());
+				mbc(ctm.getMsg("no-wins", false));
 			} else if (winners.size() == 1) {
 				if (Bukkit.getPlayer(winners.get(0)) != null) {
 					rep.put("{PLAYER}", Bukkit.getPlayer(winners.get(0)).getName());
@@ -297,21 +296,24 @@ public class TriviaRound {
 					rep.put("{PLAYER}", "Herobrine");
 					rep.put("{POINTS}", "-666");
 				}
-				mbc(CustomMessage.CT_PLAYER_WINS.noPre(rep));
+				mbc(ctm.getMsg("player-wins", false, rep));
 				rewardUsers(winners);
 			} else if (winners.size() > 1) {
 				rep.put("{POINTS}", points.get(winners.get(0)) + "");
-				String wins = "";
+				StringBuilder sb = new StringBuilder(Bukkit.getPlayer(winners.get(0)).getName());
+				//String wins = "";
+				for (int i = 1; i < winners.size(); i++)
+					sb.append(", ").append(Bukkit.getPlayer(winners.get(i)).getName());
 				for (UUID id : winners)
 					if (Bukkit.getPlayer(id) != null && Bukkit.getPlayer(id).isOnline())
-						wins += Bukkit.getPlayer(id).getName() + ", ";
-				wins = wins.substring(0, wins.length() - 2);
-				rep.put("{PLAYERS}", wins);
-				mbc(CustomMessage.CT_MULTI_WINS.noPre(rep));
+						//wins += Bukkit.getPlayer(id).getName() + ", ";
+				//wins = wins.substring(0, wins.length() - 2);
+				rep.put("{PLAYERS}", sb.toString());
+				mbc(ctm.getMsg("multi-wins", false, rep));
 				rewardUsers(winners);
 			} else {
 				CarbonKit.log.warn("Something strange happened with the winner list!");
-				mbc(CustomMessage.CT_GENERIC_END.noPre());
+				mbc(ctm.getMsg("generic-end", false));
 			}
 			flushData();
 			TriviaRound.clearActiveRound();
@@ -326,7 +328,7 @@ public class TriviaRound {
 			started = false;
 			TriviaCancelledEvent tce = new TriviaCancelledEvent(this);
 			CarbonKit.pm.callEvent(tce);
-			mbc(CustomMessage.CT_NO_WINS.noPre());
+			mbc(ctm.getMsg("no-wins", false));
 			flushData();
 			TriviaRound.clearActiveRound();
 		}
@@ -357,7 +359,7 @@ public class TriviaRound {
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{PLAYER}", p.getName());
 		rep.put("{ANSWER}", ans);
-		mbc(CustomMessage.CT_ANSWERED.noPre(rep));
+		mbc(ctm.getMsg("answered", false, rep));
 		UUID id = p.getUniqueId();
 		addPoints(p, 1);
 		CarbonKit.log.debug(p.getName() + " answered with '" + ans + "', now has " + getPoints(p) + " points");
@@ -369,7 +371,7 @@ public class TriviaRound {
 	 */
 	public void skipQuestion() {
 		CarbonKit.log.debug("No one answered this question, skipping it.");
-		mbc(CustomMessage.CT_SKIPPED.noPre());
+		mbc(ctm.getMsg("skipped", false));
 		nextQuestion();
 	}
 

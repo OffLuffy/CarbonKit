@@ -2,7 +2,6 @@ package net.teamcarbon.carbonkit.commands.CarbonTools;
 
 import net.teamcarbon.carbonkit.CarbonKit;
 import net.teamcarbon.carbonkit.modules.CarbonToolsModule;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
 import net.teamcarbon.carbonkit.utils.Module;
 import net.teamcarbon.carbonkit.utils.ModuleCmd;
 import net.teamcarbon.carbonkit.utils.UserStore;
@@ -29,22 +28,22 @@ public class OnlineTimeCommand extends ModuleCmd {
 			if (p != null) {
 				if (sender.equals(p)) {
 					if (!mod.perm(sender, "onlinetime.self")) {
-						sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+						sender.sendMessage(mod.getCoreMsg("no-perm", false));
 						return;
 					}
 					displayOnlineTime(sender, p);
 				} else {
 					if (!mod.perm(sender, "onlinetime.others")) {
-						sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+						sender.sendMessage(mod.getCoreMsg("no-perm", false));
 						return;
 					}
 					displayOnlineTime(sender, p);
 				}
 			} else {
 				if (mod.perm(sender, "onlinetime.others")) {
-					sender.sendMessage(CustomMessage.GEN_PLAYER_NOT_FOUND.noPre());
+					sender.sendMessage(mod.getCoreMsg("player-not-found", false));
 				} else {
-					sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+					sender.sendMessage(mod.getCoreMsg("no-perm", false));
 				}
 			}
 		} else {
@@ -53,7 +52,7 @@ public class OnlineTimeCommand extends ModuleCmd {
 				return;
 			}
 			if (!mod.perm(sender, "onlinetime.self")) {
-				sender.sendMessage(CustomMessage.GEN_NO_PERM.noPre());
+				sender.sendMessage(mod.getCoreMsg("no-perm", false));
 				return;
 			}
 			displayOnlineTime(sender, (Player) sender);
@@ -69,7 +68,7 @@ public class OnlineTimeCommand extends ModuleCmd {
 		CarbonToolsModule.updateOnlineTime(id, false);
 		UserStore us = CarbonKit.getPlayerData(id);
 		String pre = "online-time." + id + ".";
-		CustomMessage.printHeader(sender, "Online Time for " + p.getName());
+		MiscUtils.printHeader(sender, "Online Time for " + p.getName());
 		sender.sendMessage(Clr.AQUA + "First seen: " + Clr.DARKAQUA + parseMillis(p.getFirstPlayed(), true));
 		sender.sendMessage(Clr.AQUA + "Last seen: " + Clr.DARKAQUA + parseMillis(p.isOnline() ? System.currentTimeMillis() : p.getLastPlayed(), true));
 		sender.sendMessage(Clr.AQUA + "Overall online time: " + Clr.DARKAQUA + parseMillis(us.getLong(getMod().getName() + ".online-time.overall-time", -1), false));
@@ -77,7 +76,7 @@ public class OnlineTimeCommand extends ModuleCmd {
 		sender.sendMessage(Clr.AQUA + "Time last month: " + Clr.DARKAQUA + parseMillis(us.getLong(getMod().getName() + ".online-time.last-month", -1), false));
 		sender.sendMessage(Clr.AQUA + "Average monthly time: " + Clr.DARKAQUA + parseMillis(us.getLong(getMod().getName() + ".online-time.monthly-avg", -1), false));
 		sender.sendMessage(Clr.AQUA + "Average session time: " + Clr.DARKAQUA + parseMillis(us.getLong(getMod().getName() + ".online-time.average-session", -1), false));
-		CustomMessage.printFooter(sender);
+		MiscUtils.printFooter(sender);
 	}
 
 	private String parseMillis(long millis, boolean asDate) {

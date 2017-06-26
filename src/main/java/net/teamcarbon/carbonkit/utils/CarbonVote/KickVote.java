@@ -1,12 +1,13 @@
 package net.teamcarbon.carbonkit.utils.CarbonVote;
 
 import net.teamcarbon.carbonkit.modules.CarbonVoteModule;
-import net.teamcarbon.carbonkit.utils.CustomMessages.CustomMessage;
+import net.teamcarbon.carbonkit.utils.Module;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import net.teamcarbon.carbonkit.utils.MiscUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 @SuppressWarnings("UnusedDeclaration")
@@ -17,20 +18,22 @@ public class KickVote extends TargetedVote {
 	protected void votePass() {
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{TARGET}", target.getName());
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList((Player) target), CustomMessage.CV_KICK_VOTE_PASSED.pre(rep));
-		if (target.isOnline()) ((Player)target).kickPlayer(CustomMessage.CV_KICK_MESSAGE.noPre(rep));
+		List<Player> plList = MiscUtils.quickList((Player) target);
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, plList, Module.getMsg("carbonvote", "kick-vote-passed", true, rep));
+		if (target.isOnline()) ((Player)target).kickPlayer(Module.getMsg("carbonvote", "kick-message", false, rep));
 	}
 	protected void voteFail() {
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{YESPERCENT}", String.format(Locale.ENGLISH, "%.2f", getAgreePercentage(true)));
 		rep.put("{NOPERCENT}", String.format(Locale.ENGLISH, "%.2f", (100 - getAgreePercentage(true))));
 		rep.put("{VOTETYPE}", "Kick");
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, MiscUtils.quickList((Player)target), CustomMessage.CV_VOTE_FAILED.pre(rep));
+		List<Player> plList = MiscUtils.quickList((Player) target);
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, plList, Module.getMsg("carbonvote", "vote-failed", true, rep));
 	}
 	protected void broadcastStart() {
 		HashMap<String, String> rep = new HashMap<>();
 		rep.put("{VOTETYPE}", getTargetedVoteType().lname());
 		rep.put("{VOTEREASON}", "to " + getTargetedVoteType().lname() + " " + target.getName());
-		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, CustomMessage.CV_VOTE_STARTED.pre(rep));
+		MiscUtils.permBroadcast(CarbonVoteModule.VMSG_PERM, Module.getMsg("carbonvote", "vote-started", true, rep));
 	}
 }
